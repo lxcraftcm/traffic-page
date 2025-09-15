@@ -1,0 +1,23 @@
+{
+  "name": "traffic-page",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "build:css": "tailwindcss -i ./public/styles.css -o ./public/styles.min.css --minimize"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "autoprefixer": "^10.4.21",
+    "body-parser": "^1.20.2",
+    "crypto": "^1.0.1",
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.17"
+  }
+}

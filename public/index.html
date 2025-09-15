@@ -1,0 +1,2192 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网站导航中心</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4F46E5',
+                        secondary: '#10B981',
+                        accent: '#F59E0B',
+                        dark: '#1E293B',
+                        light: '#F8FAFC',
+                        intranet: '#10B981',
+                        extranet: '#3B82F6'
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'spin-slow': 'spin 1.5s linear infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-50 text-dark font-inter min-h-screen flex flex-col">
+<!-- 固定页眉 -->
+<header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm transition-all duration-300">
+    <div class="container mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center">
+        <div class="flex items-center mb-4 md:mb-0">
+            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-primary/90 to-primary flex items-center justify-center mr-3 shadow-md">
+                <i class="fa fa-compass text-white text-xl"></i>
+            </div>
+            <h1 class="text-xl md:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/70">导航中心</h1>
+        </div>
+
+        <div class="flex items-center space-x-4">
+            <!-- 网络切换 -->
+            <div class="flex items-center space-x-2">
+                <span class="text-sm text-extranet" id="networkLabel">外网</span>
+                <label class="relative inline-block w-[50px] h-[24px] cursor-pointer">
+                    <input type="checkbox" id="networkToggle" class="opacity-0 w-0 h-0">
+                    <span class="absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-extranet transition-all duration-300 rounded-full"></span>
+                    <span class="absolute content-[''] h-[18px] w-[18px] left-[3px] bottom-[3px] bg-white transition-all duration-300 rounded-full"></span>
+                </label>
+                <span class="text-sm text-intranet">内网</span>
+            </div>
+
+            <button id="authSettingsBtn" class="hidden md:flex items-center px-4 py-2 text-gray-600 hover:text-primary transition-colors">
+                <i class="fa fa-key mr-2"></i>权限设置
+            </button>
+            <button id="refreshBtn" class="hidden md:flex items-center px-4 py-2 text-gray-600 hover:text-primary transition-colors">
+                <i class="fa fa-refresh mr-2"></i>刷新
+            </button>
+            <button id="addSiteBtn" class="px-4 py-2 bg-gradient-to-br from-primary/90 to-primary text-white rounded-lg hover:from-primary hover:to-primary/80 transition-all shadow-md hover:shadow-lg">
+                <i class="fa fa-plus mr-2"></i>添加网站
+            </button>
+        </div>
+    </div>
+</header>
+
+<!-- 主内容区 -->
+<main class="container mx-auto px-4 py-8 flex-grow">
+    <!-- 全局加载状态 -->
+    <div id="globalLoadingState" class="max-w-4xl mx-auto mb-10 py-12 text-center hidden">
+        <div class="inline-block w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin-slow mb-4"></div>
+        <p class="text-gray-600">正在加载数据...</p>
+    </div>
+
+    <!-- 错误状态 -->
+    <div id="errorState" class="max-w-4xl mx-auto mb-10 p-6 bg-red-50 border border-red-200 rounded-xl hidden">
+        <div class="flex items-start">
+            <div class="flex-shrink-0 mt-0.5">
+                <i class="fa fa-exclamation-circle text-red-500 text-xl"></i>
+            </div>
+            <div class="ml-4">
+                <h3 class="text-lg font-medium text-red-800">加载失败</h3>
+                <p class="mt-1 text-red-700" id="errorMessage">无法加载导航数据，请稍后重试。</p>
+                <button id="retryBtn" class="mt-3 inline-flex items-center px-4 py-2 border border-red-300 text-red-700 bg-white rounded-lg hover:bg-red-50 transition-colors">
+                    <i class="fa fa-refresh mr-2"></i>重试
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 搜索区域 -->
+    <div id="searchContainer" class="max-w-2xl mx-auto mb-10 hidden">
+        <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-center mb-2">发现并访问你的常用网站</h2>
+        <p class="text-gray-500 text-center mb-6">一站式导航到所有重要页面，提高你的工作效率</p>
+
+        <div class="relative group">
+            <input type="text" id="searchInput"
+                   class="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all shadow-sm group-hover:shadow-md"
+                   placeholder="搜索网站或服务...">
+            <i class="fa fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 transition-colors group-hover:text-primary"></i>
+        </div>
+    </div>
+
+    <!-- 分类标签 -->
+    <div id="categoriesContainer" class="overflow-x-auto pb-2 mb-8 hidden">
+        <div id="categoryTabs" class="flex space-x-2 min-w-max">
+            <!-- 分类标签将动态生成 -->
+        </div>
+    </div>
+
+    <!-- 导航内容容器 -->
+    <div id="navigationContent">
+        <!-- 导航内容将动态生成 -->
+    </div>
+</main>
+
+<!-- 固定页脚 -->
+<footer class="bg-white border-t border-gray-200 py-6 mt-12">
+    <div class="container mx-auto px-4">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+            <div class="mb-4 md:mb-0">
+                <p class="text-gray-500 text-sm">© 2023 导航中心. 保留所有权利.</p>
+            </div>
+
+            <div class="flex space-x-6">
+                <a href="#" class="text-gray-500 hover:text-primary transition-colors">
+                    <i class="fa fa-question-circle mr-1"></i> 帮助
+                </a>
+                <a href="#" class="text-gray-500 hover:text-primary transition-colors">
+                    <i class="fa fa-cog mr-1"></i> 设置
+                </a>
+                <a href="#" class="text-gray-500 hover:text-primary transition-colors">
+                    <i class="fa fa-info-circle mr-1"></i> 关于
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- 编辑网站模态框 -->
+<div id="editSiteModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto transform translate-y-8 transition-transform duration-300">
+        <div class="p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold" id="editModalTitle">编辑网站</h3>
+                <button id="closeEditModal" class="text-gray-400 hover:text-gray-600 transition-colors">
+                    <i class="fa fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <!-- 模态框内加载状态 -->
+            <div id="editModalLoading" class="hidden py-8 text-center">
+                <div class="inline-block w-8 h-8 border-4 border-primary/30 border-t-primary rounded-full animate-spin-slow mb-2"></div>
+                <p class="text-gray-500 text-sm">处理中...</p>
+            </div>
+
+            <!-- 模态框内容表单 -->
+            <div id="editModalContent">
+                <form id="editSiteForm">
+                    <input type="hidden" id="editSiteId">
+                    <input type="hidden" id="editSiteType" value="site">
+
+                    <div class="mb-4">
+                        <label for="editSiteName" class="block text-sm font-medium text-gray-700 mb-1">网站名称</label>
+                        <input type="text" id="editSiteName" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" placeholder="输入网站名称">
+                    </div>
+
+                    <!-- 内外网URL输入框 -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">网址</label>
+                        <div class="space-y-2">
+                            <div>
+                                <label for="editSiteExtranetUrl" class="flex items-center text-xs text-extranet mb-1">
+                                    <i class="fa fa-globe mr-1"></i> 外网地址
+                                </label>
+                                <input type="url" id="editSiteExtranetUrl" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" placeholder="https://example.com">
+                            </div>
+                            <div>
+                                <label for="editSiteIntranetUrl" class="flex items-center text-xs text-intranet mb-1">
+                                    <i class="fa fa-building mr-1"></i> 内网地址
+                                </label>
+                                <input type="url" id="editSiteIntranetUrl" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" placeholder="http://192.168.x.x">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="editSiteDescription" class="block text-sm font-medium text-gray-700 mb-1">描述</label>
+                        <textarea id="editSiteDescription" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" rows="2" placeholder="简要描述网站功能"></textarea>
+                    </div>
+
+                    <div class="mb-4" id="editCategoryContainer">
+                        <label for="editSiteCategory" class="block text-sm font-medium text-gray-700 mb-1">分类</label>
+                        <select id="editSiteCategory" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all">
+                            <!-- 分类选项将动态生成 -->
+                        </select>
+                    </div>
+
+                    <!-- 图标选择 -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">选择图标</label>
+                        <div class="grid grid-cols-6 gap-2 max-h-40 overflow-y-auto p-2 border border-gray-200 rounded-lg">
+                            <div class="icon-selector cursor-pointer flex flex-col items-center p-2 hover:bg-gray-100 rounded" data-icon="fa-link">
+                                <i class="fa fa-link text-lg text-primary"></i>
+                                <span class="text-xs mt-1">链接</span>
+                            </div>
+                            <div class="icon-selector cursor-pointer flex flex-col items-center p-2 hover:bg-gray-100 rounded" data-icon="fa-envelope">
+                                <i class="fa fa-envelope text-lg text-primary"></i>
+                                <span class="text-xs mt-1">邮件</span>
+                            </div>
+                            <div class="icon-selector cursor-pointer flex flex-col items-center p-2 hover:bg-gray-100 rounded" data-icon="fa-file-text">
+                                <i class="fa fa-file-text text-lg text-primary"></i>
+                                <span class="text-xs mt-1">文档</span>
+                            </div>
+                            <div class="icon-selector cursor-pointer flex flex-col items-center p-2 hover:bg-gray-100 rounded" data-icon="fa-code">
+                                <i class="fa fa-code text-lg text-primary"></i>
+                                <span class="text-xs mt-1">代码</span>
+                            </div>
+                            <div class="icon-selector cursor-pointer flex flex-col items-center p-2 hover:bg-gray-100 rounded" data-icon="fa-database">
+                                <i class="fa fa-database text-lg text-primary"></i>
+                                <span class="text-xs mt-1">数据库</span>
+                            </div>
+                            <div class="icon-selector cursor-pointer flex flex-col items-center p-2 hover:bg-gray-100 rounded" data-icon="fa-shopping-cart">
+                                <i class="fa fa-shopping-cart text-lg text-primary"></i>
+                                <span class="text-xs mt-1">购物</span>
+                            </div>
+                            <div class="icon-selector cursor-pointer flex flex-col items-center p-2 hover:bg-gray-100 rounded" data-icon="fa-calendar">
+                                <i class="fa fa-calendar text-lg text-primary"></i>
+                                <span class="text-xs mt-1">日历</span>
+                            </div>
+                            <div class="icon-selector cursor-pointer flex flex-col items-center p-2 hover:bg-gray-100 rounded" data-icon="fa-users">
+                                <i class="fa fa-users text-lg text-primary"></i>
+                                <span class="text-xs mt-1">用户</span>
+                            </div>
+                            <div class="icon-selector cursor-pointer flex flex-col items-center p-2 hover:bg-gray-100 rounded" data-icon="fa-bar-chart">
+                                <i class="fa fa-bar-chart text-lg text-primary"></i>
+                                <span class="text-xs mt-1">图表</span>
+                            </div>
+                            <div class="icon-selector cursor-pointer flex flex-col items-center p-2 hover:bg-gray-100 rounded" data-icon="fa-cog">
+                                <i class="fa fa-cog text-lg text-primary"></i>
+                                <span class="text-xs mt-1">设置</span>
+                            </div>
+                            <div class="icon-selector cursor-pointer flex flex-col items-center p-2 hover:bg-gray-100 rounded" data-icon="fa-home">
+                                <i class="fa fa-home text-lg text-primary"></i>
+                                <span class="text-xs mt-1">主页</span>
+                            </div>
+                            <div class="icon-selector cursor-pointer flex flex-col items-center p-2 hover:bg-gray-100 rounded" data-icon="fa-question-circle">
+                                <i class="fa fa-question-circle text-lg text-primary"></i>
+                                <span class="text-xs mt-1">帮助</span>
+                            </div>
+                        </div>
+                        <input type="hidden" id="selectedIcon" value="fa-link">
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">图标样式</label>
+                        <div class="grid grid-cols-3 gap-3">
+                            <div class="flex items-center space-x-2">
+                                <input type="radio" id="iconStyle1" name="iconStyle" value="bg-blue-100 text-primary" checked>
+                                <label for="iconStyle1" class="flex items-center">
+                                    <div class="w-6 h-6 rounded-lg bg-blue-100 flex items-center justify-center mr-1">
+                                        <i class="fa fa-link text-primary text-xs"></i>
+                                    </div>
+                                    <span class="text-xs">蓝色</span>
+                                </label>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <input type="radio" id="iconStyle2" name="iconStyle" value="bg-green-100 text-green-600">
+                                <label for="iconStyle2" class="flex items-center">
+                                    <div class="w-6 h-6 rounded-lg bg-green-100 flex items-center justify-center mr-1">
+                                        <i class="fa fa-link text-green-600 text-xs"></i>
+                                    </div>
+                                    <span class="text-xs">绿色</span>
+                                </label>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <input type="radio" id="iconStyle3" name="iconStyle" value="bg-purple-100 text-purple-600">
+                                <label for="iconStyle3" class="flex items-center">
+                                    <div class="w-6 h-6 rounded-lg bg-purple-100 flex items-center justify-center mr-1">
+                                        <i class="fa fa-link text-purple-600 text-xs"></i>
+                                    </div>
+                                    <span class="text-xs">紫色</span>
+                                </label>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <input type="radio" id="iconStyle4" name="iconStyle" value="bg-red-100 text-red-600">
+                                <label for="iconStyle4" class="flex items-center">
+                                    <div class="w-6 h-6 rounded-lg bg-red-100 flex items-center justify-center mr-1">
+                                        <i class="fa fa-link text-red-600 text-xs"></i>
+                                    </div>
+                                    <span class="text-xs">红色</span>
+                                </label>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <input type="radio" id="iconStyle5" name="iconStyle" value="bg-yellow-100 text-yellow-600">
+                                <label for="iconStyle5" class="flex items-center">
+                                    <div class="w-6 h-6 rounded-lg bg-yellow-100 flex items-center justify-center mr-1">
+                                        <i class="fa fa-link text-yellow-600 text-xs"></i>
+                                    </div>
+                                    <span class="text-xs">黄色</span>
+                                </label>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <input type="radio" id="iconStyle6" name="iconStyle" value="bg-gray-100 text-gray-600">
+                                <label for="iconStyle6" class="flex items-center">
+                                    <div class="w-6 h-6 rounded-lg bg-gray-100 flex items-center justify-center mr-1">
+                                        <i class="fa fa-link text-gray-600 text-xs"></i>
+                                    </div>
+                                    <span class="text-xs">灰色</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex space-x-3">
+                        <button type="button" id="deleteSiteBtn" class="flex-1 bg-red-50 text-red-600 px-4 py-2 rounded-lg hover:bg-red-100 transition-colors focus:outline-none focus:ring-2 focus:ring-red-200">
+                            <i class="fa fa-trash mr-2"></i>删除
+                        </button>
+                        <button type="submit" class="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50">
+                            <i class="fa fa-save mr-2"></i>保存
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 添加网站模态框 -->
+<div id="addSiteModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto transform translate-y-8 transition-transform duration-300">
+        <div class="p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold">添加新网站</h3>
+                <button id="closeAddModal" class="text-gray-400 hover:text-gray-600 transition-colors">
+                    <i class="fa fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <!-- 模态框内加载状态 -->
+            <div id="addModalLoading" class="hidden py-8 text-center">
+                <div class="inline-block w-8 h-8 border-4 border-primary/30 border-t-primary rounded-full animate-spin-slow mb-2"></div>
+                <p class="text-gray-500 text-sm">处理中...</p>
+            </div>
+
+            <!-- 模态框内容表单 -->
+            <div id="addModalContent">
+                <form id="addSiteForm">
+                    <div class="mb-4">
+                        <label for="addSiteName" class="block text-sm font-medium text-gray-700 mb-1">网站名称 <span class="text-red-500">*</span></label>
+                        <input type="text" id="addSiteName" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" placeholder="输入网站名称" required>
+                    </div>
+
+                    <!-- 内外网URL输入框 -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">网址</label>
+                        <div class="space-y-2">
+                            <div>
+                                <label for="addSiteExtranetUrl" class="flex items-center text-xs text-extranet mb-1">
+                                    <i class="fa fa-globe mr-1"></i> 外网地址 <span class="text-red-500">*</span>
+                                </label>
+                                <input type="url" id="addSiteExtranetUrl" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" placeholder="https://example.com" required>
+                            </div>
+                            <div>
+                                <label for="addSiteIntranetUrl" class="flex items-center text-xs text-intranet mb-1">
+                                    <i class="fa fa-building mr-1"></i> 内网地址
+                                </label>
+                                <input type="url" id="addSiteIntranetUrl" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" placeholder="http://192.168.x.x">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="addSiteDescription" class="block text-sm font-medium text-gray-700 mb-1">描述</label>
+                        <textarea id="addSiteDescription" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" rows="2" placeholder="简要描述网站功能"></textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="addSiteCategory" class="block text-sm font-medium text-gray-700 mb-1">分类 <span class="text-red-500">*</span></label>
+                        <select id="addSiteCategory" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" required>
+                            <!-- 分类选项将动态生成 -->
+                        </select>
+                    </div>
+
+                    <!-- 图标选择 -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">选择图标</label>
+                        <div class="grid grid-cols-6 gap-2 max-h-40 overflow-y-auto p-2 border border-gray-200 rounded-lg">
+                            <div class="icon-selector cursor-pointer flex flex-col items-center p-2 hover:bg-gray-100 rounded" data-icon="fa-link">
+                                <i class="fa fa-link text-lg text-primary"></i>
+                                <span class="text-xs mt-1">链接</span>
+                            </div>
+                            <div class="icon-selector cursor-pointer flex flex-col items-center p-2 hover:bg-gray-100 rounded" data-icon="fa-envelope">
+                                <i class="fa fa-envelope text-lg text-primary"></i>
+                                <span class="text-xs mt-1">邮件</span>
+                            </div>
+                            <div class="icon-selector cursor-pointer flex flex-col items-center p-2 hover:bg-gray-100 rounded" data-icon="fa-file-text">
+                                <i class="fa fa-file-text text-lg text-primary"></i>
+                                <span class="text-xs mt-1">文档</span>
+                            </div>
+                            <div class="icon-selector cursor-pointer flex flex-col items-center p-2 hover:bg-gray-100 rounded" data-icon="fa-code">
+                                <i class="fa fa-code text-lg text-primary"></i>
+                                <span class="text-xs mt-1">代码</span>
+                            </div>
+                            <div class="icon-selector cursor-pointer flex flex-col items-center p-2 hover:bg-gray-100 rounded" data-icon="fa-database">
+                                <i class="fa fa-database text-lg text-primary"></i>
+                                <span class="text-xs mt-1">数据库</span>
+                            </div>
+                            <div class="icon-selector cursor-pointer flex flex-col items-center p-2 hover:bg-gray-100 rounded" data-icon="fa-shopping-cart">
+                                <i class="fa fa-shopping-cart text-lg text-primary"></i>
+                                <span class="text-xs mt-1">购物</span>
+                            </div>
+                        </div>
+                        <input type="hidden" id="addSelectedIcon" value="fa-link">
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">图标样式</label>
+                        <div class="grid grid-cols-3 gap-3">
+                            <div class="flex items-center space-x-2">
+                                <input type="radio" id="addIconStyle1" name="addIconStyle" value="bg-blue-100 text-primary" checked>
+                                <label for="addIconStyle1" class="flex items-center">
+                                    <div class="w-6 h-6 rounded-lg bg-blue-100 flex items-center justify-center mr-1">
+                                        <i class="fa fa-link text-primary text-xs"></i>
+                                    </div>
+                                    <span class="text-xs">蓝色</span>
+                                </label>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <input type="radio" id="addIconStyle2" name="addIconStyle" value="bg-green-100 text-green-600">
+                                <label for="addIconStyle2" class="flex items-center">
+                                    <div class="w-6 h-6 rounded-lg bg-green-100 flex items-center justify-center mr-1">
+                                        <i class="fa fa-link text-green-600 text-xs"></i>
+                                    </div>
+                                    <span class="text-xs">绿色</span>
+                                </label>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <input type="radio" id="addIconStyle3" name="addIconStyle" value="bg-purple-100 text-purple-600">
+                                <label for="addIconStyle3" class="flex items-center">
+                                    <div class="w-6 h-6 rounded-lg bg-purple-100 flex items-center justify-center mr-1">
+                                        <i class="fa fa-link text-purple-600 text-xs"></i>
+                                    </div>
+                                    <span class="text-xs">紫色</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center mb-6">
+                        <input type="checkbox" id="addToQuickAccess" class="mr-2">
+                        <label for="addToQuickAccess" class="text-sm text-gray-700">同时添加到快速访问</label>
+                    </div>
+
+                    <button type="submit" class="w-full bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50">
+                        <i class="fa fa-plus mr-2"></i>添加网站
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 编辑分类模态框 -->
+<div id="editCategoryModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto transform translate-y-8 transition-transform duration-300">
+        <div class="p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold">编辑分类</h3>
+                <button id="closeCategoryModal" class="text-gray-400 hover:text-gray-600 transition-colors">
+                    <i class="fa fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <!-- 模态框内加载状态 -->
+            <div id="categoryModalLoading" class="hidden py-8 text-center">
+                <div class="inline-block w-8 h-8 border-4 border-primary/30 border-t-primary rounded-full animate-spin-slow mb-2"></div>
+                <p class="text-gray-500 text-sm">处理中...</p>
+            </div>
+
+            <!-- 模态框内容表单 -->
+            <div id="categoryModalContent">
+                <form id="editCategoryForm">
+                    <input type="hidden" id="editCategoryId">
+
+                    <div class="mb-4">
+                        <label for="editCategoryName" class="block text-sm font-medium text-gray-700 mb-1">分类名称 <span class="text-red-500">*</span></label>
+                        <input type="text" id="editCategoryName" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" placeholder="输入分类名称" required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="editCategoryIcon" class="block text-sm font-medium text-gray-700 mb-1">分类图标</label>
+                        <select id="editCategoryIcon" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all">
+                            <option value="fa-briefcase">公文包 (fa-briefcase)</option>
+                            <option value="fa-code">代码 (fa-code)</option>
+                            <option value="fa-tasks">任务 (fa-tasks)</option>
+                            <option value="fa-users">用户 (fa-users)</option>
+                            <option value="fa-file-text">文件 (fa-file-text)</option>
+                            <option value="fa-cogs">设置 (fa-cogs)</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">图标颜色</label>
+                        <div class="grid grid-cols-6 gap-3">
+                            <div class="flex items-center space-x-2">
+                                <input type="radio" id="catColor1" name="categoryColor" value="bg-blue-100 text-primary" checked>
+                                <label for="catColor1" class="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center">
+                                    <i class="fa fa-check text-primary text-xs"></i>
+                                </label>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <input type="radio" id="catColor2" name="categoryColor" value="bg-green-100 text-green-600">
+                                <label for="catColor2" class="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center">
+                                    <i class="fa fa-check text-green-600 text-xs"></i>
+                                </label>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <input type="radio" id="catColor3" name="categoryColor" value="bg-purple-100 text-purple-600">
+                                <label for="catColor3" class="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center">
+                                    <i class="fa fa-check text-purple-600 text-xs"></i>
+                                </label>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <input type="radio" id="catColor4" name="categoryColor" value="bg-red-100 text-red-600">
+                                <label for="catColor4" class="w-6 h-6 rounded-full bg-red-100 flex items-center justify-center">
+                                    <i class="fa fa-check text-red-600 text-xs"></i>
+                                </label>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <input type="radio" id="catColor5" name="categoryColor" value="bg-yellow-100 text-yellow-600">
+                                <label for="catColor5" class="w-6 h-6 rounded-full bg-yellow-100 flex items-center justify-center">
+                                    <i class="fa fa-check text-yellow-600 text-xs"></i>
+                                </label>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <input type="radio" id="catColor6" name="categoryColor" value="bg-gray-100 text-gray-600">
+                                <label for="catColor6" class="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center">
+                                    <i class="fa fa-check text-gray-600 text-xs"></i>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex space-x-3">
+                        <button type="button" id="deleteCategoryBtn" class="flex-1 bg-red-50 text-red-600 px-4 py-2 rounded-lg hover:bg-red-100 transition-colors focus:outline-none focus:ring-2 focus:ring-red-200">
+                            <i class="fa fa-trash mr-2"></i>删除分类
+                        </button>
+                        <button type="submit" class="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50">
+                            <i class="fa fa-save mr-2"></i>保存
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 鉴权设置模态框 -->
+<div id="authModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto transform translate-y-8 transition-transform duration-300">
+        <div class="p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold">权限设置</h3>
+                <button id="closeAuthModal" class="text-gray-400 hover:text-gray-600 transition-colors">
+                    <i class="fa fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <!-- 模态框内加载状态 -->
+            <div id="authModalLoading" class="hidden py-8 text-center">
+                <div class="inline-block w-8 h-8 border-4 border-primary/30 border-t-primary rounded-full animate-spin-slow mb-2"></div>
+                <p class="text-gray-500 text-sm">保存中...</p>
+            </div>
+
+            <!-- 模态框内容表单 -->
+            <div id="authModalContent">
+                <form id="authForm">
+                    <div class="mb-4">
+                        <label for="authToken" class="block text-sm font-medium text-gray-700 mb-1">Authorization Token</label>
+                        <input type="text" id="authToken" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" placeholder="例如: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." />
+                        <p class="mt-1 text-xs text-gray-500">请输入访问API所需的授权令牌</p>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="flex items-center">
+                            <input type="checkbox" id="rememberAuth" class="mr-2" checked />
+                            <span class="text-sm text-gray-700">记住令牌（将存储在本地浏览器中）</span>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="w-full bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50">
+                        <i class="fa fa-save mr-2"></i>保存设置
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 消息提示框 -->
+<div id="toast" class="fixed top-20 right-6 bg-dark text-white px-6 py-3 rounded-lg shadow-lg transform translate-x-full opacity-0 transition-all duration-300 z-50 flex items-center">
+    <i id="toastIcon" class="fa fa-info-circle mr-2"></i>
+    <span id="toastMessage"></span>
+</div>
+
+<script>
+    // 导航应用主模块
+    const NavigationApp = (() => {
+        // 私有变量
+        let navigationData = null;
+        let currentEditingItem = null;
+        let currentEditingCategory = null;
+        let currentNetwork = 'extranet';
+        const API_BASE_URL = '/api/navigation';
+
+        // DOM元素引用
+        const elements = {
+            // 主界面元素
+            globalLoadingState: document.getElementById('globalLoadingState'),
+            errorState: document.getElementById('errorState'),
+            errorMessage: document.getElementById('errorMessage'),
+            searchContainer: document.getElementById('searchContainer'),
+            searchInput: document.getElementById('searchInput'),
+            categoriesContainer: document.getElementById('categoriesContainer'),
+            categoryTabs: document.getElementById('categoryTabs'),
+            navigationContent: document.getElementById('navigationContent'),
+            refreshBtn: document.getElementById('refreshBtn'),
+            retryBtn: document.getElementById('retryBtn'),
+            addSiteBtn: document.getElementById('addSiteBtn'),
+            networkToggle: document.getElementById('networkToggle'),
+            networkLabel: document.getElementById('networkLabel'),
+
+            // 编辑网站模态框元素
+            editSiteModal: document.getElementById('editSiteModal'),
+            closeEditModal: document.getElementById('closeEditModal'),
+            editSiteForm: document.getElementById('editSiteForm'),
+            editModalTitle: document.getElementById('editModalTitle'),
+            editSiteId: document.getElementById('editSiteId'),
+            editSiteType: document.getElementById('editSiteType'),
+            editSiteName: document.getElementById('editSiteName'),
+            editSiteExtranetUrl: document.getElementById('editSiteExtranetUrl'),
+            editSiteIntranetUrl: document.getElementById('editSiteIntranetUrl'),
+            editSiteDescription: document.getElementById('editSiteDescription'),
+            editSiteCategory: document.getElementById('editSiteCategory'),
+            editCategoryContainer: document.getElementById('editCategoryContainer'),
+            deleteSiteBtn: document.getElementById('deleteSiteBtn'),
+            editModalLoading: document.getElementById('editModalLoading'),
+            editModalContent: document.getElementById('editModalContent'),
+            selectedIcon: document.getElementById('selectedIcon'),
+
+            // 添加网站模态框元素
+            addSiteModal: document.getElementById('addSiteModal'),
+            closeAddModal: document.getElementById('closeAddModal'),
+            addSiteForm: document.getElementById('addSiteForm'),
+            addSiteName: document.getElementById('addSiteName'),
+            addSiteExtranetUrl: document.getElementById('addSiteExtranetUrl'),
+            addSiteIntranetUrl: document.getElementById('addSiteIntranetUrl'),
+            addSiteDescription: document.getElementById('addSiteDescription'),
+            addSiteCategory: document.getElementById('addSiteCategory'),
+            addToQuickAccess: document.getElementById('addToQuickAccess'),
+            addModalLoading: document.getElementById('addModalLoading'),
+            addModalContent: document.getElementById('addModalContent'),
+            addSelectedIcon: document.getElementById('addSelectedIcon'),
+
+            // 编辑分类模态框元素
+            editCategoryModal: document.getElementById('editCategoryModal'),
+            closeCategoryModal: document.getElementById('closeCategoryModal'),
+            editCategoryForm: document.getElementById('editCategoryForm'),
+            editCategoryId: document.getElementById('editCategoryId'),
+            editCategoryName: document.getElementById('editCategoryName'),
+            editCategoryIcon: document.getElementById('editCategoryIcon'),
+            deleteCategoryBtn: document.getElementById('deleteCategoryBtn'),
+            categoryModalLoading: document.getElementById('categoryModalLoading'),
+            categoryModalContent: document.getElementById('categoryModalContent'),
+
+            // 鉴权模态框元素
+            authModal: document.getElementById('authModal'),
+            closeAuthModal: document.getElementById('closeAuthModal'),
+            authForm: document.getElementById('authForm'),
+            authToken: document.getElementById('authToken'),
+            rememberAuth: document.getElementById('rememberAuth'),
+            authSettingsBtn: document.getElementById('authSettingsBtn'),
+            authModalLoading: document.getElementById('authModalLoading'),
+            authModalContent: document.getElementById('authModalContent'),
+
+            // 提示框元素
+            toast: document.getElementById('toast'),
+            toastIcon: document.getElementById('toastIcon'),
+            toastMessage: document.getElementById('toastMessage')
+        };
+
+        // 工具函数
+        const Utils = {
+            // 显示消息提示
+            showToast(message, type = 'info', duration = 3000) {
+                elements.toastMessage.textContent = message;
+
+                elements.toastIcon.className = 'fa mr-2';
+                elements.toast.classList.remove('bg-green-600', 'bg-red-600', 'bg-blue-600', 'bg-dark');
+
+                switch(type) {
+                    case 'success':
+                        elements.toastIcon.classList.add('fa-check-circle');
+                        elements.toast.classList.add('bg-green-600');
+                        break;
+                    case 'error':
+                        elements.toastIcon.classList.add('fa-exclamation-circle');
+                        elements.toast.classList.add('bg-red-600');
+                        break;
+                    default:
+                        elements.toastIcon.classList.add('fa-info-circle');
+                        elements.toast.classList.add('bg-blue-600');
+                        break;
+                }
+
+                elements.toast.classList.remove('translate-x-full', 'opacity-0');
+                elements.toast.classList.add('translate-x-0', 'opacity-100');
+
+                setTimeout(() => {
+                    elements.toast.classList.remove('translate-x-0', 'opacity-100');
+                    elements.toast.classList.add('translate-x-full', 'opacity-0');
+                }, duration);
+            },
+
+            // 提取URL中的域名
+            extractDomain(url) {
+                try {
+                    return new URL(url).hostname;
+                } catch (e) {
+                    return url;
+                }
+            },
+
+            // 显示/隐藏加载状态
+            showGlobalLoading() {
+                elements.globalLoadingState.classList.remove('hidden');
+                elements.errorState.classList.add('hidden');
+                elements.searchContainer.classList.add('hidden');
+                elements.categoriesContainer.classList.add('hidden');
+                elements.navigationContent.innerHTML = '';
+            },
+
+            hideGlobalLoading() {
+                elements.globalLoadingState.classList.add('hidden');
+            },
+
+            showModalLoading(modalType) {
+                const loadingEl = modalType === 'edit' ? elements.editModalLoading :
+                    modalType === 'add' ? elements.addModalLoading :
+                        modalType === 'auth' ? elements.authModalLoading :
+                            elements.categoryModalLoading;
+
+                const contentEl = modalType === 'edit' ? elements.editModalContent :
+                    modalType === 'add' ? elements.addModalContent :
+                        modalType === 'auth' ? elements.authModalContent :
+                            elements.categoryModalContent;
+
+                loadingEl.classList.remove('hidden');
+                contentEl.classList.add('hidden');
+            },
+
+            hideModalLoading(modalType) {
+                const loadingEl = modalType === 'edit' ? elements.editModalLoading :
+                    modalType === 'add' ? elements.addModalLoading :
+                        modalType === 'auth' ? elements.authModalLoading :
+                            elements.categoryModalLoading;
+
+                const contentEl = modalType === 'edit' ? elements.editModalContent :
+                    modalType === 'add' ? elements.addModalContent :
+                        modalType === 'auth' ? elements.authModalContent :
+                            elements.categoryModalContent;
+
+                loadingEl.classList.add('hidden');
+                contentEl.classList.remove('hidden');
+            }
+        };
+
+        // 网络请求服务
+        const HttpService = (() => {
+            let authToken = null;
+
+            const init = () => {
+                authToken = localStorage.getItem('auth_token');
+            };
+
+            const setAuthToken = (token, remember = false) => {
+                authToken = token;
+                if (remember) {
+                    localStorage.setItem('auth_token', token);
+                } else {
+                    localStorage.removeItem('auth_token');
+                }
+            };
+
+            const getDefaultHeaders = () => {
+                const headers = { 'Content-Type': 'application/json' };
+                if (authToken) headers['Authorization'] = authToken;
+                return headers;
+            };
+
+            const request = async (endpoint, method = 'GET', data = null) => {
+                try {
+                    console.log(`请求: ${method} ${API_BASE_URL}${endpoint}`, { data });
+                    await new Promise(resolve => setTimeout(resolve, 600));
+                    return { ok: true, json: async () => ({ success: true }) };
+                } catch (error) {
+                    console.error(`网络请求错误:`, error);
+                    throw error;
+                }
+            };
+
+            return {
+                init,
+                setAuthToken,
+                get: (endpoint) => request(endpoint, 'GET'),
+                post: (endpoint, data) => request(endpoint, 'POST', data),
+                put: (endpoint, data) => request(endpoint, 'PUT', data),
+                delete: (endpoint) => request(endpoint, 'DELETE')
+            };
+        })();
+
+        // API服务
+        const ApiService = (() => {
+            let lastId = 100;
+
+            return {
+                init() { HttpService.init(); },
+
+                async getNavigationData() {
+                    await HttpService.get('/data');
+                    return {
+                        categories: [
+                            { id: 'work-tools', name: '工作工具', icon: 'fa-briefcase', iconBg: 'bg-blue-100', iconColor: 'text-primary' },
+                            { id: 'project-management', name: '项目管理', icon: 'fa-tasks', iconBg: 'bg-green-100', iconColor: 'text-green-600' },
+                            { id: 'development', name: '开发工具', icon: 'fa-code', iconBg: 'bg-purple-100', iconColor: 'text-purple-600' }
+                        ],
+                        sections: [
+                            {
+                                id: 'work-tools-section',
+                                categoryId: 'work-tools',
+                                name: '工作工具',
+                                icon: 'fa-briefcase',
+                                iconBg: 'bg-blue-100',
+                                iconColor: 'text-primary',
+                                sites: [
+                                    {
+                                        id: 'mail',
+                                        name: '邮件系统',
+                                        description: '企业邮箱与通讯',
+                                        urls: {
+                                            extranet: 'https://mail.example.com',
+                                            intranet: 'http://mail.corp.internal'
+                                        },
+                                        icon: 'fa-envelope',
+                                        cardBg: 'bg-purple-100',
+                                        iconColor: 'text-purple-600'
+                                    },
+                                    {
+                                        id: 'calendar',
+                                        name: '日程安排',
+                                        description: '会议与任务提醒',
+                                        urls: {
+                                            extranet: 'https://calendar.example.com',
+                                            intranet: 'http://calendar.corp.internal'
+                                        },
+                                        icon: 'fa-calendar',
+                                        cardBg: 'bg-green-100',
+                                        iconColor: 'text-green-600'
+                                    }
+                                ]
+                            },
+                            {
+                                id: 'project-management-section',
+                                categoryId: 'project-management',
+                                name: '项目管理',
+                                icon: 'fa-tasks',
+                                iconBg: 'bg-green-100',
+                                iconColor: 'text-green-600',
+                                sites: [
+                                    {
+                                        id: 'jira',
+                                        name: '任务跟踪',
+                                        description: '项目任务与缺陷管理',
+                                        urls: {
+                                            extranet: 'https://jira.example.com',
+                                            intranet: 'http://jira.corp.internal'
+                                        },
+                                        icon: 'fa-tasks',
+                                        cardBg: 'bg-blue-100',
+                                        iconColor: 'text-primary'
+                                    }
+                                ]
+                            }
+                        ],
+                        quickAccess: [
+                            {
+                                id: 'dashboard',
+                                name: '控制台',
+                                urls: {
+                                    extranet: 'https://dashboard.example.com',
+                                    intranet: 'http://dashboard.corp.internal'
+                                },
+                                icon: 'fa-dashboard',
+                                bgColor: 'bg-blue-100',
+                                iconColor: 'text-primary'
+                            }
+                        ]
+                    };
+                },
+
+                async addNewSite(siteData) {
+                    await HttpService.post('/sites', siteData);
+                    lastId++;
+                    return { id: `site-${lastId}`, ...siteData };
+                },
+
+                async updateSite(siteId, siteData) {
+                    await HttpService.put(`/sites/${siteId}`, siteData);
+                    return { success: true, id: siteId, ...siteData };
+                },
+
+                async deleteSite(siteId) {
+                    await HttpService.delete(`/sites/${siteId}`);
+                    return { success: true, id: siteId };
+                },
+
+                async addCategory(categoryData) {
+                    await HttpService.post('/categories', categoryData);
+                    lastId++;
+                    return { id: `category-${lastId}`, ...categoryData };
+                },
+
+                async updateCategory(categoryId, categoryData) {
+                    await HttpService.put(`/categories/${categoryId}`, categoryData);
+                    return { success: true, id: categoryId, ...categoryData };
+                },
+
+                async deleteCategory(categoryId) {
+                    await HttpService.delete(`/categories/${categoryId}`);
+                    return { success: true, id: categoryId };
+                },
+
+                async updateQuickAccess(quickAccessItems) {
+                    await HttpService.put('/quick-access', { items: quickAccessItems });
+                    return { success: true, items: quickAccessItems };
+                }
+            };
+        })();
+
+        // 鉴权管理
+        const AuthManager = {
+            init() {
+                this.bindEvents();
+                this.checkAuthStatus();
+            },
+
+            bindEvents() {
+                elements.authSettingsBtn.addEventListener('click', () => this.showAuthModal());
+                elements.closeAuthModal.addEventListener('click', () => this.hideAuthModal());
+                elements.authForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.saveAuthSettings();
+                });
+                elements.authModal.addEventListener('click', (e) => {
+                    if (e.target === elements.authModal) this.hideAuthModal();
+                });
+            },
+
+            checkAuthStatus() {
+                const savedToken = localStorage.getItem('auth_token');
+                if (savedToken) {
+                    elements.authToken.value = savedToken;
+                } else {
+                    elements.authToken.value = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...';
+                }
+            },
+
+            showAuthModal() {
+                elements.authModal.classList.add('opacity-100', 'pointer-events-auto');
+                elements.authModal.querySelector('div').classList.remove('translate-y-8');
+                elements.authModal.querySelector('div').classList.add('translate-y-0');
+                document.body.style.overflow = 'hidden';
+            },
+
+            hideAuthModal() {
+                elements.authModal.classList.remove('opacity-100', 'pointer-events-auto');
+                elements.authModal.querySelector('div').classList.remove('translate-y-0');
+                elements.authModal.querySelector('div').classList.add('translate-y-8');
+                document.body.style.overflow = '';
+            },
+
+            async saveAuthSettings() {
+                const token = elements.authToken.value.trim();
+                const remember = elements.rememberAuth.checked;
+
+                if (!token) {
+                    Utils.showToast('请输入授权令牌', 'error');
+                    return;
+                }
+
+                Utils.showModalLoading('auth');
+
+                try {
+                    HttpService.setAuthToken(token, remember);
+                    await new Promise(resolve => setTimeout(resolve, 600));
+                    Utils.showToast('授权令牌已保存', 'success');
+                    this.hideAuthModal();
+                    loadNavigationData();
+                } catch (error) {
+                    console.error('保存授权设置失败:', error);
+                    Utils.showToast('保存授权设置失败，请重试', 'error');
+                } finally {
+                    Utils.hideModalLoading('auth');
+                }
+            },
+
+            hasAuthToken() {
+                return !!localStorage.getItem('auth_token') || !!elements.authToken.value.trim();
+            },
+
+            requireAuth() {
+                if (!this.hasAuthToken()) {
+                    this.showAuthModal();
+                    return false;
+                }
+                return true;
+            }
+        };
+
+        // 分类管理
+        const CategoryManager = {
+            init() {
+                this.bindEvents();
+            },
+
+            bindEvents() {
+                elements.closeCategoryModal.addEventListener('click', () => this.hideCategoryModal());
+                elements.editCategoryForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.saveCategory();
+                });
+                elements.deleteCategoryBtn.addEventListener('click', () => this.confirmDeleteCategory());
+                elements.editCategoryModal.addEventListener('click', (e) => {
+                    if (e.target === elements.editCategoryModal) this.hideCategoryModal();
+                });
+            },
+
+            showCategoryModal(categoryId) {
+                currentEditingCategory = navigationData.categories.find(cat => cat.id === categoryId);
+
+                if (!currentEditingCategory) {
+                    Utils.showToast('未找到要编辑的分类', 'error');
+                    return;
+                }
+
+                elements.editCategoryId.value = categoryId;
+                elements.editCategoryName.value = currentEditingCategory.name;
+                elements.editCategoryIcon.value = currentEditingCategory.icon || 'fa-briefcase';
+
+                const iconClasses = `${currentEditingCategory.iconBg} ${currentEditingCategory.iconColor}`;
+                document.querySelectorAll('input[name="categoryColor"]').forEach(radio => {
+                    radio.checked = radio.value === iconClasses;
+                });
+
+                elements.editCategoryModal.classList.add('opacity-100', 'pointer-events-auto');
+                elements.editCategoryModal.querySelector('div').classList.remove('translate-y-8');
+                elements.editCategoryModal.querySelector('div').classList.add('translate-y-0');
+                document.body.style.overflow = 'hidden';
+            },
+
+            hideCategoryModal() {
+                elements.editCategoryModal.classList.remove('opacity-100', 'pointer-events-auto');
+                elements.editCategoryModal.querySelector('div').classList.remove('translate-y-0');
+                elements.editCategoryModal.querySelector('div').classList.add('translate-y-8');
+                document.body.style.overflow = '';
+                currentEditingCategory = null;
+            },
+
+            async saveCategory() {
+                if (!currentEditingCategory) return;
+
+                const categoryId = elements.editCategoryId.value;
+                const name = elements.editCategoryName.value;
+                const icon = elements.editCategoryIcon.value;
+
+                if (!name) {
+                    Utils.showToast('请填写分类名称', 'error');
+                    return;
+                }
+
+                const colorStyle = document.querySelector('input[name="categoryColor"]:checked').value;
+                const [iconBg, iconColor] = colorStyle.split(' ');
+
+                const updateData = { name, icon, iconBg, iconColor };
+
+                Utils.showModalLoading('category');
+
+                try {
+                    await ApiService.updateCategory(categoryId, updateData);
+
+                    const section = navigationData.sections.find(s => s.categoryId === categoryId);
+                    if (section) {
+                        section.name = name;
+                        section.icon = icon;
+                        section.iconBg = iconBg;
+                        section.iconColor = iconColor;
+                    }
+
+                    await loadNavigationData();
+                    this.hideCategoryModal();
+                    Utils.showToast('分类已更新', 'success');
+                } catch (error) {
+                    console.error('保存分类失败:', error);
+                    Utils.showToast('更新分类失败，请稍后重试', 'error');
+                } finally {
+                    Utils.hideModalLoading('category');
+                }
+            },
+
+            async confirmDeleteCategory() {
+                if (!currentEditingCategory) return;
+
+                const hasSites = navigationData.sections.some(
+                    section => section.categoryId === currentEditingCategory.id &&
+                        section.sites && section.sites.length > 0
+                );
+
+                if (hasSites) {
+                    Utils.showToast('该分类下包含网站，请先移动或删除这些网站', 'error');
+                    return;
+                }
+
+                if (!confirm(`确定要删除分类"${currentEditingCategory.name}"吗？`)) return;
+
+                const categoryId = elements.editCategoryId.value;
+
+                Utils.showModalLoading('category');
+
+                try {
+                    await ApiService.deleteCategory(categoryId);
+
+                    navigationData.categories = navigationData.categories.filter(
+                        cat => cat.id !== categoryId
+                    );
+
+                    navigationData.sections = navigationData.sections.filter(
+                        section => section.categoryId !== categoryId
+                    );
+
+                    await loadNavigationData();
+                    this.hideCategoryModal();
+                    Utils.showToast('分类已删除', 'success');
+                } catch (error) {
+                    console.error('删除分类失败:', error);
+                    Utils.showToast('删除分类失败，请稍后重试', 'error');
+                } finally {
+                    Utils.hideModalLoading('category');
+                }
+            },
+
+            async addNewCategory() {
+                const name = prompt('请输入新分类名称:');
+                if (!name || name.trim() === '') return;
+
+                try {
+                    const newCategory = {
+                        name: name.trim(),
+                        icon: 'fa-folder',
+                        iconBg: 'bg-blue-100',
+                        iconColor: 'text-primary'
+                    };
+
+                    const addedCategory = await ApiService.addCategory(newCategory);
+
+                    navigationData.categories.push(addedCategory);
+                    navigationData.sections.push({
+                        id: `${addedCategory.id}-section`,
+                        categoryId: addedCategory.id,
+                        name: addedCategory.name,
+                        icon: addedCategory.icon,
+                        iconBg: addedCategory.iconBg,
+                        iconColor: addedCategory.iconColor,
+                        sites: []
+                    });
+
+                    await loadNavigationData();
+                    Utils.showToast(`分类"${name}"已添加`, 'success');
+                    this.showCategoryModal(addedCategory.id);
+                } catch (error) {
+                    console.error('添加分类失败:', error);
+                    Utils.showToast('添加分类失败，请稍后重试', 'error');
+                }
+            }
+        };
+
+        // 图标选择功能
+        function setupIconSelectors() {
+            // 编辑网站模态框图标选择
+            document.querySelectorAll('#editModalContent .icon-selector').forEach(selector => {
+                selector.addEventListener('click', () => {
+                    document.querySelectorAll('#editModalContent .icon-selector').forEach(s => {
+                        s.classList.remove('bg-primary/10', 'ring-2', 'ring-primary/30');
+                    });
+                    selector.classList.add('bg-primary/10', 'ring-2', 'ring-primary/30');
+                    elements.selectedIcon.value = selector.dataset.icon;
+                });
+            });
+
+            // 添加网站模态框图标选择
+            document.querySelectorAll('#addModalContent .icon-selector').forEach(selector => {
+                selector.addEventListener('click', () => {
+                    document.querySelectorAll('#addModalContent .icon-selector').forEach(s => {
+                        s.classList.remove('bg-primary/10', 'ring-2', 'ring-primary/30');
+                    });
+                    selector.classList.add('bg-primary/10', 'ring-2', 'ring-primary/30');
+                    elements.addSelectedIcon.value = selector.dataset.icon;
+                });
+            });
+        }
+
+        // 绑定事件处理程序
+        function bindEvents() {
+            // 图标选择器初始化
+            setupIconSelectors();
+
+            // 刷新和重试按钮
+            elements.refreshBtn.addEventListener('click', () => {
+                if (AuthManager.requireAuth()) loadNavigationData();
+            });
+            elements.retryBtn.addEventListener('click', () => {
+                if (AuthManager.requireAuth()) loadNavigationData();
+            });
+
+            // 搜索功能
+            elements.searchInput.addEventListener('input', (e) => handleSearch(e.target.value));
+
+            // 添加网站
+            elements.addSiteBtn.addEventListener('click', () => {
+                if (AuthManager.requireAuth()) showAddSiteModal();
+            });
+
+            // 网络切换
+            elements.networkToggle.addEventListener('change', (e) => {
+                currentNetwork = e.target.checked ? 'intranet' : 'extranet';
+                elements.networkLabel.textContent = currentNetwork === 'intranet' ? '内网' : '外网';
+                localStorage.setItem('preferred_network', currentNetwork);
+                updateAllLinks();
+                Utils.showToast(`已切换至${currentNetwork === 'intranet' ? '内网' : '外网'}模式`, 'info');
+            });
+
+            // 编辑模态框
+            elements.closeEditModal.addEventListener('click', hideEditModal);
+            elements.editSiteForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                saveEditedItem();
+            });
+            elements.deleteSiteBtn.addEventListener('click', confirmDeleteItem);
+
+            // 添加网站模态框
+            elements.closeAddModal.addEventListener('click', hideAddSiteModal);
+            elements.addSiteForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                addNewSite();
+            });
+
+            // 模态框背景点击关闭
+            elements.editSiteModal.addEventListener('click', (e) => {
+                if (e.target === elements.editSiteModal) hideEditModal();
+            });
+            elements.addSiteModal.addEventListener('click', (e) => {
+                if (e.target === elements.addSiteModal) hideAddSiteModal();
+            });
+
+            // 滚动时导航栏样式变化
+            window.addEventListener('scroll', () => {
+                const header = document.querySelector('header');
+                if (window.scrollY > 10) {
+                    header.classList.add('shadow');
+                    header.classList.remove('shadow-sm');
+                } else {
+                    header.classList.remove('shadow');
+                    header.classList.add('shadow-sm');
+                }
+            });
+        }
+
+        /**
+         * 根据当前网络状态更新所有链接
+         */
+        function updateAllLinks() {
+            document.querySelectorAll('#navigationContent section a[data-site-id]').forEach(link => {
+                const siteId = link.dataset.siteId;
+                if (!siteId) return;
+
+                let siteData = null;
+                let isQuickAccess = false;
+
+                // 检查是否是快速访问项
+                if (link.closest('section').querySelector('h3')?.textContent === '快速访问') {
+                    siteData = this.navigationData?.quickAccess?.find(item => item.id === siteId);
+                    isQuickAccess = true;
+                } else {
+                    // 查找普通网站
+                    if (this.navigationData?.sections) {
+                        for (const section of this.navigationData.sections) {
+                            siteData = section.sites.find(site => site.id === siteId);
+                            if (siteData) break;
+                        }
+                    }
+                }
+
+                if (siteData && siteData.urls) {
+                    // 获取当前网络的URL，若无则使用备用网络
+                    const currentUrl = siteData.urls[this.currentNetwork] ||
+                        siteData.urls[this.currentNetwork === 'intranet' ? 'extranet' : 'intranet'];
+
+                    if (currentUrl) {
+                        link.href = currentUrl;
+
+                        // 更新域名显示
+                        const domainSpan = link.querySelector('.domain-name');
+                        if (domainSpan) {
+                            domainSpan.textContent = Utils.extractDomain(currentUrl);
+                        }
+
+                        // 更新网络指示器
+                        const indicator = link.querySelector('.network-indicator');
+                        if (indicator) {
+                            // 确定网络类型图标
+                            const networkIcon = this.currentNetwork === 'intranet' ?
+                                'fa-building' : 'fa-globe';
+                            const networkText = this.currentNetwork === 'intranet' ?
+                                '内网' : '外网';
+
+                            if (!siteData.urls[this.currentNetwork]) {
+                                // 当前网络无链接时显示警告
+                                indicator.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800';
+                                indicator.innerHTML = isQuickAccess ?
+                                    '<i class="fa fa-exclamation-triangle mr-0"></i>' :
+                                    '<i class="fa fa-exclamation-triangle mr-1"></i> 已切换';
+                            } else {
+                                // 正常显示当前网络状态
+                                indicator.className = `inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${this.currentNetwork === 'intranet' ? 'bg-intranet/20 text-intranet' : 'bg-extranet/20 text-extranet'}`;
+                                indicator.innerHTML = isQuickAccess ?
+                                    `<i class="fa ${networkIcon} mr-0"></i>` :
+                                    `<i class="fa ${networkIcon} mr-1"></i> ${networkText}`;
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        /**
+         * 从API加载导航数据
+         */
+        async function loadNavigationData() {
+            Utils.showGlobalLoading();
+
+            try {
+                const data = await ApiService.getNavigationData();
+                navigationData = data;
+
+                renderCategories();
+                renderNavigationContent();
+                populateCategorySelectors();
+
+                showContent();
+            } catch (error) {
+                console.error('加载导航数据失败:', error);
+
+                let errorMsg = '无法加载导航数据，请稍后重试。';
+                if (error.message.includes('授权失败')) {
+                    errorMsg = error.message + '。请检查您的令牌设置。';
+                    AuthManager.showAuthModal();
+                }
+
+                showError(errorMsg);
+            } finally {
+                Utils.hideGlobalLoading();
+            }
+        }
+
+        /**
+         * 渲染分类标签
+         */
+        function renderCategories() {
+            if (!navigationData || !navigationData.categories) return;
+
+            elements.categoryTabs.innerHTML = '';
+
+            // 添加"全部"标签
+            const allTab = document.createElement('button');
+            allTab.className = 'px-3 py-1 rounded-full text-sm font-medium bg-primary text-white cursor-pointer transition-all duration-200';
+            allTab.textContent = '全部';
+            allTab.dataset.category = 'all';
+            allTab.addEventListener('click', () => filterByCategory('all'));
+            elements.categoryTabs.appendChild(allTab);
+
+            // 添加其他分类标签
+            navigationData.categories.forEach(category => {
+                const tab = document.createElement('button');
+                tab.className = 'px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 cursor-pointer transition-all duration-200';
+                tab.textContent = category.name;
+                tab.dataset.category = category.id;
+                tab.addEventListener('click', () => filterByCategory(category.id));
+                elements.categoryTabs.appendChild(tab);
+            });
+
+            // 添加"添加分类"按钮
+            const addCategoryBtn = document.createElement('button');
+            addCategoryBtn.className = 'flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-all duration-200';
+            addCategoryBtn.innerHTML = '<i class="fa fa-plus mr-1"></i> 添加分类';
+            addCategoryBtn.addEventListener('click', () => {
+                if (AuthManager.requireAuth()) CategoryManager.addNewCategory();
+            });
+            elements.categoryTabs.appendChild(addCategoryBtn);
+        }
+
+        /**
+         * 按分类筛选
+         */
+        function filterByCategory(categoryId) {
+            // 更新标签样式
+            document.querySelectorAll('#categoryTabs button[data-category]').forEach(btn => {
+                if (btn.dataset.category === categoryId) {
+                    btn.classList.remove('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
+                    btn.classList.add('bg-primary', 'text-white');
+                } else {
+                    btn.classList.remove('bg-primary', 'text-white');
+                    btn.classList.add('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
+                }
+            });
+
+            // 筛选内容
+            document.querySelectorAll('#navigationContent section').forEach(section => {
+                if (categoryId === 'all' || section.dataset.category === categoryId) {
+                    section.classList.remove('hidden');
+                } else {
+                    section.classList.add('hidden');
+                }
+            });
+        }
+
+        /**
+         * 渲染导航内容
+         */
+        function renderNavigationContent() {
+            if (!navigationData || !navigationData.sections) return;
+
+            elements.navigationContent.innerHTML = '';
+
+            // 渲染每个分类区域
+            navigationData.sections.forEach((section, index) => {
+                const sectionElement = createSectionElement(section, index);
+                elements.navigationContent.appendChild(sectionElement);
+            });
+
+            // 渲染快速访问区域
+            if (navigationData.quickAccess && navigationData.quickAccess.length > 0) {
+                const quickAccessSection = createQuickAccessSection();
+                elements.navigationContent.appendChild(quickAccessSection);
+            }
+
+            // 确保链接符合当前网络设置
+            updateAllLinks();
+        }
+
+        /**
+         * 创建分类区域元素
+         */
+        function createSectionElement(section, index) {
+            const sectionElement = document.createElement('section');
+            sectionElement.className = `mb-12 animate-fade-in opacity-0 translate-y-10 transition-all duration-300`;
+            sectionElement.dataset.category = section.categoryId;
+
+            // 设置延迟显示动画
+            setTimeout(() => {
+                sectionElement.style.opacity = '1';
+                sectionElement.style.transform = 'translateY(0)';
+            }, 100 * index);
+
+            // 区域标题
+            let sectionHtml = `
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 rounded-lg ${section.iconBg} flex items-center justify-center mr-3">
+                                <i class="fa ${section.icon} ${section.iconColor}"></i>
+                            </div>
+                            <h3 class="text-lg font-semibold">${section.name}</h3>
+                        </div>
+                        <button class="text-primary text-sm hover:underline flex items-center"
+                                onclick="NavigationApp.editCategory('${section.categoryId}')">
+                            <i class="fa fa-edit mr-1"></i> 编辑分类
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                `;
+
+            // 如果该分类下没有网站，显示提示
+            if (!section.sites || section.sites.length === 0) {
+                sectionHtml += `
+                        <div class="col-span-full p-8 bg-gray-50 rounded-xl text-center border border-dashed border-gray-200">
+                            <i class="fa fa-folder-open-o text-gray-300 text-3xl mb-3"></i>
+                            <p class="text-gray-500 mb-4">该分类下暂无网站</p>
+                            <button class="text-primary hover:text-primary/80 text-sm font-medium"
+                                    onclick="event.preventDefault(); NavigationApp.showAddSiteModalWithCategory('${section.categoryId}')">
+                                <i class="fa fa-plus mr-1"></i> 添加网站到"${section.name}"
+                            </button>
+                        </div>
+                    `;
+            } else {
+                // 区域内的网站卡片
+                section.sites.forEach(site => {
+                    // 确定当前网络的URL
+                    const currentUrl = site.urls[currentNetwork] ||
+                        site.urls[currentNetwork === 'intranet' ? 'extranet' : 'intranet'];
+
+                    // 确定网络指示器样式
+                    let indicatorClass = '';
+                    let indicatorContent = '';
+
+                    if (!site.urls[currentNetwork]) {
+                        indicatorClass = 'bg-yellow-100 text-yellow-800';
+                        indicatorContent = '<i class="fa fa-exclamation-triangle mr-1"></i> 已切换';
+                    } else {
+                        indicatorClass = currentNetwork === 'intranet' ? 'bg-intranet/20 text-intranet' : 'bg-extranet/20 text-extranet';
+                        indicatorContent = `<i class="fa ${currentNetwork === 'intranet' ? 'fa-building' : 'fa-globe'} mr-1"></i> ${currentNetwork === 'intranet' ? '内网' : '外网'}`;
+                    }
+
+                    sectionHtml += `
+                            <a href="${currentUrl || '#'}" target="_blank" class="block bg-white rounded-xl p-5 shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border border-gray-100" data-site-id="${site.id}">
+                                <div class="flex items-start">
+                                    <div class="w-10 h-10 rounded-lg ${site.cardBg} flex items-center justify-center mr-3 flex-shrink-0">
+                                        <i class="fa ${site.icon} ${site.iconColor}"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4 class="font-medium mb-1">${site.name}</h4>
+                                        <p class="text-sm text-gray-500 mb-2">${site.description}</p>
+                                        <div class="flex flex-wrap items-center gap-2">
+                                            <span class="text-xs text-gray-400 domain-name">${currentUrl ? Utils.extractDomain(currentUrl) : '无可用链接'}</span>
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${indicatorClass} network-indicator">
+                                                ${indicatorContent}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="edit-btn ml-2 text-gray-400 hover:text-primary opacity-0 transition-opacity duration-200"
+                                            onclick="event.preventDefault(); NavigationApp.showEditModal('site', '${site.id}', '${section.categoryId}')">
+                                        <i class="fa fa-pencil"></i>
+                                    </button>
+                                </div>
+                            </a>
+                        `;
+                });
+            }
+
+            sectionHtml += `</div>`;
+            sectionElement.innerHTML = sectionHtml;
+
+            // 添加卡片悬停显示编辑按钮的效果
+            const cards = sectionElement.querySelectorAll('a');
+            cards.forEach(card => {
+                const editBtn = card.querySelector('.edit-btn');
+                if (editBtn) {
+                    card.addEventListener('mouseenter', () => editBtn.style.opacity = '1');
+                    card.addEventListener('mouseleave', () => editBtn.style.opacity = '0');
+                }
+            });
+
+            return sectionElement;
+        }
+
+        /**
+         * 创建快速访问区域
+         */
+        function createQuickAccessSection() {
+            const section = document.createElement('section');
+            section.className = 'mb-12 animate-fade-in';
+
+            let sectionHtml = `
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 rounded-lg bg-yellow-100 flex items-center justify-center mr-3">
+                                <i class="fa fa-star text-yellow-600"></i>
+                            </div>
+                            <h3 class="text-lg font-semibold">快速访问</h3>
+                        </div>
+                        <button class="text-primary text-sm hover:underline flex items-center"
+                                onclick="NavigationApp.manageQuickAccess()">
+                            <i class="fa fa-edit mr-1"></i> 管理
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3">
+                `;
+
+            // 快速访问项
+            navigationData.quickAccess.forEach(item => {
+                // 确定当前网络的URL
+                const currentUrl = item.urls[currentNetwork] ||
+                    item.urls[currentNetwork === 'intranet' ? 'extranet' : 'intranet'];
+
+                sectionHtml += `
+                        <a href="${currentUrl || '#'}" target="_blank" class="flex flex-col items-center justify-center p-3 bg-white rounded-xl shadow-sm transition-all duration-200 hover:bg-primary/10 hover:text-primary border border-gray-100 relative group" data-site-id="${item.id}">
+                            <div class="w-10 h-10 rounded-full ${item.bgColor} flex items-center justify-center mb-2">
+                                <i class="fa ${item.icon} ${item.iconColor}"></i>
+                            </div>
+                            <span class="text-xs text-center">${item.name}</span>
+                            <button type="button" class="edit-btn absolute mt-10 text-gray-400 hover:text-primary opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+                                    onclick="event.preventDefault(); NavigationApp.showEditModal('quickAccess', '${item.id}')">
+                                <i class="fa fa-pencil text-xs"></i>
+                            </button>
+                        </a>
+                    `;
+            });
+
+            // 添加"添加到快速访问"按钮
+            sectionHtml += `
+                    <div class="flex flex-col items-center justify-center p-3 bg-gray-50 rounded-xl border border-dashed border-gray-200 hover:bg-gray-100 transition-all cursor-pointer"
+                         onclick="NavigationApp.addToQuickAccess()">
+                        <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mb-2">
+                            <i class="fa fa-plus text-gray-500"></i>
+                        </div>
+                        <span class="text-xs text-center text-gray-500">添加</span>
+                    </div>
+                `;
+
+            sectionHtml += `</div>`;
+            section.innerHTML = sectionHtml;
+
+            return section;
+        }
+
+        /**
+         * 填充分类选择器
+         */
+        function populateCategorySelectors() {
+            if (!navigationData || !navigationData.categories) return;
+
+            elements.editSiteCategory.innerHTML = '';
+            elements.addSiteCategory.innerHTML = '';
+
+            navigationData.categories.forEach(category => {
+                const editOption = document.createElement('option');
+                editOption.value = category.id;
+                editOption.textContent = category.name;
+                elements.editSiteCategory.appendChild(editOption);
+
+                const addOption = document.createElement('option');
+                addOption.value = category.id;
+                addOption.textContent = category.name;
+                elements.addSiteCategory.appendChild(addOption);
+            });
+        }
+
+        /**
+         * 显示编辑模态框
+         */
+        function showEditModal(type, id, categoryId = null) {
+            let item = null;
+
+            if (type === 'site') {
+                for (const section of navigationData.sections) {
+                    item = section.sites.find(site => site.id === id);
+                    if (item) {
+                        item.categoryId = categoryId;
+                        break;
+                    }
+                }
+                elements.editModalTitle.textContent = '编辑网站';
+                elements.editCategoryContainer.classList.remove('hidden');
+            } else if (type === 'quickAccess') {
+                item = navigationData.quickAccess.find(item => item.id === id);
+                elements.editModalTitle.textContent = '编辑快速访问';
+                elements.editCategoryContainer.classList.add('hidden');
+            }
+
+            if (!item) {
+                Utils.showToast('未找到要编辑的项目', 'error');
+                return;
+            }
+
+            currentEditingItem = item;
+
+            // 填充表单数据
+            elements.editSiteId.value = id;
+            elements.editSiteType.value = type;
+            elements.editSiteName.value = item.name;
+            elements.editSiteExtranetUrl.value = item.urls?.extranet || '';
+            elements.editSiteIntranetUrl.value = item.urls?.intranet || '';
+            elements.editSiteDescription.value = item.description || '';
+            elements.selectedIcon.value = item.icon || 'fa-link';
+
+            // 选中当前图标
+            document.querySelectorAll('#editModalContent .icon-selector').forEach(s => {
+                s.classList.remove('bg-primary/10', 'ring-2', 'ring-primary/30');
+                if (s.dataset.icon === item.icon) {
+                    s.classList.add('bg-primary/10', 'ring-2', 'ring-primary/30');
+                }
+            });
+
+            if (type === 'site' && categoryId) {
+                elements.editSiteCategory.value = categoryId;
+            }
+
+            // 设置图标样式
+            const iconClasses = type === 'site' ?
+                `${item.cardBg} ${item.iconColor}` :
+                `${item.bgColor} ${item.iconColor}`;
+
+            document.querySelectorAll('input[name="iconStyle"]').forEach(radio => {
+                radio.checked = radio.value === iconClasses;
+            });
+
+            // 显示模态框
+            elements.editSiteModal.classList.add('opacity-100', 'pointer-events-auto');
+            elements.editSiteModal.querySelector('div').classList.remove('translate-y-8');
+            elements.editSiteModal.querySelector('div').classList.add('translate-y-0');
+            document.body.style.overflow = 'hidden';
+        }
+
+        /**
+         * 隐藏编辑模态框
+         */
+        function hideEditModal() {
+            elements.editSiteModal.classList.remove('opacity-100', 'pointer-events-auto');
+            elements.editSiteModal.querySelector('div').classList.remove('translate-y-0');
+            elements.editSiteModal.querySelector('div').classList.add('translate-y-8');
+            document.body.style.overflow = '';
+            currentEditingItem = null;
+        }
+
+        /**
+         * 显示添加网站模态框
+         */
+        function showAddSiteModalWithCategory(categoryId = null) {
+            elements.addSiteForm.reset();
+            elements.addSelectedIcon.value = 'fa-link';
+
+            // 重置图标选择状态
+            document.querySelectorAll('#addModalContent .icon-selector').forEach(s => {
+                s.classList.remove('bg-primary/10', 'ring-2', 'ring-primary/30');
+                if (s.dataset.icon === 'fa-link') {
+                    s.classList.add('bg-primary/10', 'ring-2', 'ring-primary/30');
+                }
+            });
+
+            if (categoryId && elements.addSiteCategory.querySelector(`option[value="${categoryId}"]`)) {
+                elements.addSiteCategory.value = categoryId;
+            }
+
+            elements.addSiteModal.classList.add('opacity-100', 'pointer-events-auto');
+            elements.addSiteModal.querySelector('div').classList.remove('translate-y-8');
+            elements.addSiteModal.querySelector('div').classList.add('translate-y-0');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function showAddSiteModal() {
+            showAddSiteModalWithCategory();
+        }
+
+        function hideAddSiteModal() {
+            elements.addSiteModal.classList.remove('opacity-100', 'pointer-events-auto');
+            elements.addSiteModal.querySelector('div').classList.remove('translate-y-0');
+            elements.addSiteModal.querySelector('div').classList.add('translate-y-8');
+            document.body.style.overflow = '';
+        }
+
+        /**
+         * 保存编辑的项目
+         */
+        async function saveEditedItem() {
+            if (!currentEditingItem) return;
+
+            const type = elements.editSiteType.value;
+            const id = elements.editSiteId.value;
+            const name = elements.editSiteName.value;
+            const extranetUrl = elements.editSiteExtranetUrl.value;
+            const intranetUrl = elements.editSiteIntranetUrl.value;
+            const description = elements.editSiteDescription.value;
+            const categoryId = elements.editSiteCategory.value;
+            const icon = elements.selectedIcon.value;
+
+            if (!name || (!extranetUrl && !intranetUrl)) {
+                Utils.showToast('请填写网站名称和至少一个网址', 'error');
+                return;
+            }
+
+            const iconStyle = document.querySelector('input[name="iconStyle"]:checked').value;
+            const [bgClass, colorClass] = iconStyle.split(' ');
+
+            const updateData = {
+                name,
+                description,
+                icon,
+                urls: {
+                    extranet: extranetUrl || null,
+                    intranet: intranetUrl || null
+                }
+            };
+
+            if (type === 'site') {
+                updateData.categoryId = categoryId;
+                updateData.cardBg = bgClass;
+                updateData.iconColor = colorClass;
+            } else if (type === 'quickAccess') {
+                updateData.bgColor = bgClass;
+                updateData.iconColor = colorClass;
+            }
+
+            Utils.showModalLoading('edit');
+
+            try {
+                if (type === 'site') {
+                    await ApiService.updateSite(id, updateData);
+                } else if (type === 'quickAccess') {
+                    const index = navigationData.quickAccess.findIndex(item => item.id === id);
+                    if (index !== -1) {
+                        navigationData.quickAccess[index] = {
+                            ...navigationData.quickAccess[index],
+                            ...updateData
+                        };
+                        await ApiService.updateQuickAccess(navigationData.quickAccess);
+                    }
+                }
+
+                await loadNavigationData();
+                hideEditModal();
+                Utils.showToast('项目已更新', 'success');
+            } catch (error) {
+                console.error('保存编辑项失败:', error);
+                Utils.showToast('更新失败，请稍后重试', 'error');
+            } finally {
+                Utils.hideModalLoading('edit');
+            }
+        }
+
+        /**
+         * 确认删除项目
+         */
+        async function confirmDeleteItem() {
+            if (!currentEditingItem) return;
+
+            if (!confirm('确定要删除这个项目吗？此操作不可撤销。')) return;
+
+            const type = elements.editSiteType.value;
+            const id = elements.editSiteId.value;
+
+            Utils.showModalLoading('edit');
+
+            try {
+                if (type === 'site') {
+                    await ApiService.deleteSite(id);
+                } else if (type === 'quickAccess') {
+                    navigationData.quickAccess = navigationData.quickAccess.filter(
+                        item => item.id !== id
+                    );
+                    await ApiService.updateQuickAccess(navigationData.quickAccess);
+                }
+
+                await loadNavigationData();
+                hideEditModal();
+                Utils.showToast('项目已删除', 'success');
+            } catch (error) {
+                console.error('删除项目失败:', error);
+                Utils.showToast('删除失败，请稍后重试', 'error');
+            } finally {
+                Utils.hideModalLoading('edit');
+            }
+        }
+
+        /**
+         * 添加新网站
+         */
+        async function addNewSite() {
+            const name = elements.addSiteName.value;
+            const extranetUrl = elements.addSiteExtranetUrl.value;
+            const intranetUrl = elements.addSiteIntranetUrl.value;
+            const description = elements.addSiteDescription.value;
+            const categoryId = elements.addSiteCategory.value;
+            const addToQuickAccess = elements.addToQuickAccess.checked;
+            const icon = elements.addSelectedIcon.value;
+
+            if (!name || !extranetUrl || !categoryId) {
+                Utils.showToast('请填写网站名称、外网地址和分类', 'error');
+                return;
+            }
+
+            const iconStyle = document.querySelector('input[name="addIconStyle"]:checked').value;
+            const [bgClass, colorClass] = iconStyle.split(' ');
+
+            const newSite = {
+                name,
+                description,
+                categoryId,
+                icon,
+                cardBg: bgClass,
+                iconColor: colorClass,
+                urls: {
+                    extranet: extranetUrl,
+                    intranet: intranetUrl || null
+                }
+            };
+
+            Utils.showModalLoading('add');
+
+            try {
+                const addedSite = await ApiService.addNewSite(newSite);
+
+                if (addToQuickAccess) {
+                    const quickAccessItem = {
+                        id: `quick-${addedSite.id}`,
+                        name,
+                        icon,
+                        bgColor: bgClass,
+                        iconColor: colorClass,
+                        urls: {
+                            extranet: extranetUrl,
+                            intranet: intranetUrl || null
+                        }
+                    };
+
+                    if (!navigationData.quickAccess) navigationData.quickAccess = [];
+                    navigationData.quickAccess.push(quickAccessItem);
+                    await ApiService.updateQuickAccess(navigationData.quickAccess);
+                }
+
+                await loadNavigationData();
+                hideAddSiteModal();
+                Utils.showToast('网站已添加', 'success');
+            } catch (error) {
+                console.error('添加新网站失败:', error);
+                Utils.showToast('添加网站失败，请稍后重试', 'error');
+            } finally {
+                Utils.hideModalLoading('add');
+            }
+        }
+
+        /**
+         * 搜索功能
+         */
+        function handleSearch(query) {
+            query = query.toLowerCase();
+
+            if (!query) {
+                // 搜索为空时显示所有内容
+                document.querySelectorAll('#navigationContent section').forEach(section => {
+                    section.classList.remove('hidden');
+                });
+                return;
+            }
+
+            // 执行搜索
+            document.querySelectorAll('#navigationContent section').forEach(section => {
+                const sectionTitle = section.querySelector('h3').textContent.toLowerCase();
+                const siteCards = section.querySelectorAll('a');
+
+                let hasMatch = sectionTitle.includes(query);
+
+                if (!hasMatch) {
+                    siteCards.forEach(card => {
+                        const title = card.querySelector('h4').textContent.toLowerCase();
+                        const description = card.querySelector('p').textContent.toLowerCase();
+                        const domain = card.querySelector('.domain-name').textContent.toLowerCase();
+
+                        const cardMatches = title.includes(query) || description.includes(query) || domain.includes(query);
+
+                        if (cardMatches) {
+                            hasMatch = true;
+                            card.classList.remove('hidden');
+                        } else {
+                            card.classList.add('hidden');
+                        }
+                    });
+                } else {
+                    siteCards.forEach(card => card.classList.remove('hidden'));
+                }
+
+                // 显示或隐藏整个区域
+                if (hasMatch) {
+                    section.classList.remove('hidden');
+                } else {
+                    section.classList.add('hidden');
+                }
+            });
+        }
+
+        /**
+         * 添加到快速访问
+         */
+        function addToQuickAccess() {
+            let sitesList = [];
+
+            navigationData.sections.forEach(section => {
+                section.sites.forEach(site => {
+                    const isInQuickAccess = navigationData.quickAccess.some(
+                        item => item.name === site.name
+                    );
+
+                    if (!isInQuickAccess) {
+                        sitesList.push({...site, sectionName: section.name});
+                    }
+                });
+            });
+
+            if (sitesList.length === 0) {
+                Utils.showToast('所有网站都已添加到快速访问', 'info');
+                return;
+            }
+
+            let optionsHtml = '<option value="">请选择要添加的网站</option>';
+            sitesList.forEach(site => {
+                optionsHtml += `<option value="${site.id}" data-section="${site.sectionName}">${site.name} (${site.sectionName})</option>`;
+            });
+
+            const selectContainer = document.createElement('div');
+            selectContainer.className = 'p-4';
+            selectContainer.innerHTML = `
+                    <label class="block text-sm font-medium text-gray-700 mb-2">选择要添加到快速访问的网站</label>
+                    <select id="siteToAdd" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                        ${optionsHtml}
+                    </select>
+                `;
+
+            confirmWithCustomContent('添加到快速访问', selectContainer, '添加').then(confirmed => {
+                if (confirmed) {
+                    const siteId = document.getElementById('siteToAdd').value;
+                    if (siteId) {
+                        let selectedSite = null;
+                        navigationData.sections.forEach(section => {
+                            const site = section.sites.find(s => s.id === siteId);
+                            if (site) selectedSite = { ...site, sectionName: section.name };
+                        });
+
+                        if (selectedSite) {
+                            const quickAccessItem = {
+                                id: `quick-${selectedSite.id}`,
+                                name: selectedSite.name,
+                                icon: selectedSite.icon,
+                                bgColor: selectedSite.cardBg,
+                                iconColor: selectedSite.iconColor,
+                                urls: selectedSite.urls
+                            };
+
+                            navigationData.quickAccess.push(quickAccessItem);
+                            ApiService.updateQuickAccess(navigationData.quickAccess)
+                                .then(() => {
+                                    loadNavigationData();
+                                    Utils.showToast(`"${selectedSite.name}"已添加到快速访问`, 'success');
+                                })
+                                .catch(error => {
+                                    console.error('添加到快速访问失败:', error);
+                                    Utils.showToast('添加到快速访问失败，请稍后重试', 'error');
+                                });
+                        }
+                    }
+                }
+            });
+        }
+
+        /**
+         * 带自定义内容的确认对话框
+         */
+        function confirmWithCustomContent(title, contentElement, confirmText = '确定') {
+            const dialog = document.createElement('div');
+            dialog.className = 'fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4';
+            dialog.innerHTML = `
+                    <div class="bg-white rounded-xl shadow-xl w-full max-w-md">
+                        <div class="p-6">
+                            <h3 class="text-lg font-bold mb-4">${title}</h3>
+                            <div id="dialogContent" class="mb-6"></div>
+                            <div class="flex space-x-3">
+                                <button id="dialogCancel" class="flex-1 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors">
+                                    取消
+                                </button>
+                                <button id="dialogConfirm" class="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors">
+                                    ${confirmText}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+            dialog.querySelector('#dialogContent').appendChild(contentElement);
+            document.body.appendChild(dialog);
+            document.body.style.overflow = 'hidden';
+
+            return new Promise(resolve => {
+                dialog.querySelector('#dialogConfirm').addEventListener('click', () => {
+                    document.body.removeChild(dialog);
+                    document.body.style.overflow = '';
+                    resolve(true);
+                });
+
+                dialog.querySelector('#dialogCancel').addEventListener('click', () => {
+                    document.body.removeChild(dialog);
+                    document.body.style.overflow = '';
+                    resolve(false);
+                });
+
+                dialog.addEventListener('click', (e) => {
+                    if (e.target === dialog) {
+                        document.body.removeChild(dialog);
+                        document.body.style.overflow = '';
+                        resolve(false);
+                    }
+                });
+            });
+        }
+
+        /**
+         * 管理快速访问
+         */
+        function manageQuickAccess() {
+            Utils.showToast('快速访问管理功能即将上线', 'info');
+        }
+
+        /**
+         * 显示内容区域
+         */
+        function showContent() {
+            elements.searchContainer.classList.remove('hidden');
+            elements.categoriesContainer.classList.remove('hidden');
+        }
+
+        /**
+         * 显示错误信息
+         */
+        function showError(message) {
+            elements.errorMessage.textContent = message;
+            elements.errorState.classList.remove('hidden');
+            elements.searchContainer.classList.add('hidden');
+            elements.categoriesContainer.classList.add('hidden');
+        }
+
+        /**
+         * 初始化应用
+         */
+        function init() {
+            // 检查本地存储的网络偏好
+            const savedNetwork = localStorage.getItem('preferred_network');
+            if (savedNetwork) {
+                currentNetwork = savedNetwork;
+                elements.networkToggle.checked = currentNetwork === 'intranet';
+                elements.networkLabel.textContent = currentNetwork === 'intranet' ? '内网' : '外网';
+            }
+
+            // 初始化服务和管理器
+            ApiService.init();
+            AuthManager.init();
+            CategoryManager.init();
+
+            // 绑定事件
+            bindEvents();
+
+            // 加载数据
+            if (AuthManager.hasAuthToken()) {
+                loadNavigationData();
+            } else {
+                AuthManager.showAuthModal();
+            }
+        }
+
+        // 暴露公共方法
+        return {
+            init,
+            editCategory: (categoryId) => CategoryManager.showCategoryModal(categoryId),
+            showEditModal,
+            showAddSiteModal,
+            showAddSiteModalWithCategory,
+            manageQuickAccess,
+            addToQuickAccess
+        };
+    })();
+
+    // 页面加载完成后初始化应用
+    document.addEventListener('DOMContentLoaded', () => {
+        NavigationApp.init();
+    });
+</script>
+</body>
+</html>
