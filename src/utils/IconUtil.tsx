@@ -1,12 +1,24 @@
 import {IconProp} from "@fortawesome/fontawesome-svg-core";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faImage} from "@fortawesome/free-solid-svg-icons";
+import {IconLookup} from "@fortawesome/fontawesome-common-types";
 
 export const defaultColor = '#1f2937';
 export const defaultIcon = faImage;
 
 export const getIconClass = (icon: IconProp): string => {
-    return `${icon.prefix} fa-${icon.iconName}`;
+    if (Array.isArray(icon)) {
+        return `${icon[0]} fa-${icon[1]}`;
+    } else if (isIconLookup(icon)) {
+        return `${icon.prefix} fa-${icon.iconName}`;
+    } else {
+        return icon;
+    }
+}
+
+// 类型保护函数示例
+const isIconLookup = (obj: any): obj is IconLookup => {
+    return obj && typeof obj === 'object' && 'prefix' in obj && 'iconName' in obj;
 }
 
 // 渲染图标
