@@ -28,6 +28,7 @@ const NavigationHub = () => {
     const [activeCategory, setActiveCategory] = useState('all');
     const [renderKey, setRenderKey] = useState(0);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [defaultSelectedId, setDefaultSelectedId] = useState<string>();
     const [isLanguageSelectorOpen, setIsLanguageSelectorOpen] = useState<boolean>(false);
     const [languageSelectorValue, setLanguageSelectorValue] = useState<string>();
     // ref引用
@@ -203,8 +204,9 @@ const NavigationHub = () => {
 
 
     // 打开编辑弹窗
-    const openEditModal = () => {
+    const openEditModal = (defaultSelectedId?: string) => {
         setIsEditModalOpen(true);
+        setDefaultSelectedId(defaultSelectedId);
     };
 
     // 分类切换
@@ -244,8 +246,10 @@ const NavigationHub = () => {
                             </h3>
                         </div>
                         <button
-                            onClick={openEditModal}
-                            className="text-indigo-600 text-sm hover:underline flex items-center gap-1.5 transition-colors duration-300"
+                            onClick={() => {
+                                openEditModal(category.id)
+                            }}
+                            className="text-indigo-600 text-sm hover:underline flex items-center gap-1.5 transition-colors duration-300 cursor-pointer"
                         >
                             <FontAwesomeIcon icon={faEdit} className="h-4.5 w-4.5"/>
                             <span>编辑分类</span>
@@ -534,7 +538,9 @@ const NavigationHub = () => {
                         ))}
                         {/* 编辑分类按钮 */}
                         <button
-                            onClick={openEditModal}
+                            onClick={() => {
+                                openEditModal()
+                            }}
                             className="px-4 py-2.5 rounded-full text-sm bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300
                              hover:bg-slate-100 dark:hover:bg-slate-700 transition-all duration-300 h-8 flex items-center cursor-pointer "
                             disabled={isLoading}
@@ -591,6 +597,7 @@ const NavigationHub = () => {
                     setIsEditModalOpen(false)
                     load()
                 }}
+                defaultSelectedId={defaultSelectedId}
             />
         </div>
     );
