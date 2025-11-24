@@ -384,7 +384,7 @@ const NavigationHub = () => {
                                 onClick={toggleDarkMode}
                                 className={`
                                         p-2 rounded-full transition-all duration-300 ease-in-out
-                                        flex items-center justify-center shadow-sm
+                                        flex items-center justify-center shadow-sm cursor-pointer
                                         ${isDarkMode
                                     ? 'bg-slate-800 text-amber-300 hover:bg-slate-700'
                                     : 'bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700'
@@ -429,7 +429,7 @@ const NavigationHub = () => {
                             <div ref={dropdownRef} className="relative inline-block">
                                 {/* 触发按钮 */}
                                 <button onClick={() => setIsLanguageSelectorOpen(!isLanguageSelectorOpen)}
-                                        className="flex items-center gap-1.5 px-3 py-1.75 rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200
+                                        className="flex items-center gap-1.5 px-3 py-1.75 rounded-md cursor-pointer bg-slate-100 dark:bg-slate-800 border border-slate-200
                                                dark:border-slate-700 text-sm font-medium text-slate-800 dark:text-slate-100 hover:bg-slate-200
                                                dark:hover:bg-slate-700 transition-all duration-200  focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                         aria-expanded={isLanguageSelectorOpen}
@@ -455,7 +455,7 @@ const NavigationHub = () => {
                                             onClick={() => handleLanguageSelect(option.code)}
                                             className={`
                                                 w-full flex items-center justify-between px-3 py-1.75 text-sm
-                                                transition-colors duration-150
+                                                transition-colors duration-150 cursor-pointer
                                                 ${languageSelectorValue === option.code
                                                 ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50/70 dark:bg-indigo-900/10'
                                                 : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/30'
@@ -493,7 +493,9 @@ const NavigationHub = () => {
 
                         <div className="relative group animate-fade-in" style={{animationDelay: '150ms'}}>
                             <input type="text" id="searchInput"
-                                   className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all shadow-sm group-hover:shadow-md"
+                                   className="w-full pl-12 pr-4 py-3 rounded-xl border outline-none transition-all shadow-sm group-hover:shadow-md
+                                   border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/30
+                                             bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200"
                                    placeholder="搜索网站或服务..."/>
                             <FontAwesomeIcon icon={faSearch}
                                              className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 h-5.5 w-5.5 transition-colors duration-300 group-hover:text-indigo-500"/>
@@ -530,16 +532,6 @@ const NavigationHub = () => {
                                     {cat.name}
                                 </button>
                         ))}
-                        <button
-                            className="px-4 py-2.5 rounded-full text-sm bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300
-                            hover:bg-slate-100 dark:hover:bg-slate-700 transition-all duration-300 h-8 flex items-center cursor-pointer "
-                            disabled={isLoading}
-                            style={{animationDelay: '500ms'}}
-                        >
-                            <FontAwesomeIcon icon={faPlus} className="h-4.5 w-4.5 mr-1.5"/>
-                            添加分类
-                        </button>
-
                         {/* 编辑分类按钮 */}
                         <button
                             onClick={openEditModal}
