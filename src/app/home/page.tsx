@@ -1,11 +1,10 @@
 'use client';
-import React, {useState, useEffect, useRef, useCallback} from 'react';
+import React, {useState, useEffect, useRef, useCallback, useLayoutEffect} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {
     faSearch,
     faCog,
     faSync,
-    faPlus,
     faEdit,
     faLayerGroup,
     faGlobe,
@@ -17,6 +16,7 @@ import {
     faRightFromBracket
 } from '@fortawesome/free-solid-svg-icons';
 import CategoryEditModal from '@/components/CategoryEditModal';
+// import SystemEditModal from '@/components/SystemSettingModal';
 import {Category} from "@/types/base"
 import {LANGUAGE_OPTIONS} from '@/components/common/PreConstants'
 import {getLocalStorage, setLocalStorage} from '@/utils/StorageUtil';
@@ -30,6 +30,7 @@ const NavigationHub = () => {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [defaultSelectedId, setDefaultSelectedId] = useState<string>();
     const [isLanguageSelectorOpen, setIsLanguageSelectorOpen] = useState<boolean>(false);
+    const [isSystemEditModalOpen, setIsSystemEditModalOpen] = useState(false);
     const [languageSelectorValue, setLanguageSelectorValue] = useState<string>();
     // ref引用
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -47,8 +48,8 @@ const NavigationHub = () => {
 
     const {isLoading, load} = useLoading();
 
-    // 初始化状态(优先从本地存储读取,默认跟随系统)
-    const [isDarkMode, setIsDarkMode] = useState(() => {
+    // 初始化状态
+    const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
         const saved = getLocalStorage('darkMode');
         if (saved !== null) return saved === 'true';
         // 跟随系统偏好
@@ -58,6 +59,7 @@ const NavigationHub = () => {
             return false;
         }
     });
+
     const [categories, setCategories] = useState<Category[]>([
         {
             id: 'quick-access',
@@ -389,30 +391,23 @@ const NavigationHub = () => {
                                 className={`
                                         p-2 rounded-full transition-all duration-300 ease-in-out
                                         flex items-center justify-center shadow-sm cursor-pointer
-                                        ${isDarkMode
-                                    ? 'bg-slate-800 text-amber-300 hover:bg-slate-700'
-                                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700'
-                                }
+                                        dark:bg-slate-800 dark:text-amber-300 dark:hover:bg-slate-700
+                                        bg-slate-100 text-slate-700 hover:bg-slate-200
                                         hover:scale-110 active:scale-95
                                         focus:outline-none focus:ring-2 focus:ring-offset-2
-                                        ${isDarkMode
-                                    ? 'focus:ring-indigo-500 dark:focus:ring-indigo-400'
-                                    : 'focus:ring-indigo-500'
-                                }
-                                        aria-label={isDarkMode ? '切换到浅色模式' : '切换到深色模式'}
+                                        dark:focus:ring-indigo-400 focus:ring-indigo-500
                                       `}
+                                aria-label={isDarkMode ? '切换到浅色模式' : '切换到深色模式'}
                             >
                                 <FontAwesomeIcon
                                     icon={isDarkMode ? faSun : faMoon}
-                                    className={`h-5 w-5 transition-transform duration-500 ${
-                                        isDarkMode ? 'rotate-0 scale-100' : 'rotate-180 scale-90'
-                                    }`}
+                                    className={`h-5 w-5 transition-transform duration-500 dark:rotate-0 dark:scale-100 rotate-180 scale-90`}
                                 />
                             </button>
 
                             {/* 功能按钮 */}
                             <button
-                                onClick={() => {}}
+                                onClick={() => setIsSystemEditModalOpen(true)}
                                 className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300
                                  transition-all duration-300 hover:text-indigo-600 cursor-pointer">
                                 <FontAwesomeIcon icon={faCog} className="h-5 w-5"/>
@@ -599,6 +594,19 @@ const NavigationHub = () => {
                 }}
                 defaultSelectedId={defaultSelectedId}
             />
+            {/*系统属性编辑组件 */}
+            {/*<SystemEditModal*/}
+            {/*    visible={isSystemEditModalOpen}*/}
+            {/*    onClose={() => {*/}
+            {/*        setIsSystemEditModalOpen(false)*/}
+            {/*    }}*/}
+            {/*    onSave={(data: any) => {*/}
+            {/*        console.log("saveData", data)*/}
+            {/*        setCategories(data)*/}
+            {/*        setIsSystemEditModalOpen(false)*/}
+            {/*        loadData()*/}
+            {/*    }}*/}
+            {/*/>*/}
         </div>
     );
 };
