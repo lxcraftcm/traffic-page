@@ -45,10 +45,6 @@ interface CategoryEditProps {
 interface CategoryEditModalProps extends CategoryEditProps {
     visible: boolean,
     onClose: () => void;
-    initialData?: Category[];
-    onSave: (finalData: Category[]) => void;
-    title?: string;
-    defaultSelectedId?: string;
 }
 
 // 深拷贝函数
