@@ -21,6 +21,8 @@ import {Category} from "@/types/base"
 import {LANGUAGE_OPTIONS} from '@/components/common/PreConstants'
 import {getLocalStorage, setLocalStorage} from '@/utils/StorageUtil';
 import {renderIcon} from "@/utils/IconUtil";
+import {apis} from "@/utils/RequestUtil";
+import {removeToken} from "@/lib/auth";
 
 const NavigationHub = () => {
     // 核心状态
@@ -197,6 +199,15 @@ const NavigationHub = () => {
         };
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    // 获取用户信息
+    useEffect(() => {
+        apis.getUserInfo().then((res) => {
+            console.log(res)
+        }).catch((err) => {
+            console.log(err)
+        })
     }, []);
 
     // 切换模式
@@ -419,6 +430,10 @@ const NavigationHub = () => {
                                 <FontAwesomeIcon icon={faSync} className="h-5 w-5"/>
                             </button>
                             <button
+                                onClick={() => {
+                                    removeToken();
+                                    window.location.href = '/login'
+                                }}
                                 className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300
                                 transition-all duration-300 hover:text-indigo-600 cursor-pointer">
                                 <FontAwesomeIcon icon={faRightFromBracket} className="h-5 w-5"/>
