@@ -18,6 +18,8 @@ import {
 import {getLocalStorage, setLocalStorage} from '@/utils/StorageUtil';
 import Link from 'next/link';
 import {LANGUAGE_OPTIONS} from "@/components/common/PreConstants";
+import {apis} from "@/utils/RequestUtil";
+import {setToken} from "@/lib/auth";
 
 const LoginPage = () => {
     const [username, setUsername] = useState('');
@@ -111,16 +113,8 @@ const LoginPage = () => {
         setFormErrors({});
 
         try {
-            // 模拟登录请求
-            await new Promise(resolve => setTimeout(resolve, 1500));
-
-            // 登录成功后的处理
-            if (rememberMe) {
-                setLocalStorage('rememberedUsername', username);
-            } else {
-                setLocalStorage('rememberedUsername', '');
-            }
-
+            const res = await apis.login({username, password});
+            setToken(res.token);
             // 跳转到首页
             window.location.href = '/home';
         } catch (error) {
