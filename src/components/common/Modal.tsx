@@ -44,11 +44,12 @@ export const Modal = ({visible, onClose, children}: ModalBase) => {
 
     // 创建 Portal 容器
     useEffect(() => {
-        let modalContainer = document.createElement('div');
+        const modalContainer = document.createElement('div');
         modalContainer.id = 'modal-root';
         document.body.appendChild(modalContainer);
-        setContainer(modalContainer);
-
+        setTimeout(() => {
+            setContainer(modalContainer);
+        }, 1)
         return () => {
             if (document.body.contains(modalContainer)) {
                 document.body.removeChild(modalContainer);
