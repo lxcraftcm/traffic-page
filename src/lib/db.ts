@@ -34,7 +34,7 @@ export const initDatabase = (config: DbConfig) => {
         const script = fs.readFileSync(scriptPath, 'utf-8');
         try {
             db.exec(script);
-            logger.log(`初始化脚本已执行: ${scriptPath}`);
+            logger.log(`初始化脚本已执行:`, scriptPath);
         } catch (error: any) {
             logger.error(`初始化脚本执行失败: ${error.message}`);
             throw error;

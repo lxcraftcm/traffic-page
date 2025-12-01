@@ -18,3 +18,13 @@ CREATE TABLE
                             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                             deleted_at DATETIME
 );
+
+CREATE TABLE
+    IF NOT EXISTS t_user_page (
+                            id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            user_id INTEGER NOT NULL,
+                            page_json TEXT NOT NULL,
+                            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                            deleted_at DATETIME
+);

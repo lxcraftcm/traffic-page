@@ -70,5 +70,8 @@ export const apis = {
     },
     generateKey: () => {
         return requestUtil({url: '/api/user/generateKey', method: 'GET'});
+    },
+    getUserPage: () => {
+        return requestUtil({url: '/api/user/page', method: 'GET'});
     }
 }

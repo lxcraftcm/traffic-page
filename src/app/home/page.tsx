@@ -27,6 +27,7 @@ import {removeToken} from "@/lib/auth";
 const NavigationHub = () => {
     // 核心状态
     const [isInternal, setIsInternal] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
     const [activeCategory, setActiveCategory] = useState('all');
     const [renderKey, setRenderKey] = useState(0);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -34,150 +35,30 @@ const NavigationHub = () => {
     const [isLanguageSelectorOpen, setIsLanguageSelectorOpen] = useState<boolean>(false);
     const [isSystemEditModalOpen, setIsSystemEditModalOpen] = useState(false);
     const [languageSelectorValue, setLanguageSelectorValue] = useState<string>();
+    const [isDarkMode, setIsDarkMode] = useState(() => {
+        const saved = getLocalStorage('darkMode');
+        if (saved !== null) return saved === 'true';
+        if (typeof window !== 'undefined') {
+            return window.matchMedia('(prefers-color-scheme: dark)').matches;
+        }
+        return false;
+    });
+
     // ref引用
     const dropdownRef = useRef<HTMLDivElement>(null);
 
-    // 加载数据hooks封装
-    function useLoading(duration = 1500) {
-        const [isLoading, setIsLoading] = useState(false);
-        const load = useCallback(() => {
-            setIsLoading(true);
-            const timer = setTimeout(() => setIsLoading(false), duration);
-            return () => clearTimeout(timer);
-        }, [duration]);
-        return {isLoading, load};
+    const loadData = () => {
     }
 
-    const {isLoading, load} = useLoading();
-
-    // 初始化状态
-    const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
-        const saved = getLocalStorage('darkMode');
-        if (saved !== null) return saved === 'true';
-        // 跟随系统偏好
-        if (typeof window !== 'undefined') {
-            return window.matchMedia('(prefers-color-scheme: dark)').matches;
-        } else {
-            return false;
-        }
-    });
-
-    const [categories, setCategories] = useState<Category[]>([
-        {
-            id: 'quick-access',
-            name: '快速访问',
-            iconMode: 'preset',
-            iconColor: '#06b6d4',
-            iconBgColor: '#e0f2fe',
-            sites: [
-                {
-                    id: 'console',
-                    name: '控制台',
-                    desc: '',
-                    internalUrl: 'http://jira.corp.internal',
-                    externalUrl: 'http://jira.corp.externa',
-                    iconMode: 'preset',
-                    iconColor: '#06b6d4',
-                    iconBgColor: '#e0f2fe',
-                },
-                {
-                    id: 'add',
-                    name: '添加',
-                    desc: '',
-                    internalUrl: 'http://jira.corp.internal',
-                    externalUrl: 'http://jira.corp.externa',
-                    iconMode: 'preset',
-                    iconColor: '#06b6d4',
-                    iconBgColor: '#e0f2fe',
-                }
-            ]
-        },
-        {
-            id: 'work-tools',
-            name: '工作工具',
-            iconMode: 'preset',
-            iconColor: '#06b6d4',
-            iconBgColor: '#e0f2fe',
-            sites: [
-                {
-                    id: 'mail',
-                    name: '邮件系统',
-                    desc: '企业邮箱与通讯',
-                    internalUrl: 'http://jira.corp.internal',
-                    externalUrl: 'http://jira.corp.externa',
-                    iconMode: 'preset',
-                    iconColor: '#06b6d4',
-                    iconBgColor: '#e0f2fe',
-                },
-                {
-                    id: 'calendar',
-                    name: '日程安排',
-                    desc: '会议与任务提醒',
-                    internalUrl: 'http://jira.corp.internal',
-                    externalUrl: 'http://jira.corp.externa',
-                    iconMode: 'preset',
-                    iconColor: '#06b6d4',
-                    iconBgColor: '#e0f2fe',
-                },
-                {
-                    id: 'calendar1',
-                    name: '测试网页',
-                    desc: '测试网页',
-                    internalUrl: 'http://jira.corp.internal',
-                    externalUrl: 'http://jira.corp.externa',
-                    iconMode: 'preset',
-                    iconColor: '#06b6d4',
-                    iconBgColor: '#e0f2fe',
-                }
-            ]
-        },
-        {
-            id: 'project-management',
-            name: '项目管理',
-            iconMode: 'preset',
-            iconColor: '#06b6d4',
-            iconBgColor: '#e0f2fe',
-            sites: [
-                {
-                    id: 'jira',
-                    name: '任务跟踪',
-                    desc: '项目任务与缺陷管理',
-                    internalUrl: 'http://jira.corp.internal',
-                    externalUrl: 'http://jira.corp.internal',
-                    iconMode: 'preset',
-                    iconColor: '#06b6d4',
-                    iconBgColor: '#e0f2fe',
-                }
-            ]
-        },
-        {
-            id: 'project-management1',
-            name: '测试管理',
-            iconMode: 'preset',
-            iconColor: '#06b6d4',
-            iconBgColor: '#e0f2fe',
-            sites: [
-                {
-                    id: 'jira1',
-                    name: '1111111',
-                    desc: '项目任务与缺陷管理',
-                    internalUrl: 'http://jira.corp.internal',
-                    externalUrl: 'http://jira.corp.internal',
-                    iconMode: 'preset',
-                    iconColor: '#06b6d4',
-                    iconBgColor: '#e0f2fe',
-                }
-            ]
-        }
-    ]);
+    const [categories, setCategories] = useState<Category[]>([]);
 
     // 初始化加载
     useEffect(() => {
         document.body.style.scrollbarWidth = 'thin';
         document.body.style.scrollbarColor = 'rgb(96 165 250) rgb(229 231 235)';
         document.body.style.scrollbarGutter = 'stable';
-        load();
-    }, [load]);
+        loadData();
+    }, [isLoading]);
 
     // 应用黑暗模式到文档
     useEffect(() => {
@@ -201,12 +82,14 @@ const NavigationHub = () => {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    // 获取用户信息
+    //
     useEffect(() => {
-        apis.getUserInfo().then((res) => {
-            console.log(res)
+        apis.getUserPage().then((res) => {
+            setCategories(JSON.parse(res.userPage))
         }).catch((err) => {
             console.log(err)
+        }).finally(() => {
+            setIsLoading(false);
         })
     }, []);
 
@@ -336,7 +219,7 @@ const NavigationHub = () => {
     const currentLanguage = LANGUAGE_OPTIONS.find(option => option.code === languageSelectorValue) || LANGUAGE_OPTIONS[0];
 
     return (
-        <div className="h-screen flex flex-col bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200">
+        <div className="h-screen flex flex-col bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200 ">
             {/* 背景装饰 */}
             <div className="fixed inset-0 -z-10 opacity-10">
                 <div
@@ -344,8 +227,8 @@ const NavigationHub = () => {
             </div>
 
             {/* 顶部导航栏 */}
-            <header className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border-b border-slate-200 dark:border-slate-800
-                 sticky top-0 z-20 transition-all duration-300">
+            <header
+                className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border-b border-slate-200 dark:border-slate-800 sticky top-0 z-20 transition-all duration-300">
                 <div className="max-w-7xl mx-auto py-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
@@ -419,14 +302,12 @@ const NavigationHub = () => {
                             {/* 功能按钮 */}
                             <button
                                 onClick={() => setIsSystemEditModalOpen(true)}
-                                className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300
-                                 transition-all duration-300 hover:text-indigo-600 cursor-pointer">
+                                className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-all duration-300 hover:text-indigo-600 cursor-pointer">
                                 <FontAwesomeIcon icon={faCog} className="h-5 w-5"/>
                             </button>
                             <button
-                                onClick={load}
-                                className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300
-                                transition-all duration-300 hover:text-indigo-600 cursor-pointer">
+                                onClick={loadData}
+                                className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-all duration-300 hover:text-indigo-600 cursor-pointer">
                                 <FontAwesomeIcon icon={faSync} className="h-5 w-5"/>
                             </button>
                             <button
@@ -434,8 +315,7 @@ const NavigationHub = () => {
                                     removeToken();
                                     window.location.href = '/login'
                                 }}
-                                className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300
-                                transition-all duration-300 hover:text-indigo-600 cursor-pointer">
+                                className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-all duration-300 hover:text-indigo-600 cursor-pointer">
                                 <FontAwesomeIcon icon={faRightFromBracket} className="h-5 w-5"/>
                             </button>
 
@@ -443,9 +323,9 @@ const NavigationHub = () => {
                             <div ref={dropdownRef} className="relative inline-block">
                                 {/* 触发按钮 */}
                                 <button onClick={() => setIsLanguageSelectorOpen(!isLanguageSelectorOpen)}
-                                        className="flex items-center gap-1.5 px-3 py-1.75 rounded-md cursor-pointer bg-slate-100 dark:bg-slate-800 border border-slate-200
+                                        className={`flex items-center gap-1.5 px-3 py-1.75 rounded-md cursor-pointer bg-slate-100 dark:bg-slate-800 border border-slate-200
                                                dark:border-slate-700 text-sm font-medium text-slate-800 dark:text-slate-100 hover:bg-slate-200
-                                               dark:hover:bg-slate-700 transition-all duration-200  focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                               dark:hover:bg-slate-700 transition-all duration-200  focus:outline-none focus:ring-2 focus:ring-indigo-500`}
                                         aria-expanded={isLanguageSelectorOpen}
                                 >
                                     <FontAwesomeIcon icon={faGlobe} className="h-4 w-4 text-indigo-500"/>
@@ -507,9 +387,9 @@ const NavigationHub = () => {
 
                         <div className="relative group animate-fade-in" style={{animationDelay: '150ms'}}>
                             <input type="text" id="searchInput"
-                                   className="w-full pl-12 pr-4 py-3 rounded-xl border outline-none transition-all shadow-sm group-hover:shadow-md
+                                   className={`w-full pl-12 pr-4 py-3 rounded-xl border outline-none transition-all shadow-sm group-hover:shadow-md
                                    border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/30
-                                             bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200"
+                                             bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200`}
                                    placeholder="搜索网站或服务..."/>
                             <FontAwesomeIcon icon={faSearch}
                                              className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 h-5.5 w-5.5 transition-colors duration-300 group-hover:text-indigo-500"/>
@@ -551,8 +431,8 @@ const NavigationHub = () => {
                             onClick={() => {
                                 openEditModal()
                             }}
-                            className="px-4 py-2.5 rounded-full text-sm bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300
-                             hover:bg-slate-100 dark:hover:bg-slate-700 transition-all duration-300 h-8 flex items-center cursor-pointer "
+                            className={`px-4 py-2.5 rounded-full text-sm bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300
+                             hover:bg-slate-100 dark:hover:bg-slate-700 transition-all duration-300 h-8 flex items-center cursor-pointer`}
                             disabled={isLoading}
                         >
                             <FontAwesomeIcon icon={faEdit} className="h-4.5 w-4.5 mr-1.5"/>
@@ -605,7 +485,7 @@ const NavigationHub = () => {
                     console.log("saveData", data)
                     setCategories(data)
                     setIsEditModalOpen(false)
-                    load()
+                    loadData()
                 }}
                 defaultSelectedId={defaultSelectedId}
             />

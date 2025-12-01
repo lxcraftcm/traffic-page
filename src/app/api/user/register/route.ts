@@ -1,5 +1,5 @@
 import {NextRequest} from "next/server";
-import {result} from "@/app/api/common/route";
+import {result} from "@/utils/ApiUtil";
 import db from "@/lib/db";
 import bcrypt from 'bcryptjs';
 import {decryptedRsa} from "@/utils/CryptoUtil";
