@@ -20,11 +20,14 @@ export async function POST(
     const {keyId, username, password} = await req.json()
     try {
         const decryptedPsw = decryptedRsa(keyId, password);
+        if (!decryptedPsw) {
+            return result.error(403, 'Invalid credentials');
+        }
         const hashedPassword = await bcrypt.hash(decryptedPsw, saltRounds);
         const stmt = db.prepare('INSERT INTO t_user (username, credentials) VALUES (?, ?)');
         stmt.run(username, hashedPassword);
         return result.success("")
-    } catch (error) {
-        return result.error(500, 'Internal server error');
+    } catch (error: any) {
+        return result.error(500, 'Internal server error: ' + error.message);
     }
 }

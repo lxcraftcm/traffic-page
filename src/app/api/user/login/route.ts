@@ -12,6 +12,9 @@ export async function POST(
     const {keyId, username, password, rememberMe} = await req.json()
     try {
         const decryptedPsw = decryptedRsa(keyId, password);
+        if (!decryptedPsw) {
+            return result.error(403, 'Invalid credentials');
+        }
         // 验证用户凭证
         const user = await validateUser(username, decryptedPsw);
         if (!user) {
