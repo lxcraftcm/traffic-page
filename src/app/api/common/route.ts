@@ -2,7 +2,7 @@ import {NextResponse} from "next/server";
 
 export const result = {
     success: (data: any) => {
-        return NextResponse.json({...data}, {status: 200});
+        return NextResponse.json({message: '请求成功', ...data}, {status: 200});
     },
 
     error: (status: number, message: string) => {

@@ -47,14 +47,28 @@ const requestUtil = (config: AxiosRequestConfig): Promise<any> => {
 // API 调用
 export const apis = {
     getUserInfo: () => {
-        return requestUtil({url: '/api/user', method: 'GET'});
+        return requestUtil({url: '/api/user/userinfo', method: 'GET'});
     },
     login: (data: any) => {
         return requestUtil({
-            url: '/api/login',
+            url: '/api/user/login',
             method: 'POST',
             responseType: 'json',
             data: JSON.stringify(data)
         });
+    },
+    register: (data: any) => {
+        return requestUtil({
+            url: '/api/user/register',
+            method: 'POST',
+            responseType: 'json',
+            data: JSON.stringify(data)
+        });
+    },
+    checkSystemInit: () => {
+        return requestUtil({url: '/api/user/checkSystemInit', method: 'GET'});
+    },
+    generateKey: () => {
+        return requestUtil({url: '/api/user/generateKey', method: 'GET'});
     }
 }

@@ -9,7 +9,10 @@ const PROTECTED_ROUTES = [
 
 // 跳过配置
 const IGNORE_ROUTES = [
-    '/api/login'
+    '/api/user/login',
+    '/api/user/register',
+    '/api/user/checkSystemInit',
+    '/api/user/generateKey',
 ];
 
 export async function proxy(request: NextRequest) {
