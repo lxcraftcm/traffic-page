@@ -21,6 +21,7 @@ import {LANGUAGE_OPTIONS} from "@/components/common/PreConstants";
 import {apis} from "@/utils/RequestUtil";
 import forge from 'node-forge';
 import {setToken} from "@/lib/auth";
+import {useToast} from "@/components/common/Toast";
 
 const LoginPage = () => {
     // 原有状态
@@ -54,6 +55,9 @@ const LoginPage = () => {
     const dropdownRef = useRef<HTMLDivElement>(null);
     const pageRef = useRef<HTMLDivElement>(null);
 
+    // 初始化 Toast
+    const {showToast} = useToast();
+
     // 检测系统初始化状态
     useEffect(() => {
         checkSystemInit()
@@ -85,8 +89,12 @@ const LoginPage = () => {
             // 调用接口检测系统是否初始化
             const res = await apis.checkSystemInit();
             setIsRegisterMode(!res.initialized);
-        } catch (error) {
-            console.error('检测系统初始化状态失败:', error);
+        } catch (error: any) {
+            showToast({
+                message: error?.message || 'Check System failed',
+                type: 'error',
+                duration: 3000,
+            });
             // 出错时默认视为已初始化
             setIsRegisterMode(false);
         }
@@ -151,33 +159,27 @@ const LoginPage = () => {
     // 登录处理
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
-
         if (!validateForm()) return;
-
         setIsLoading(true);
         setFormErrors({});
-
         try {
-
             const rsaInfo = await apis.generateKey();
             const {keyId, publicKey} = rsaInfo;
-
             const res = await apis.login({keyId, username, password: encryptPassword(password, publicKey)});
             setToken(res.token);
-
             // 记住用户名
             if (rememberMe) {
                 setLocalStorage('rememberedUsername', username);
             } else {
                 setLocalStorage('rememberedUsername', '');
             }
-
             window.location.href = '/home';
-        } catch (error) {
-            setFormErrors({
-                password: selectedLanguage === 'zh-CN' ? '用户名或密码错误，请重试' : 'Invalid username or password'
+        } catch (error: any) {
+            showToast({
+                message: error?.message || 'Login failed, please try again',
+                type: 'error',
+                duration: 3000,
             });
-            console.error('登录失败:', error);
         } finally {
             setIsLoading(false);
         }
@@ -186,12 +188,9 @@ const LoginPage = () => {
     // 新增：注册处理
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
-
         if (!validateForm()) return;
-
         setRegisterLoading(true);
         setFormErrors({});
-
         try {
             const rsaInfo = await apis.generateKey();
             const {keyId, publicKey} = rsaInfo;
@@ -201,24 +200,19 @@ const LoginPage = () => {
                 username,
                 password: encryptPassword(password, publicKey),
             });
-
             // 注册成功后自动切换到登录模式，并填充用户名
             setIsRegisterMode(false);
             setUsername(username);
             setPassword('');
             setConfirmPassword('');
-
             // 显示注册成功提示
             alert(selectedLanguage === 'zh-CN' ? '注册成功，请登录！' : 'Registration successful, please log in!');
         } catch (error: any) {
-            // 处理接口返回的具体错误
-            const errorMsg = error.response?.data?.message ||
-                (selectedLanguage === 'zh-CN' ? '注册失败，请重试' : 'Registration failed, please try again');
-
-            setFormErrors({
-                username: errorMsg // 可根据实际错误字段调整
+            showToast({
+                message: error?.message || 'Registration failed, please try again',
+                type: 'error',
+                duration: 3000,
             });
-            console.error('注册失败:', error);
         } finally {
             setRegisterLoading(false);
         }

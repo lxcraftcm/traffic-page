@@ -19,7 +19,7 @@ api.interceptors.request.use(
         }
         return config;
     },
-    error => Promise.reject(error)
+    error => Promise.reject(error.response.data)
 );
 
 // 响应拦截器：处理 401 错误
@@ -33,9 +33,9 @@ api.interceptors.response.use(
                 window.location.href = '/login';
             }
             // 服务器端返回 401 响应
-            return Promise.reject(error);
+            return Promise.reject(error.response.data);
         }
-        return Promise.reject(error);
+        return Promise.reject(error.response.data);
     }
 );
 

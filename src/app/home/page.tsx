@@ -23,6 +23,7 @@ import {getLocalStorage, setLocalStorage} from '@/utils/StorageUtil';
 import {renderIcon} from "@/utils/IconUtil";
 import {apis} from "@/utils/RequestUtil";
 import {removeToken} from "@/lib/auth";
+import {useToast} from "@/components/common/Toast";
 
 const NavigationHub = () => {
     // 核心状态
@@ -44,6 +45,8 @@ const NavigationHub = () => {
         }
         return false;
     });
+    // 初始化 Toast
+    const {showToast} = useToast();
 
     // ref引用
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -56,8 +59,12 @@ const NavigationHub = () => {
         setIsLoading(true);
         apis.getUserPage().then((res) => {
             setCategories(JSON.parse(res.userPage))
-        }).catch((err) => {
-            console.log(err)
+        }).catch((error: any) => {
+            showToast({
+                message: error?.message || 'Loading user page data failed, please try again',
+                type: 'error',
+                duration: 3000,
+            });
         }).finally(() => {
             setIsLoading(false);
         })
@@ -124,10 +131,19 @@ const NavigationHub = () => {
     // 保存数据
     const savePageData = (data: Category[]) => {
         apis.saveUserPage({userPage: JSON.stringify(data)}).then(res => {
+            showToast({
+                message: 'Save success',
+                type: 'success',
+                duration: 3000,
+            });
             loadData();
             setIsEditModalOpen(false);
-        }).catch(err => {
-
+        }).catch((err: any) => {
+            showToast({
+                message: err?.message || 'Save user page data failed, please try again',
+                type: 'error',
+                duration: 3000,
+            });
         }).finally(() => {
 
         })

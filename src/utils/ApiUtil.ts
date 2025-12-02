@@ -8,7 +8,7 @@ export const result = {
     },
 
     error: (status: number, message: string) => {
-        return NextResponse.json({error: message}, {status: status});
+        return NextResponse.json({message: message}, {status: status});
     }
 }
 

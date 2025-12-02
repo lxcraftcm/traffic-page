@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import "./navigationHub.css";
+import { ToastProvider } from '@/components/common/Toast';
 
 export const metadata: Metadata = {
   title: "Traffic Page",
@@ -17,7 +18,9 @@ export default function RootLayout({
       <body
         className={`antialiased`}
       >
-        {children}
+      <ToastProvider>
+          {children}
+      </ToastProvider>
       </body>
     </html>
   );
