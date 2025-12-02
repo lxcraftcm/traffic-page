@@ -73,5 +73,8 @@ export const apis = {
     },
     getUserPage: () => {
         return requestUtil({url: '/api/user/page', method: 'GET'});
+    },
+    saveUserPage: (data: any) => {
+        return requestUtil({url: '/api/user/page', method: 'POST', data: JSON.stringify(data)});
     }
 }

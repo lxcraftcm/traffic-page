@@ -27,7 +27,7 @@ import {removeToken} from "@/lib/auth";
 const NavigationHub = () => {
     // 核心状态
     const [isInternal, setIsInternal] = useState(true);
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     const [activeCategory, setActiveCategory] = useState('all');
     const [renderKey, setRenderKey] = useState(0);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -35,6 +35,7 @@ const NavigationHub = () => {
     const [isLanguageSelectorOpen, setIsLanguageSelectorOpen] = useState<boolean>(false);
     const [isSystemEditModalOpen, setIsSystemEditModalOpen] = useState(false);
     const [languageSelectorValue, setLanguageSelectorValue] = useState<string>();
+    const [categories, setCategories] = useState<Category[]>([]);
     const [isDarkMode, setIsDarkMode] = useState(() => {
         const saved = getLocalStorage('darkMode');
         if (saved !== null) return saved === 'true';
@@ -47,17 +48,26 @@ const NavigationHub = () => {
     // ref引用
     const dropdownRef = useRef<HTMLDivElement>(null);
 
+    // 加载数据
     const loadData = () => {
+        if (isLoading) {
+            return;
+        }
+        setIsLoading(true);
+        apis.getUserPage().then((res) => {
+            setCategories(JSON.parse(res.userPage))
+        }).catch((err) => {
+            console.log(err)
+        }).finally(() => {
+            setIsLoading(false);
+        })
     }
-
-    const [categories, setCategories] = useState<Category[]>([]);
 
     // 初始化加载
     useEffect(() => {
         document.body.style.scrollbarWidth = 'thin';
         document.body.style.scrollbarColor = 'rgb(96 165 250) rgb(229 231 235)';
         document.body.style.scrollbarGutter = 'stable';
-        loadData();
     }, [isLoading]);
 
     // 应用黑暗模式到文档
@@ -84,20 +94,13 @@ const NavigationHub = () => {
 
     //
     useEffect(() => {
-        apis.getUserPage().then((res) => {
-            setCategories(JSON.parse(res.userPage))
-        }).catch((err) => {
-            console.log(err)
-        }).finally(() => {
-            setIsLoading(false);
-        })
+        setTimeout(loadData, 1);
     }, []);
 
     // 切换模式
     const toggleDarkMode = () => {
         setIsDarkMode(!isDarkMode);
     };
-
 
     // 打开编辑弹窗
     const openEditModal = (defaultSelectedId?: string) => {
@@ -116,6 +119,18 @@ const NavigationHub = () => {
     const handleLanguageSelect = (code: string) => {
         setLanguageSelectorValue(code);
         setIsLanguageSelectorOpen(false)
+    }
+
+    // 保存数据
+    const savePageData = (data: Category[]) => {
+        apis.saveUserPage({userPage: JSON.stringify(data)}).then(res => {
+            loadData();
+            setIsEditModalOpen(false);
+        }).catch(err => {
+
+        }).finally(() => {
+
+        })
     }
 
     // 渲染卡片
@@ -482,10 +497,7 @@ const NavigationHub = () => {
                 }}
                 initialData={[...categories]}
                 onSave={(data) => {
-                    console.log("saveData", data)
-                    setCategories(data)
-                    setIsEditModalOpen(false)
-                    loadData()
+                    savePageData(data);
                 }}
                 defaultSelectedId={defaultSelectedId}
             />
