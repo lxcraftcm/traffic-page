@@ -16,6 +16,7 @@ interface ModalBase {
     visible: boolean;
     onClose: (...args: any[]) => any;
     children?: any;
+    className?: string;
 }
 
 interface ModalMessage extends ModalBase {
@@ -37,7 +38,7 @@ const IconMap = {
     rollback: <FontAwesomeIcon icon={faUndo} className="h-5 text-amber-500"/>,
 };
 
-export const Modal = ({visible, onClose, children}: ModalBase) => {
+export const Modal = ({visible, onClose, children, className}: ModalBase) => {
     const modalRef = useRef<HTMLDivElement>(null);
     const backdropRef = useRef(null);
     const [container, setContainer]: any = useState(null);
@@ -68,7 +69,7 @@ export const Modal = ({visible, onClose, children}: ModalBase) => {
     return ReactDOM.createPortal(
         <div
             ref={backdropRef}
-            className={`fixed inset-0 flex items-center justify-center transition-opacity duration-300 max-h-[calc(100vw)]
+            className={`fixed inset-0 flex items-center justify-center transition-opacity duration-300 w-[100vw] h-[100vh]
             ${visible
                 ? 'opacity-100 pointer-events-auto'
                 : 'opacity-0 pointer-events-none'
@@ -89,7 +90,7 @@ export const Modal = ({visible, onClose, children}: ModalBase) => {
                     visible
                         ? 'scale-100 opacity-100 translate-y-0'
                         : 'scale-95 opacity-0 translate-y-4'
-                }`}
+                } ${className? (className) :''}}`}
             >
                 <button
                     onClick={onClose}
@@ -101,9 +102,9 @@ export const Modal = ({visible, onClose, children}: ModalBase) => {
                 </button>
 
                 {/* 动态内容区域 */}
-                <div>
+                <>
                     {visible ? children : <></>}
-                </div>
+                </>
             </div>
         </div>, document.body
     );
