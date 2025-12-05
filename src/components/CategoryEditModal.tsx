@@ -5,7 +5,7 @@ import SiteEditModal from './SiteEditModal'
 import {Modal, MessageModal} from "@/components/common/Modal";
 import {Category, Site} from "@/types/base";
 import {library} from '@fortawesome/fontawesome-svg-core';
-import {fas} from '@fortawesome/free-solid-svg-icons';
+import {faEllipsis, fas} from '@fortawesome/free-solid-svg-icons';
 import {far} from '@fortawesome/free-regular-svg-icons';
 import {fab} from '@fortawesome/free-brands-svg-icons';
 import {
@@ -31,6 +31,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import ResizeCard from "@/components/common/ResizeCard";
 import {getIconClass, renderIcon} from "@/utils/IconUtil";
+import IconPickerModal from "@/components/IconPickerModal";
 
 // 初始化FontAwesome库
 library.add(fas, far, fab);
@@ -40,6 +41,7 @@ interface CategoryEditProps {
     onSave: (finalData: Category[]) => void;
     title?: string;
     defaultSelectedId?: string;
+    isSaving: boolean;
 }
 
 interface CategoryEditModalProps extends CategoryEditProps {
@@ -61,7 +63,8 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
                                                        initialData = [],
                                                        onSave,
                                                        title = "编辑分类",
-                                                       defaultSelectedId
+                                                       defaultSelectedId,
+                                                       isSaving
                                                    }) => {
     // 初始化数据
     const safeData = initialData.map(cat => ({
@@ -120,12 +123,12 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
         startY: 0
     });
 
-    const [isSaving, setIsSaving] = useState(false);
     const [invalidClass, setInvalidClass] = useState(false);
     const [showRestoreConfirm, setShowRestoreConfirm] = useState(false);
     const [deleteSite, setDeleteSite] = useState<Site>();
     const [showDeleteCategoryConfirm, setShowDeleteCategoryConfirm] = useState(false);
-    const [showDeleteSiteConfirm, setshowDeleteSiteConfirm] = useState(false);
+    const [showDeleteSiteConfirm, setShowDeleteSiteConfirm] = useState(false);
+    const [isShowIconPickerModal, setIsShowIconPickerModal] = useState<boolean>(false);
 
     const hasUnsavedChanges = useMemo(() => {
         return !isDataEqual(localCategories, originalData);
@@ -465,13 +468,7 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
 
     // 保存所有更改
     const handleFinalSave = () => {
-        setIsSaving(true);
-        setTimeout(() => {
-            onSave([...localCategories]);
-            setOriginalData(deepClone(localCategories));
-            // setHasUnsavedChanges(false);
-            setIsSaving(false);
-        }, 300);
+        onSave([...localCategories]);
     };
 
     // 恢复所有修改
@@ -493,7 +490,7 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
     // 删除网页前置
     const handleDeleteSite = async (site: Site) => {
         setDeleteSite(site);
-        setshowDeleteSiteConfirm(true);
+        setShowDeleteSiteConfirm(true);
     }
 
     // 确认删除网页
@@ -510,7 +507,7 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
             return cat;
         });
         setLocalCategories(updatedCategories);
-        setshowDeleteSiteConfirm(false); // 关闭弹窗
+        setShowDeleteSiteConfirm(false); // 关闭弹窗
     }
 
     // 保存
@@ -537,7 +534,7 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
 
     return (
         <div className="flex flex-col h-full bg-white dark:bg-slate-800 rounded-lg shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-700
-                        transition-all duration-250 ease-in-out max-w-[calc(100vw)]">
+                        transition-all duration-250 ease-in-out w-[100vw] md:min-w-[768px] md:max-w-[1024px] max-h-[85vh]">
             {/* 标题栏 */}
             <div
                 className="min-h-15 border-b border-slate-200 dark:border-slate-700 px-6 py-3 flex items-center justify-between bg-slate-50 dark:bg-slate-900/50">
@@ -980,7 +977,7 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
                              scrollbarGutter: 'stable'
                          }}
                     >
-                        <div className="max-w-lg mx-auto lg:w-lg">
+                        <div className="mx-auto">
                             {selectedCategory ? (
                                 <>
                                     {/* 分类信息卡片 */}
@@ -1090,10 +1087,12 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
                                                         type="button"
                                                         title={`${label} (${className})`}
                                                         onClick={() => handleIconSelect(icon, className)}
-                                                        className={`w-11 h-11 rounded-lg flex items-center justify-center transition-all duration-200 cursor-pointer ${
+                                                        className={`w-11 h-11 rounded-lg flex items-center justify-center transition-all duration-200 cursor-pointer 
+                                                        bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-gray-900
+                                                        dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-gray-200
+                                                        border border-gray-200 dark:border-gray-700 ${
                                                             selectedCategory.fontAwesomeClass === getIconClass(icon) ? 'ring-2 ring-indigo-500' : ''
                                                         }`}
-                                                        style={{backgroundColor: '#f3f4f6'}}
                                                     >
                                                         <FontAwesomeIcon icon={icon} style={{
                                                             fontSize: '20px',
@@ -1101,6 +1100,22 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
                                                         }}/>
                                                     </button>
                                                 ))}
+                                                <button
+                                                    onClick={() => {
+                                                        setIsShowIconPickerModal(true)
+                                                    }}
+                                                    disabled={isSaving}
+                                                    className={`
+                                                        w-11 h-11 rounded-lg flex items-center justify-center transition-all cursor-pointer
+                                                        bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-gray-900
+                                                        dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-gray-200
+                                                        border border-gray-200 dark:border-gray-700
+                                                        ${isSaving ? 'opacity-50 cursor-not-allowed' : ''}
+                                                    `}
+                                                    title="更多"
+                                                >
+                                                    <FontAwesomeIcon icon={faEllipsis} style={{fontSize: '16px'}}/>
+                                                </button>
                                             </div>
                                         )}
 
@@ -1475,8 +1490,8 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
             {/* 删除网页对话框 */}
             <MessageModal
                 visible={showDeleteSiteConfirm}
-                onClose={() => setshowDeleteSiteConfirm(false)}
-                onCancel={() => setshowDeleteSiteConfirm(false)}
+                onClose={() => setShowDeleteSiteConfirm(false)}
+                onCancel={() => setShowDeleteSiteConfirm(false)}
                 onConfirm={handleDeleteSiteConfirm}
                 type="delete"
                 title="确认删除"
@@ -1490,7 +1505,17 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
                 editSite={siteEditData}
                 onSubmit={handleSaveSite}
                 onCancel={() => setIsShowSiteEditModal(false)}
-                isSaving={isSaving}
+            />
+            {/*更多图标选择*/}
+            <IconPickerModal
+                visible={isShowIconPickerModal}
+                onClose={() => setIsShowIconPickerModal(false)}
+                onSubmit={(icon) => {
+                    handleIconSelect(icon, getIconClass(icon), false)
+                    setIsShowIconPickerModal(false)
+                }}
+                onCancel={() => setIsShowIconPickerModal(false)}
+
             />
         </div>
     );
@@ -1502,7 +1527,8 @@ const CategoryEditModal: React.FC<CategoryEditModalProps> = ({
                                                                  initialData = [],
                                                                  onSave,
                                                                  title = "编辑分类",
-                                                                 defaultSelectedId
+                                                                 defaultSelectedId,
+                                                                 isSaving
                                                              }) => {
     return (
         <Modal
@@ -1514,6 +1540,7 @@ const CategoryEditModal: React.FC<CategoryEditModalProps> = ({
                 onSave={onSave}
                 title={title}
                 defaultSelectedId={defaultSelectedId}
+                isSaving={isSaving}
             ></CategoryEdit>
         </Modal>
     );
