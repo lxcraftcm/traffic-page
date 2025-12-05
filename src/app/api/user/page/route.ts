@@ -112,38 +112,6 @@ const defaultPage = [
         ]
     },
     {
-        id: 'social-media',
-        name: 'SocialMedia',
-        iconMode: 'preset',
-        fontAwesomeClass: 'fas fa-share-alt',
-        iconColor: '#1DA1F2',
-        iconBgColor: '#e6f7ff',
-        sites: [
-            {
-                id: 'social-media-1',
-                name: 'Twitter',
-                desc: 'Microblogging platform',
-                internalUrl: 'https://twitter.com',
-                externalUrl: 'https://twitter.com',
-                iconMode: 'preset',
-                fontAwesomeClass: 'fab fa-twitter',
-                iconColor: '#1DA1F2',
-                iconBgColor: '#e6f7ff'
-            },
-            {
-                id: 'social-media-2',
-                name: 'LinkedIn',
-                desc: 'Professional networking platform',
-                internalUrl: 'https://linkedin.com',
-                externalUrl: 'https://linkedin.com',
-                iconMode: 'preset',
-                fontAwesomeClass: 'fab fa-linkedin',
-                iconColor: '#0a66c2',
-                iconBgColor: '#e6f2ff'
-            }
-        ]
-    },
-    {
         id: 'development',
         name: 'Development',
         iconMode: 'preset',
@@ -270,71 +238,6 @@ const defaultPage = [
                 fontAwesomeClass: 'fab fa-bilibili',
                 iconColor: '#00a1d6',
                 iconBgColor: '#e6f7ff'
-            }
-        ]
-    },
-    {
-        id: 'news',
-        name: 'News',
-        iconMode: 'preset',
-        fontAwesomeClass: 'fas fa-newspaper',
-        iconColor: '#3b82f6',
-        iconBgColor: '#e6f7ff',
-        sites: [
-            {
-                id: 'news-1',
-                name: 'Al Jazeera',
-                desc: 'International news network',
-                internalUrl: 'https://aljazeera.com',
-                externalUrl: 'https://aljazeera.com',
-                iconMode: 'preset',
-                fontAwesomeClass: 'fas fa-globe',
-                iconColor: '#237f52',
-                iconBgColor: '#e0f2e9'
-            },
-            {
-                id: 'news-2',
-                name: 'Reuters',
-                desc: 'Global news agency',
-                internalUrl: 'https://reuters.com',
-                externalUrl: 'https://reuters.com',
-                iconMode: 'preset',
-                fontAwesomeClass: 'fas fa-r',
-                iconColor: '#000',
-                iconBgColor: '#f3f4f6'
-            },
-            {
-                id: 'news-3',
-                name: 'The New York Times',
-                desc: 'American news publication',
-                internalUrl: 'https://nytimes.com',
-                externalUrl: 'https://nytimes.com',
-                iconMode: 'preset',
-                fontAwesomeClass: 'fas fa-newspaper',
-                iconColor: '#000',
-                iconBgColor: '#f3f4f6'
-            },
-            {
-                id: 'news-4',
-                name: 'Bloomberg',
-                desc: 'Business news platform',
-                internalUrl: 'https://bloomberg.com',
-                externalUrl: 'https://bloomberg.com',
-                iconMode: 'preset',
-                fontAwesomeClass: 'fas fa-chart-line',
-                iconColor: '#ff6f61',
-                iconBgColor: '#ffe6e6'
-            },
-            {
-                id: 'news-5',
-                name: 'The Guardian',
-                desc: 'British news publication',
-                internalUrl: 'https://theguardian.com',
-                externalUrl: 'https://theguardian.com',
-                iconMode: 'preset',
-                fontAwesomeClass: 'fas fa-globe',
-                iconColor: '#1b75bc',
-                iconBgColor: '#e6f2ff'
             }
         ]
     },
