@@ -10,7 +10,7 @@ const eslintConfig = defineConfig([
         rules: {
             // 禁用any类型检查
             '@typescript-eslint/no-explicit-any': 'off',
-            // 允许隐式any（如函数参数未标注类型）
+            // 允许隐式any(如函数参数未标注类型)
             '@typescript-eslint/explicit-function-return-type': 'off',
             // img
             "@next/next/no-img-element": "off"

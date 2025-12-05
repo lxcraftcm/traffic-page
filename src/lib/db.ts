@@ -49,7 +49,7 @@ export const initDatabase = (config: DbConfig) => {
         return result['COUNT(*)'] > 0;
     };
 
-    // 如果配置了初始化脚本且表不存在，则执行脚本
+    // 如果配置了初始化脚本且表不存在,则执行脚本
     if (config.initScript && !checkTableExists('t_user')) {
         executeInitScript(config.initScript);
     }

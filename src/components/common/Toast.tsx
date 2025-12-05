@@ -13,7 +13,7 @@ import {
 interface ToastOptions {
     message: ReactNode;
     type?: 'success' | 'error' | 'info' | 'warning';
-    duration?: number; // 自动关闭时间（毫秒），0 表示不自动关闭
+    duration?: number; // 自动关闭时间(毫秒),0 表示不自动关闭
     showCloseBtn?: boolean; // 是否显示关闭按钮
     className?: string; // 自定义类名
     onClose?: () => void; // 关闭回调

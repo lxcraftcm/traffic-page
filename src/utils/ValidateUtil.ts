@@ -14,6 +14,6 @@ export const validateFaClassFormat = (className: string | undefined): boolean =>
 // 校验非空
 export const validateNotEmpty = (value: string | undefined): boolean => {
     if (!value) return false;
-    const regex = /^\s*\S+/; // 允许前后空格，中间必须非空
+    const regex = /^\s*\S+/; // 允许前后空格,中间必须非空
     return regex.test(value);
 };

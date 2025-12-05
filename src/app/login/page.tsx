@@ -200,13 +200,13 @@ const LoginPage = () => {
                 username,
                 password: encryptPassword(password, publicKey),
             });
-            // 注册成功后自动切换到登录模式，并填充用户名
+            // 注册成功后自动切换到登录模式
             setIsRegisterMode(false);
             setUsername(username);
             setPassword('');
             setConfirmPassword('');
             // 显示注册成功提示
-            alert(selectedLanguage === 'zh-CN' ? '注册成功，请登录！' : 'Registration successful, please log in!');
+            alert(selectedLanguage === 'zh-CN' ? '注册成功,请登录！' : 'Registration successful, please log in!');
         } catch (error: any) {
             showToast({
                 message: error?.message || 'Registration failed, please try again',
@@ -370,7 +370,7 @@ const LoginPage = () => {
                                             value={username}
                                             onChange={(e) => setUsername(e.target.value)}
                                             className={`${getInputClass('username')} pl-12`}
-                                            placeholder={isRegisterMode ? '请设置用户名（3-20位）' : '请输入用户名/邮箱'}
+                                            placeholder={isRegisterMode ? '请设置用户名(3-20位)' : '请输入用户名/邮箱'}
                                             disabled={isLoading || registerLoading}
                                         />
                                         {username.trim() && !formErrors.username && (
@@ -413,7 +413,7 @@ const LoginPage = () => {
                                             value={password}
                                             onChange={(e) => setPassword(e.target.value)}
                                             className={`${getInputClass('password')} pl-12`}
-                                            placeholder={isRegisterMode ? '请设置密码（6-20位，含字母和数字）' : '请输入密码'}
+                                            placeholder={isRegisterMode ? '请设置密码(6-20位,含字母和数字)' : '请输入密码'}
                                             disabled={isLoading || registerLoading}
                                         />
                                         <button
