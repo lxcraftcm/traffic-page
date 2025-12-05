@@ -79,22 +79,6 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
     const [selectedId, setSelectedId] = useState<string | null>(defaultSelectedId ? defaultSelectedId : (safeData.length > 0 ? safeData[0].id : null));
     const [isShowSiteEditModal, setIsShowSiteEditModal] = useState(false);
     const [siteEditData, setSiteEditData] = useState<Site | undefined>(undefined);
-    const [newCat, setNewCat] = useState<{
-        name: string;
-        iconUrl?: string;
-        fontAwesomeClass?: string;
-        iconMode: 'preset' | 'class' | 'url';
-        iconColor: string;
-        iconBgColor: string;
-    }>({
-        name: '',
-        iconUrl: '',
-        fontAwesomeClass: '',
-        iconMode: 'preset',
-        iconColor: '#6366f1',
-        iconBgColor: '#f3f4f6'
-    });
-    const [showAddForm, setShowAddForm] = useState(false);
 
     // 分类拖拽状态 - 包含方向和位置判断
     const [draggingCategory, setDraggingCategory] = useState<{
@@ -276,26 +260,18 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
     };
 
     // 图标模式切换
-    const handleIconModeChange = (mode: 'preset' | 'class' | 'url', isNew: boolean = false) => {
-        if (isNew) {
-            setNewCat(prev => ({
-                ...prev,
-                iconMode: mode,
-            }));
-            if (mode !== 'class') setInvalidClass(false);
-        } else {
-            setLocalCategories(prev =>
-                prev?.map(category =>
-                    category.id === selectedId
-                        ? {
-                            ...category,
-                            iconMode: mode,
-                        }
-                        : category
-                ) || []
-            );
-            if (mode !== 'class') setInvalidClass(false);
-        }
+    const handleIconModeChange = (mode: 'preset' | 'class' | 'url') => {
+        setLocalCategories(prev =>
+            prev?.map(category =>
+                category.id === selectedId
+                    ? {
+                        ...category,
+                        iconMode: mode,
+                    }
+                    : category
+            ) || []
+        );
+        if (mode !== 'class') setInvalidClass(false);
     };
 
     // 验证FontAwesome类名格式
@@ -306,73 +282,51 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
     };
 
     // FontAwesome类名输入处理
-    const handleFontAwesomeClassChange = (e: React.ChangeEvent<HTMLInputElement>, isNew: boolean = false) => {
+    const handleFontAwesomeClassChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const className = e.target.value.trim();
-
-        if (isNew) {
-            setNewCat(prev => ({...prev, fontAwesomeClass: className}));
-        } else {
-            setLocalCategories(prev =>
-                prev?.map(category =>
-                    category.id === selectedId
-                        ? {
-                            ...category,
-                            fontAwesomeClass: className
-                        }
-                        : category
-                ) || []
-            );
-        }
-
+        setLocalCategories(prev =>
+            prev?.map(category =>
+                category.id === selectedId
+                    ? {
+                        ...category,
+                        fontAwesomeClass: className
+                    }
+                    : category
+            ) || []
+        );
         setInvalidClass(!validateFaClassFormat(className));
     };
 
     // 图标链接输入处理
-    const handleIconUrlChange = (e: React.ChangeEvent<HTMLInputElement>, isNew: boolean = false) => {
+    const handleIconUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value.trim();
-        if (isNew) {
-            setNewCat(prev => ({...prev, iconUrl: value}));
-        } else {
-            setLocalCategories(prev =>
-                prev?.map(category =>
-                    category.id === selectedId
-                        ? {
-                            ...category,
-                            iconUrl: value
-                        }
-                        : category
-                ) || []
-            );
-        }
+        setLocalCategories(prev =>
+            prev?.map(category =>
+                category.id === selectedId
+                    ? {
+                        ...category,
+                        iconUrl: value
+                    }
+                    : category
+            ) || []
+        );
     };
 
     // 添加分类
     const handleAddCategory = () => {
-        if (!newCat.name.trim()) return;
-
         const newCategory: Category = {
             id: `cat-${Date.now()}`,
-            name: newCat.name,
-            iconMode: newCat.iconMode,
-            fontAwesomeClass: newCat.iconMode === 'class' ? newCat.fontAwesomeClass : undefined,
-            iconUrl: newCat.iconMode === 'url' ? newCat.iconUrl : undefined,
-            iconColor: newCat.iconColor,
-            iconBgColor: newCat.iconBgColor,
+            name: 'NewCategory',
+            iconMode: "preset",
+            fontAwesomeClass: getIconClass(PRESET_ICONS[0].icon),
+            iconUrl: '',
+            iconColor: PRESET_ICON_COLORS[0],
+            iconBgColor: PRESET_BG_COLORS[0],
             sites: []
         };
-
         const updated = [...localCategories, newCategory];
         setSelectedId(newCategory.id);
         setLocalCategories(updated);
-        setShowAddForm(false);
-        setNewCat({
-            name: '',
-            iconUrl: '',
-            fontAwesomeClass: '',
-            iconMode: 'preset',
-            iconColor: '#6366f1',
-            iconBgColor: '#f3f4f6'
-        });
     };
 
     // 编辑分类名称
@@ -390,64 +344,47 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
     };
 
     // 选择预设图标
-    const handleIconSelect = (icon: any, className: string, isNew: boolean = false) => {
-        if (isNew) {
-            setNewCat(prev => ({
-                ...prev,
-                icon,
-                fontAwesomeClass: getIconClass(icon),
-                iconMode: 'preset'
-            }));
-        } else {
-            setLocalCategories(prev =>
-                prev?.map(category =>
-                    category.id === selectedId
-                        ? {
-                            ...category,
-                            icon,
-                            fontAwesomeClass: getIconClass(icon),
-                            iconMode: 'preset'
-                        }
-                        : category
-                ) || []
-            );
-        }
+    const handleIconSelect = (icon: any, className: string) => {
+        setLocalCategories(prev =>
+            prev?.map(category =>
+                category.id === selectedId
+                    ? {
+                        ...category,
+                        icon,
+                        fontAwesomeClass: getIconClass(icon),
+                        iconMode: 'preset'
+                    }
+                    : category
+            ) || []
+        );
         setInvalidClass(false);
     };
 
     // 颜色选择处理
-    const handleColorSelect = (color: string, isNew: boolean = false) => {
-        if (isNew) {
-            setNewCat(prev => ({...prev, iconColor: color}));
-        } else {
-            setLocalCategories(prev =>
-                prev?.map(category =>
-                    category.id === selectedId
-                        ? {
-                            ...category,
-                            iconColor: color
-                        }
-                        : category
-                ) || []
-            );
-        }
+    const handleColorSelect = (color: string) => {
+        setLocalCategories(prev =>
+            prev?.map(category =>
+                category.id === selectedId
+                    ? {
+                        ...category,
+                        iconColor: color
+                    }
+                    : category
+            ) || []
+        );
     };
 
-    const handleBgColorSelect = (color: string, isNew: boolean = false) => {
-        if (isNew) {
-            setNewCat(prev => ({...prev, iconBgColor: color}));
-        } else {
-            setLocalCategories(prev =>
-                prev?.map(category =>
-                    category.id === selectedId
-                        ? {
-                            ...category,
-                            iconBgColor: color
-                        }
-                        : category
-                ) || []
-            );
-        }
+    const handleBgColorSelect = (color: string) => {
+        setLocalCategories(prev =>
+            prev?.map(category =>
+                category.id === selectedId
+                    ? {
+                        ...category,
+                        iconBgColor: color
+                    }
+                    : category
+            ) || []
+        );
     };
 
     // 删除分类前置
@@ -476,7 +413,6 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
         const restoredData = deepClone(originalData);
         setSelectedId(restoredData.length > 0 ? restoredData[0].id : null);
         setLocalCategories(restoredData);
-        setShowAddForm(false);
         setShowRestoreConfirm(false);
         // setHasUnsavedChanges(false);
     }, [originalData]);
@@ -597,10 +533,9 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
                              }}
                         >
                             <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">分类列表(拖拽排序)</p>
-                            <div className={`transition-all duration-250 ease-in-out overflow-hidden h-1/3
-                             ${showAddForm ? 'max-h-200' : 'max-h-13'}`}>
+                            <div className={`transition-all duration-250 ease-in-out overflow-hidden h-1/3 max-h-13`}>
                                 <button
-                                    onClick={() => setShowAddForm(true)}
+                                    onClick={handleAddCategory}
                                     className="w-full flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-sm transition-colors mb-3
                                          bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600
                                          text-slate-700 dark:text-slate-300 cursor-pointer"
@@ -608,273 +543,6 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
                                     <FontAwesomeIcon icon={faPlus} className="h-4"/>
                                     <span>添加分类</span>
                                 </button>
-
-                                {/* 添加分类表单 */}
-                                <div className={`overflow-hidden mb-5 p-3 bg-white dark:bg-slate-700 rounded-lg border 
-                                border-slate-200 dark:border-slate-600 shadow-sm`}>
-                                    <div className="mb-3">
-                                        <label
-                                            className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">分类名称</label>
-                                        <input
-                                            type="text"
-                                            value={newCat.name}
-                                            onChange={(e) => setNewCat(prev => ({...prev, name: e.target.value}))}
-                                            placeholder="输入分类名称"
-                                            className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200"
-                                        />
-                                    </div>
-
-                                    <div className="mb-3">
-                                        <label
-                                            className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-2">图标来源</label>
-                                        <div className="grid grid-cols-3 gap-2 mb-3">
-                                            <button
-                                                type="button"
-                                                onClick={() => handleIconModeChange('preset', true)}
-                                                className={`py-1.5 px-2 rounded-lg text-xs transition-all flex items-center justify-center gap-1 cursor-pointer 
-                                                    duration-200 ${
-                                                    newCat.iconMode === 'preset' ? 'ring-1 ring-indigo-200 bg-indigo-100 text-indigo-700  dark:ring-indigo-800' +
-                                                        ' dark:bg-indigo-900/30 dark:text-indigo-300' : 'dark:text-indigo-300 dark:bg-slate-600 bg-slate-100' +
-                                                        ' ring-slate-100 hover:bg-indigo-200 dark:hover:ring-indigo-600 dark:hover:bg-indigo-900/30'
-                                                }`}
-                                            >
-                                                <FontAwesomeIcon icon={faImage} className="h-3.5"/>
-                                                <span>预设</span>
-                                            </button>
-                                            <button
-                                                type="button"
-                                                onClick={() => handleIconModeChange('class', true)}
-                                                className={`py-1.5 px-2 rounded-lg text-xs transition-all flex items-center justify-center gap-1 cursor-pointer 
-                                                    duration-200 ${
-                                                    newCat.iconMode === 'class' ? 'ring-1 ring-indigo-200 bg-indigo-100 text-indigo-700  dark:ring-indigo-800' +
-                                                        ' dark:bg-indigo-900/30 dark:text-indigo-300' : 'dark:text-indigo-300 dark:bg-slate-600 bg-slate-100' +
-                                                        ' ring-slate-100 hover:bg-indigo-200 dark:hover:ring-indigo-600 dark:hover:bg-indigo-900/30'
-                                                }`}
-                                            >
-                                                <FontAwesomeIcon icon={faFont} className="h-3.5"/>
-                                                <span>FA</span>
-                                            </button>
-                                            <button
-                                                type="button"
-                                                onClick={() => handleIconModeChange('url', true)}
-                                                className={`py-1.5 px-2 rounded-lg text-xs transition-all flex items-center justify-center gap-1 cursor-pointer 
-                                                    duration-200 ${
-                                                    newCat.iconMode === 'url' ? 'ring-1 ring-indigo-200 bg-indigo-100 text-indigo-700  dark:ring-indigo-800' +
-                                                        ' dark:bg-indigo-900/30 dark:text-indigo-300' : 'dark:text-indigo-300 dark:bg-slate-600 bg-slate-100' +
-                                                        ' ring-slate-100 hover:bg-indigo-200 dark:hover:ring-indigo-600 dark:hover:bg-indigo-900/30'
-                                                }`}
-                                            >
-                                                <FontAwesomeIcon icon={faLink} className="h-3.5"/>
-                                                <span>链接</span>
-                                            </button>
-                                        </div>
-
-                                        <div className="flex items-center gap-3 mt-3 mb-3">
-                                            <label
-                                                className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">预览: </label>
-                                            <div
-                                                className="w-10 h-10 rounded-lg flex items-center justify-center shadow-sm"
-                                                style={{backgroundColor: newCat.iconBgColor}}
-                                            >
-                                                {renderIcon(newCat, 5)}
-                                            </div>
-                                        </div>
-
-                                        {/* 1. 预设图标选择 */}
-                                        {newCat.iconMode === 'preset' && (
-                                            <div className="flex gap-2 flex-wrap mt-1">
-                                                {PRESET_ICONS.map(({icon, label, class: className}, i) => (
-                                                    <button
-                                                        key={"newCat_preset_icon_" + i}
-                                                        type="button"
-                                                        title={`${label} (${className})`}
-                                                        onClick={() => handleIconSelect(icon, className, true)}
-                                                        className={`w-9.5 h-9.5 rounded-lg flex items-center justify-center transition-all duration-200 cursor-pointer ${
-                                                            newCat.fontAwesomeClass === getIconClass(icon) ? 'ring-2 ring-indigo-500' : ''
-                                                        }`}
-                                                        style={{backgroundColor: '#f3f4f6'}}
-                                                    >
-                                                        <FontAwesomeIcon icon={icon}
-                                                                         style={{
-                                                                             fontSize: '20px',
-                                                                             color: '#6366f1'
-                                                                         }}/>
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        )}
-
-                                        {/* 2. FontAwesome类名输入 */}
-                                        {newCat.iconMode === 'class' && (
-                                            <div className="mt-1">
-                                                <div className="flex gap-2">
-                                                    <input
-                                                        type="text"
-                                                        value={newCat.fontAwesomeClass}
-                                                        onChange={(e) => handleFontAwesomeClassChange(e, true)}
-                                                        placeholder="输入FontAwesome类名(格式: fa-solid fa-house)"
-                                                        className={`flex-1 min-w-10 px-3 py-2 rounded-lg border text-sm focus:outline-none focus:ring-2 ${
-                                                            invalidClass
-                                                                ? 'border-red-300 dark:border-red-700 focus:ring-red-500/30'
-                                                                : 'border-slate-200 dark:border-slate-600 focus:ring-indigo-500/30'
-                                                        } bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200`}
-                                                    />
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => setNewCat(prev => ({
-                                                            ...prev,
-                                                            fontAwesomeClass: ''
-                                                        }))}
-                                                        disabled={!newCat.fontAwesomeClass}
-                                                        className="p-2 rounded-lg bg-slate-200 dark:bg-slate-600 hover:bg-slate-300 dark:hover:bg-slate-500
-                                                    text-slate-500 cursor-pointer"
-                                                    >
-                                                        <FontAwesomeIcon icon={faTimes} className="h-4"/>
-                                                    </button>
-                                                </div>
-
-                                                {invalidClass && (
-                                                    <p className="mt-1 text-xs text-red-500 dark:text-red-400 flex items-center gap-1">
-                                                        <FontAwesomeIcon icon={faExclamationCircle}
-                                                                         className="h-3"/>
-                                                        格式错误,请使用&quot;缀 图标名&quot;格式(如fa-solid
-                                                        fa-house)
-                                                    </p>
-                                                )}
-                                            </div>
-                                        )}
-
-                                        {/* 3. 图标链接输入 */}
-                                        {newCat.iconMode === 'url' && (
-                                            <div className="mt-1">
-                                                <div className="flex gap-2">
-                                                    <input
-                                                        type="url"
-                                                        value={newCat.iconUrl}
-                                                        onChange={(e) => handleIconUrlChange(e, true)}
-                                                        placeholder="输入图标图片链接(http/https)"
-                                                        className="flex-1 min-w-10 px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600
-                                                                text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 bg-white dark:bg-slate-800
-                                                                text-slate-800 dark:text-slate-200"
-                                                    />
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => setNewCat(prev => ({...prev, iconUrl: ''}))}
-                                                        disabled={!newCat.iconUrl}
-                                                        className="p-2 rounded-lg bg-slate-200 dark:bg-slate-600 hover:bg-slate-300 dark:hover:bg-slate-500
-                                                     text-slate-500 cursor-pointer"
-                                                    >
-                                                        <FontAwesomeIcon icon={faTimes} className="h-4"/>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    {/* 图标颜色选择 */}
-                                    <div className="mb-3">
-                                        <label
-                                            className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-2">
-                                            图标颜色(当前: {newCat.iconColor})
-                                        </label>
-                                        <div className="flex items-center gap-2">
-                                            <div className="flex gap-1 flex-wrap flex-1">
-                                                {PRESET_ICON_COLORS.map((color, i) => (
-                                                    <button
-                                                        key={"newCat_icon_color_" + i}
-                                                        type="button"
-                                                        title={color}
-                                                        onClick={() => handleColorSelect(color, true)}
-                                                        className={`w-6 h-6 rounded-full transition-all duration-200 cursor-pointer relative 
-                                                                ${newCat.iconColor === color ?
-                                                            'ring-2 ring-indigo-500 dark:ring-indigo-400' :
-                                                            'hover:ring-1 hover:ring-slate-400 dark:hover:ring-slate-500'}
-                                                            }`}
-                                                        style={{backgroundColor: color}}
-                                                    >
-                                                        {newCat.iconColor === color && (
-                                                            <span className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-1 h-1 rounded-full
-                                                                   bg-white dark:bg-slate-100 shadow-[0_0_0_0.5px_rgba(0,0,0,0.1)]"/>
-                                                        )}
-                                                    </button>
-                                                ))}
-                                            </div>
-                                            <div
-                                                className="w-10 h-10 border-0 rounded-lg shadow-sm overflow-hidden">
-                                                <input
-                                                    type="color"
-                                                    value={newCat.iconColor}
-                                                    onChange={(e) => handleColorSelect(e.target.value, true)}
-                                                    className="w-16 h-16 -mt-3 -ml-3 cursor-pointer"
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* 图标背景色选择 */}
-                                    <div className="mb-3">
-                                        <label
-                                            className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-2">
-                                            图标背景色(当前: {newCat.iconBgColor})
-                                        </label>
-                                        <div className="flex items-center gap-2">
-                                            <div className="flex gap-1 flex-wrap flex-1">
-                                                {PRESET_BG_COLORS.map((color, i) => (
-                                                    <button
-                                                        key={"newCat_back_color_" + i}
-                                                        type="button"
-                                                        title={color}
-                                                        onClick={() => handleBgColorSelect(color, true)}
-                                                        className={`w-6 h-6 rounded-full transition-all duration-200 cursor-pointer relative ${
-                                                            newCat.iconBgColor === color
-                                                                ? 'ring-2 ring-indigo-500 border-transparent'
-                                                                : 'border-slate-200 dark:border-slate-600'
-                                                        }`}
-                                                        style={{backgroundColor: color}}
-                                                    >
-                                                        {newCat.iconBgColor === color && (
-                                                            <span className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-1 h-1 rounded-full
-                                                                   bg-black  shadow-[0_0_0_0.5px_rgba(0,0,0,0.1)]"/>
-                                                        )}
-                                                    </button>
-                                                ))}
-                                            </div>
-                                            <div
-                                                className="w-10 h-10 border-0 rounded-lg shadow-sm overflow-hidden">
-                                                <input
-                                                    type="color"
-                                                    value={newCat.iconBgColor}
-                                                    onChange={(e) => handleBgColorSelect(e.target.value, true)}
-                                                    className="w-16 h-16 -mt-3 -ml-3 cursor-pointer"
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* 操作按钮 */}
-                                    <div className="flex gap-2 justify-end">
-                                        <button
-                                            onClick={() => setShowAddForm(false)}
-                                            className="px-3 py-1.5 text-xs rounded-lg bg-slate-200 dark:bg-slate-600 hover:bg-slate-300
-                                        dark:hover:bg-slate-500 transition-colors text-slate-700 dark:text-slate-300 cursor-pointer"
-                                        >
-                                            <FontAwesomeIcon icon={faTimes} className="h-3.5 mr-1"/>
-                                            取消
-                                        </button>
-                                        <button
-                                            onClick={handleAddCategory}
-                                            disabled={!newCat.name.trim() || (newCat.iconMode === 'class' && invalidClass)}
-                                            className={`px-3 py-1.5 text-xs rounded-lg transition-colors ${
-                                                (!newCat.name.trim() || (newCat.iconMode === 'class' && invalidClass))
-                                                    ? 'bg-slate-200 dark:bg-slate-600 text-slate-400 cursor-not-allowed'
-                                                    : 'bg-indigo-600 text-white hover:bg-indigo-700 cursor-pointer'
-                                            }`}
-                                        >
-                                            <FontAwesomeIcon icon={faCheck} className="h-3.5 mr-1"/>
-                                            添加
-                                        </button>
-                                    </div>
-                                </div>
                             </div>
 
                             {/* 分类列表 - 细虚线辅助线 */}
@@ -969,15 +637,15 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
                     </ResizeCard>
                 </div>
                 {/* 右侧编辑区 */}
-                <ResizeCard className="flex-1 flex flex-col overflow-hidden bg-white dark:bg-slate-800">
-                    <div className="flex-1 overflow-y-auto p-6 max-h-220"
+                <div className="flex-1 flex flex-col bg-white dark:bg-slate-800">
+                    <div className="flex-1 p-6 max-h-220 overflow-y-auto"
                          style={{
                              scrollbarWidth: 'thin',
                              scrollbarColor: 'rgb(96 165 250) rgb(229 231 235)',
                              scrollbarGutter: 'stable'
                          }}
                     >
-                        <div className="mx-auto">
+                        <div className="mx-auto mb-5">
                             {selectedCategory ? (
                                 <>
                                     {/* 分类信息卡片 */}
@@ -1465,7 +1133,7 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
                             )}
                         </div>
                     </div>
-                </ResizeCard>
+                </div>
             </div>
             {/* 恢复确认对话框 */}
             <MessageModal
@@ -1511,7 +1179,7 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
                 visible={isShowIconPickerModal}
                 onClose={() => setIsShowIconPickerModal(false)}
                 onSubmit={(icon) => {
-                    handleIconSelect(icon, getIconClass(icon), false)
+                    handleIconSelect(icon, getIconClass(icon))
                     setIsShowIconPickerModal(false)
                 }}
                 onCancel={() => setIsShowIconPickerModal(false)}
