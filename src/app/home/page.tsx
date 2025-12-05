@@ -37,6 +37,7 @@ const NavigationHub = () => {
     const [isSystemEditModalOpen, setIsSystemEditModalOpen] = useState(false);
     const [languageSelectorValue, setLanguageSelectorValue] = useState<string>();
     const [categories, setCategories] = useState<Category[]>([]);
+    const [isSaving, setIsSaving] = useState<boolean>(false);
     const [isDarkMode, setIsDarkMode] = useState(() => {
         const saved = getLocalStorage('darkMode');
         if (saved !== null) return saved === 'true';
@@ -130,6 +131,7 @@ const NavigationHub = () => {
 
     // 保存数据
     const savePageData = (data: Category[]) => {
+        setIsSaving(true)
         apis.saveUserPage({userPage: JSON.stringify(data)}).then(res => {
             showToast({
                 message: 'Save success',
@@ -145,7 +147,7 @@ const NavigationHub = () => {
                 duration: 3000,
             });
         }).finally(() => {
-
+            setIsSaving(false)
         })
     }
 
@@ -193,7 +195,8 @@ const NavigationHub = () => {
 
                             return (
                                 <a key={site.id}
-                                   href="http://mail.corp.internal"
+                                   target={'_blank'}
+                                   href={isInternal ? site.internalUrl : site.externalUrl}
                                    className={`block rounded-xl shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border
                                                    bg-white  dark:bg-slate-800 border-gray-100 dark:border-slate-700 ${isQuick ? 'p-3' : 'p-5'}`}
                                    style={{animationDelay: `${delay}ms`}}
@@ -516,6 +519,7 @@ const NavigationHub = () => {
                     savePageData(data);
                 }}
                 defaultSelectedId={defaultSelectedId}
+                isSaving={isSaving}
             />
             {/*系统属性编辑组件 */}
             {/*<SystemEditModal*/}
