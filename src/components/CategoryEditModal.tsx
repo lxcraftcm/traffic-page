@@ -523,15 +523,14 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
             {/* 主内容区 */}
             <div className="flex flex-1 overflow-hidden bg-white dark:bg-slate-900/30">
                 {/* 左侧分类列表 */}
-                <div className="bg-slate-100 border-slate-200 dark:bg-slate-800 dark:border-slate-700 border-r-1">
-                    <ResizeCard className="w-73 bg-slate-100 dark:bg-slate-800">
-                        <div className="overflow-y-auto p-4 max-h-220"
-                             style={{
-                                 scrollbarWidth: 'thin',
-                                 scrollbarColor: 'rgb(96 165 250) rgb(229 231 235)',
-                                 scrollbarGutter: 'stable',
-                             }}
-                        >
+                <div className="flex bg-slate-100 border-slate-200 dark:bg-slate-800 dark:border-slate-700 border-r-1 ">
+                    <div className="w-73 bg-slate-100 dark:bg-slate-800 overflow-y-auto flex-1"
+                         style={{
+                             scrollbarWidth: 'thin',
+                             scrollbarColor: 'rgb(96 165 250) rgb(229 231 235)',
+                             scrollbarGutter: 'stable',
+                         }}>
+                        <div className="p-4 max-h-220">
                             <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">分类列表(拖拽排序)</p>
                             <div className={`transition-all duration-250 ease-in-out overflow-hidden h-1/3 max-h-13`}>
                                 <button
@@ -634,7 +633,7 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
                                 ))}
                             </div>
                         </div>
-                    </ResizeCard>
+                    </div>
                 </div>
                 {/* 右侧编辑区 */}
                 <div className="flex-1 flex flex-col bg-white dark:bg-slate-800">
