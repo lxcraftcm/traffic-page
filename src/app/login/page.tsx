@@ -394,14 +394,6 @@ const LoginPage = () => {
                                         <label htmlFor="password" className="block text-sm font-medium">
                                             {isRegisterMode ? '设置密码' : '密码'}
                                         </label>
-                                        {!isRegisterMode && (
-                                            <Link
-                                                href="/forgot-password"
-                                                className="text-sm text-indigo-600 dark:text-indigo-400 hover:underline transition-colors duration-300"
-                                            >
-                                                忘记密码
-                                            </Link>
-                                        )}
                                     </div>
                                     <div className="relative">
                     <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
@@ -487,6 +479,12 @@ const LoginPage = () => {
                                                className={`ml-2 block text-sm dark:text-slate-300 text-slate-600`}>
                                             记住我
                                         </label>
+                                        <Link
+                                            href="/forgot-password"
+                                            className="text-sm text-indigo-600 dark:text-indigo-400 hover:underline transition-colors duration-300 ml-auto"
+                                        >
+                                            忘记密码
+                                        </Link>
                                     </div>
                                 )}
 
