@@ -1,5 +1,45 @@
 {
-  "HomePage": {
-    "title": "你好"
+  "LoginPage": {
+    "title": "登录页面",
+    "systemInit": "初始化系统",
+    "navCenter": "导航中心",
+    "createNewAccount": "创建新账号",
+    "welcomeBack": "欢迎回来",
+    "completeInitByFilling": "填写以下信息完成初始化",
+    "enterAccountInfoToLogin": "请输入账号信息登录系统",
+    "username": "用户名",
+    "setUsernamePlaceholder": "请设置用户名(3-20位)",
+    "enterUsernamePlaceholder": "请输入用户名/邮箱",
+    "setPassword": "设置密码",
+    "password": "密码",
+    "setPasswordPlaceholder": "请设置密码(6-20位,含字母和数字)",
+    "enterPasswordPlaceholder": "请输入密码",
+    "confirmPassword": "确认密码",
+    "confirmPasswordPlaceholder": "请再次输入密码",
+    "rememberMe": "记住我",
+    "forgotPassword": "忘记密码",
+    "confirmRegister": "确认注册",
+    "loginNow": "立即登录",
+    "registering": "注册中...",
+    "loggingIn": "登录中...",
+    "switchToLightMode": "切换到浅色模式",
+    "switchToDarkMode": "切换到深色模式",
+    "hidePassword": "隐藏密码",
+    "showPassword": "显示密码",
+    "copyright": "© {year} 导航中心 | 版本 {version}",
+    "version": "1.0.0",
+    "checkSystemFailed": "检测系统失败",
+    "loginFailed": "登录失败，请重试",
+    "registerSuccess": "注册成功，请登录！",
+    "registerFailed": "注册失败，请重试",
+    "errors": {
+      "usernameRequired": "请输入用户名",
+      "usernameLength": "用户名长度需在3-20位之间",
+      "passwordRequired": "请输入密码",
+      "passwordLength": "密码长度需在6-20位之间",
+      "passwordFormat": "密码需包含字母和数字",
+      "confirmPasswordRequired": "请确认密码",
+      "confirmPasswordMismatch": "两次输入的密码不一致"
+    }
   }
 }

@@ -78,7 +78,7 @@ const LoginPage = () => {
             setIsRegisterMode(!res.initialized);
         } catch (error: any) {
             showToast({
-                message: error?.message || 'Check System failed',
+                message: error?.message || t('checkSystemFailed'),
                 type: 'error',
                 duration: 3000,
             });
@@ -98,26 +98,26 @@ const LoginPage = () => {
 
         // 用户名验证
         if (!username.trim()) {
-            errors.username = '请输入用户名';
+            errors.username = t('errors.usernameRequired');
         } else if (username.length < 3 || username.length > 20) {
-            errors.username = '用户名长度需在3-20位之间';
+            errors.username = t('errors.usernameLength');
         }
 
         // 密码验证
         if (!password.trim()) {
-            errors.password = '请输入密码';
+            errors.password = t('errors.passwordRequired');
         } else if (password.length < 6 || password.length > 20) {
-            errors.password = '密码长度需在6-20位之间';
+            errors.password = t('errors.passwordLength');
         } else if (!/^(?=.*[a-zA-Z])(?=.*\d).+$/.test(password)) {
-            errors.password = '密码需包含字母和数字';
+            errors.password = t('errors.passwordFormat');
         }
 
         // 注册模式额外验证确认密码
         if (isRegisterMode) {
             if (!confirmPassword.trim()) {
-                errors.confirmPassword = '请确认密码';
+                errors.confirmPassword = t('errors.confirmPasswordRequired');
             } else if (confirmPassword !== password) {
-                errors.confirmPassword = '两次输入的密码不一致';
+                errors.confirmPassword = t('errors.confirmPasswordMismatch');
             }
         }
 
@@ -151,7 +151,7 @@ const LoginPage = () => {
             window.location.href = '/home';
         } catch (error: any) {
             showToast({
-                message: error?.message || 'Login failed, please try again',
+                message: error?.message || t('loginFailed'),
                 type: 'error',
                 duration: 3000,
             });
@@ -181,10 +181,14 @@ const LoginPage = () => {
             setPassword('');
             setConfirmPassword('');
             // 显示注册成功提示
-            // alert(selectedLanguage === 'zh-CN' ? '注册成功,请登录！' : 'Registration successful, please log in!');
+            showToast({
+                message: t('registerSuccess'),
+                type: 'success',
+                duration: 3000,
+            });
         } catch (error: any) {
             showToast({
-                message: error?.message || 'Registration failed, please try again',
+                message: error?.message || t('registerFailed'),
                 type: 'error',
                 duration: 3000,
             });
@@ -244,7 +248,7 @@ const LoginPage = () => {
                                     <FontAwesomeIcon icon={faShieldHalved} className="text-white h-5 w-5"/>
                                 </div>
                                 <h1 className="text-lg font-semibold dark:text-amber-50">
-                                    {isRegisterMode ? '初始化系统' : '导航中心'}
+                                    {isRegisterMode ? t('systemInit') : t('navCenter')}
                                 </h1>
                             </div>
 
@@ -259,7 +263,7 @@ const LoginPage = () => {
                     hover:scale-110 active:scale-95
                     focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500/30
                   `}
-                                    aria-label={isDarkMode ? '切换到浅色模式' : '切换到深色模式'}
+                                    aria-label={isDarkMode ? t('switchToLightMode') : t('switchToDarkMode')}
                                 >
                                     <FontAwesomeIcon
                                         icon={isDarkMode ? faSun : faMoon}
@@ -277,12 +281,12 @@ const LoginPage = () => {
                             {/* 表单标题与切换 */}
                             <div className="text-center mb-6 animate-fade-in-up" style={{animationDelay: '200ms'}}>
                                 <h2 className="text-[clamp(1.5rem,3vw,2rem)] font-bold mb-2 dark:text-amber-50">
-                                    {isRegisterMode ? '创建新账号' : '欢迎回来'}
+                                    {isRegisterMode ? t('createNewAccount') : t('welcomeBack')}
                                 </h2>
                                 <p className={`text-sm dark:text-slate-400 text-slate-500 mb-4`}>
                                     {isRegisterMode
-                                        ? '填写以下信息完成初始化'
-                                        : '请输入账号信息登录系统'}
+                                        ? t('completeInitByFilling')
+                                        : t('enterAccountInfoToLogin')}
                                 </p>
                             </div>
 
@@ -291,7 +295,7 @@ const LoginPage = () => {
                                 {/* 用户名输入框 */}
                                 <div className="space-y-2 animate-fade-in-up" style={{animationDelay: '300ms'}}>
                                     <label htmlFor="username" className="block text-sm font-medium dark:text-amber-50">
-                                        用户名
+                                        {t('username')}
                                     </label>
                                     <div className="relative">
                     <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
@@ -303,7 +307,7 @@ const LoginPage = () => {
                                             value={username}
                                             onChange={(e) => setUsername(e.target.value)}
                                             className={`${getInputClass('username')} pl-12`}
-                                            placeholder={isRegisterMode ? '请设置用户名(3-20位)' : '请输入用户名/邮箱'}
+                                            placeholder={isRegisterMode ? t('setUsernamePlaceholder') : t('enterUsernamePlaceholder')}
                                             disabled={isLoading || registerLoading}
                                         />
                                         {username.trim() && !formErrors.username && (
@@ -325,7 +329,7 @@ const LoginPage = () => {
                                 <div className="space-y-2 animate-fade-in-up" style={{animationDelay: '400ms'}}>
                                     <div className="flex items-center justify-between dark:text-amber-50">
                                         <label htmlFor="password" className="block text-sm font-medium">
-                                            {isRegisterMode ? '设置密码' : '密码'}
+                                            {isRegisterMode ? t('setPassword') : t('password')}
                                         </label>
                                     </div>
                                     <div className="relative">
@@ -338,7 +342,7 @@ const LoginPage = () => {
                                             value={password}
                                             onChange={(e) => setPassword(e.target.value)}
                                             className={`${getInputClass('password')} pl-12`}
-                                            placeholder={isRegisterMode ? '请设置密码(6-20位,含字母和数字)' : '请输入密码'}
+                                            placeholder={isRegisterMode ? t('setPasswordPlaceholder') : t('enterPasswordPlaceholder')}
                                             disabled={isLoading || registerLoading}
                                         />
                                         <button
@@ -346,7 +350,7 @@ const LoginPage = () => {
                                             onClick={() => setShowPassword(!showPassword)}
                                             className="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 hover:text-indigo-500 transition-colors duration-300"
                                             disabled={isLoading || registerLoading}
-                                            aria-label={showPassword ? '隐藏密码' : '显示密码'}
+                                            aria-label={showPassword ? t('hidePassword') : t('showPassword')}
                                         >
                                             <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye}
                                                              className="h-5 w-5"/>
@@ -365,7 +369,7 @@ const LoginPage = () => {
                                     <div className="space-y-2 animate-fade-in-up" style={{animationDelay: '450ms'}}>
                                         <label htmlFor="confirmPassword"
                                                className="block text-sm font-medium dark:text-amber-50">
-                                            确认密码
+                                            {t('confirmPassword')}
                                         </label>
                                         <div className="relative">
                     <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
@@ -377,7 +381,7 @@ const LoginPage = () => {
                                                 value={confirmPassword}
                                                 onChange={(e) => setConfirmPassword(e.target.value)}
                                                 className={`${getInputClass('confirmPassword')} pl-12`}
-                                                placeholder="请再次输入密码"
+                                                placeholder={t('confirmPasswordPlaceholder')}
                                                 disabled={registerLoading}
                                             />
                                             {confirmPassword.trim() && !formErrors.confirmPassword && confirmPassword === password && (
@@ -410,13 +414,13 @@ const LoginPage = () => {
                                         />
                                         <label htmlFor="remember-me"
                                                className={`ml-2 block text-sm dark:text-slate-300 text-slate-600`}>
-                                            记住我
+                                            {t('rememberMe')}
                                         </label>
                                         <Link
                                             href="/forgot-password"
                                             className="text-sm text-indigo-600 dark:text-indigo-400 hover:underline transition-colors duration-300 ml-auto"
                                         >
-                                            忘记密码
+                                            {t('forgotPassword')}
                                         </Link>
                                     </div>
                                 )}
@@ -437,11 +441,11 @@ const LoginPage = () => {
                                         <>
                                             <div
                                                 className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                                            <span>{isRegisterMode ? '注册中...' : '登录中...'}</span>
+                                            <span>{isRegisterMode ? t('registering') : t('loggingIn')}</span>
                                         </>
                                     ) : (
                                         <>
-                                            <span>{isRegisterMode ? '确认注册' : '立即登录'}</span>
+                                            <span>{isRegisterMode ? t('confirmRegister') : t('loginNow')}</span>
                                             <FontAwesomeIcon icon={faArrowRight} className="h-4.5 w-4.5"/>
                                         </>
                                     )}
@@ -452,7 +456,7 @@ const LoginPage = () => {
                         {/* 版权信息 */}
                         <div className="mb-8 text-center text-sm text-slate-500 dark:text-slate-400 animate-fade-in"
                              style={{animationDelay: '800ms'}}>
-                            © {new Date().getFullYear()} 企业导航中心 | 版本 3.6.0
+                            {t('copyright', {year: new Date().getFullYear(), version: t('version')})}
                         </div>
                     </div>
 

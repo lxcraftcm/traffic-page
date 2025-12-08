@@ -1,5 +1,45 @@
 {
-  "HomePage": {
-    "title": "Hello world!"
+  "LoginPage": {
+    "title": "Login Page",
+    "systemInit": "System Initialization",
+    "navCenter": "Navigation Center",
+    "createNewAccount": "Create New Account",
+    "welcomeBack": "Welcome Back",
+    "completeInitByFilling": "Complete initialization by filling in the following information",
+    "enterAccountInfoToLogin": "Please enter your account information to log in",
+    "username": "Username",
+    "setUsernamePlaceholder": "Please set username (3-20 characters)",
+    "enterUsernamePlaceholder": "Please enter username/email",
+    "setPassword": "Set Password",
+    "password": "Password",
+    "setPasswordPlaceholder": "Please set password (6-20 characters, including letters and numbers)",
+    "enterPasswordPlaceholder": "Please enter password",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordPlaceholder": "Please enter password again",
+    "rememberMe": "Remember Me",
+    "forgotPassword": "Forgot Password",
+    "confirmRegister": "Confirm Registration",
+    "loginNow": "Login Now",
+    "registering": "Registering...",
+    "loggingIn": "Logging in...",
+    "switchToLightMode": "Switch to Light Mode",
+    "switchToDarkMode": "Switch to Dark Mode",
+    "hidePassword": "Hide Password",
+    "showPassword": "Show Password",
+    "copyright": "© {year} Navigation Center | Version {version}",
+    "version": "1.0.0",
+    "checkSystemFailed": "Check System failed",
+    "loginFailed": "Login failed, please try again",
+    "registerSuccess": "Registration successful, please log in!",
+    "registerFailed": "Registration failed, please try again",
+    "errors": {
+      "usernameRequired": "Please enter username",
+      "usernameLength": "Username length must be between 3-20 characters",
+      "passwordRequired": "Please enter password",
+      "passwordLength": "Password length must be between 6-20 characters",
+      "passwordFormat": "Password must contain letters and numbers",
+      "confirmPasswordRequired": "Please confirm password",
+      "confirmPasswordMismatch": "Two passwords do not match"
+    }
   }
 }
