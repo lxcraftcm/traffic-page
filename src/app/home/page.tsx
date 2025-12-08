@@ -1,5 +1,5 @@
 'use client';
-import React, {useState, useEffect, useRef, useCallback, useLayoutEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {
     faSearch,
@@ -11,19 +11,16 @@ import {
     faSun,
     faMoon,
     faServer,
-    faCheck,
-    faChevronDown,
     faRightFromBracket
 } from '@fortawesome/free-solid-svg-icons';
 import CategoryEditModal from '@/components/CategoryEditModal';
-// import SystemEditModal from '@/components/SystemSettingModal';
 import {Category} from "@/types/base"
-import {LANGUAGE_OPTIONS} from '@/components/common/PreConstants'
 import {getLocalStorage, setLocalStorage} from '@/utils/StorageUtil';
 import {renderIcon} from "@/utils/IconUtil";
 import {apis} from "@/utils/RequestUtil";
 import {removeToken} from "@/lib/auth";
 import {useToast} from "@/components/common/Toast";
+import LanguageSelector from "@/components/LanguageSelector";
 
 const NavigationHub = () => {
     // 核心状态
@@ -33,9 +30,7 @@ const NavigationHub = () => {
     const [renderKey, setRenderKey] = useState(0);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [defaultSelectedId, setDefaultSelectedId] = useState<string>();
-    const [isLanguageSelectorOpen, setIsLanguageSelectorOpen] = useState<boolean>(false);
     const [isSystemEditModalOpen, setIsSystemEditModalOpen] = useState(false);
-    const [languageSelectorValue, setLanguageSelectorValue] = useState<string>();
     const [categories, setCategories] = useState<Category[]>([]);
     const [isSaving, setIsSaving] = useState<boolean>(false);
     const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -89,17 +84,6 @@ const NavigationHub = () => {
         setLocalStorage('darkMode', isDarkMode.toString());
     }, [isDarkMode]);
 
-    // 点击外部关闭语言切换
-    useEffect(() => {
-        const handleClickOutside = (e: MouseEvent) => {
-            if (dropdownRef && dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-                setIsLanguageSelectorOpen(false);
-            }
-        };
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
-
     //
     useEffect(() => {
         setTimeout(loadData, 1);
@@ -122,12 +106,6 @@ const NavigationHub = () => {
         setActiveCategory(category);
         setRenderKey(prev => prev + 1);
     };
-
-    // 语言切换
-    const handleLanguageSelect = (code: string) => {
-        setLanguageSelectorValue(code);
-        setIsLanguageSelectorOpen(false)
-    }
 
     // 保存数据
     const savePageData = (data: Category[]) => {
@@ -249,8 +227,6 @@ const NavigationHub = () => {
 
     // 快速访问id
     const isQuickAccess = (id: string) => id === 'quick-access';
-    // 获取当前选中的语言信息
-    const currentLanguage = LANGUAGE_OPTIONS.find(option => option.code === languageSelectorValue) || LANGUAGE_OPTIONS[0];
 
     return (
         <div className="h-screen flex flex-col bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200 ">
@@ -354,50 +330,7 @@ const NavigationHub = () => {
                             </button>
 
                             {/* 语言切换 */}
-                            <div ref={dropdownRef} className="relative inline-block">
-                                {/* 触发按钮 */}
-                                <button onClick={() => setIsLanguageSelectorOpen(!isLanguageSelectorOpen)}
-                                        className={`flex items-center gap-1.5 px-3 py-1.75 rounded-md cursor-pointer bg-slate-100 dark:bg-slate-800 border border-slate-200
-                                               dark:border-slate-700 text-sm font-medium text-slate-800 dark:text-slate-100 hover:bg-slate-200
-                                               dark:hover:bg-slate-700 transition-all duration-200  focus:outline-none focus:ring-2 focus:ring-indigo-500`}
-                                        aria-expanded={isLanguageSelectorOpen}
-                                >
-                                    <FontAwesomeIcon icon={faGlobe} className="h-4 w-4 text-indigo-500"/>
-                                    <span>{currentLanguage.nativeName}</span>
-                                    <FontAwesomeIcon
-                                        icon={faChevronDown}
-                                        className={`h-3 w-3 text-slate-500 transition-transform duration-200 ${isLanguageSelectorOpen ? 'rotate-180' : ''}`}
-                                    />
-                                </button>
-
-                                {/* 下拉菜单 */}
-                                <div className={`
-                                      absolute z-50 mt-1 w-44 rounded-md bg-white dark:bg-slate-800  border border-slate-200 dark:border-slate-700  
-                                      shadow-md  overflow-hidden transition-opacity duration-200
-                                      ${isLanguageSelectorOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}
-                                    `}
-                                >
-                                    {LANGUAGE_OPTIONS.map(option => (
-                                        <button
-                                            key={option.code}
-                                            onClick={() => handleLanguageSelect(option.code)}
-                                            className={`
-                                                w-full flex items-center justify-between px-3 py-1.75 text-sm
-                                                transition-colors duration-150 cursor-pointer
-                                                ${languageSelectorValue === option.code
-                                                ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50/70 dark:bg-indigo-900/10'
-                                                : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/30'
-                                            }   
-                                        `}
-                                        >
-                                            <span>{option.nativeName}</span>
-                                            {languageSelectorValue === option.code && (
-                                                <FontAwesomeIcon icon={faCheck} className="h-3.5 w-3.5"/>
-                                            )}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
+                            <LanguageSelector/>
                         </div>
                     </div>
                 </div>
