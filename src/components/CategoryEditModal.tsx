@@ -32,6 +32,7 @@ import {
 import ResizeCard from "@/components/common/ResizeCard";
 import {getIconClass, renderIcon} from "@/utils/IconUtil";
 import IconPickerModal from "@/components/IconPickerModal";
+import {useTranslations} from 'next-intl';
 
 // 初始化FontAwesome库
 library.add(fas, far, fab);
@@ -39,7 +40,6 @@ library.add(fas, far, fab);
 interface CategoryEditProps {
     initialData?: Category[];
     onSave: (finalData: Category[]) => void;
-    title?: string;
     defaultSelectedId?: string;
     isSaving: boolean;
 }
@@ -62,7 +62,6 @@ const isDataEqual = (a: Category[], b: Category[]): boolean => {
 const CategoryEdit: React.FC<CategoryEditProps> = ({
                                                        initialData = [],
                                                        onSave,
-                                                       title = "编辑分类",
                                                        defaultSelectedId,
                                                        isSaving
                                                    }) => {
@@ -117,6 +116,9 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
     const hasUnsavedChanges = useMemo(() => {
         return !isDataEqual(localCategories, originalData);
     }, [localCategories, originalData]);
+
+    // 翻译钩子
+    const t = useTranslations('CategoryEdit');
 
     // 分类拖拽相关函数
     const handleCategoryDragStart = (id: string, e: React.DragEvent) => {
@@ -316,7 +318,7 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
     const handleAddCategory = () => {
         const newCategory: Category = {
             id: `cat-${Date.now()}`,
-            name: 'NewCategory',
+            name: t('newCategory'),
             iconMode: "preset",
             fontAwesomeClass: getIconClass(PRESET_ICONS[0].icon),
             iconUrl: '',
@@ -476,13 +478,13 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
                 className="min-h-15 border-b border-slate-200 dark:border-slate-700 px-6 py-3 flex items-center justify-between bg-slate-50 dark:bg-slate-900/50">
                 <h2 className="text-xl font-semibold flex items-center gap-2 text-slate-800 dark:text-slate-100">
                     <FontAwesomeIcon icon={faLayerGroup} className="h-5 text-indigo-500"/>
-                    <span>{title}</span>
+                    <span>{t('editCategory')}</span>
                     {hasUnsavedChanges && (
                         <span
                             className="ml-2 px-2 py-0.5 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 text-xs rounded-full flex
                                 items-center gap-1">
                           <FontAwesomeIcon icon={faExclamationCircle} className="h-3"/>
-                          有未保存的更改
+                            {t('unsavedChanges')}
                         </span>
                     )}
                 </h2>
@@ -495,7 +497,7 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
                                  dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 cursor-pointer"
                         >
                             <FontAwesomeIcon icon={faUndo} className="h-4"/>
-                            <span>恢复修改</span>
+                            <span>{t('restoreChanges')}</span>
                         </button>
                     )}
 
@@ -515,7 +517,7 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
                         ) : (
                             <FontAwesomeIcon icon={faSave} className="h-4"/>
                         )}
-                        <span>{isSaving ? '保存中...' : '保存所有更改'}</span>
+                        <span>{isSaving ? t('saving') : t('saveAllChanges')}</span>
                     </button>
                 </div>
             </div>
@@ -531,7 +533,7 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
                              scrollbarGutter: 'stable',
                          }}>
                         <div className="p-4 max-h-220">
-                            <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">分类列表(拖拽排序)</p>
+                            <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">{t('categoryList')}</p>
                             <div className={`transition-all duration-250 ease-in-out overflow-hidden h-1/3 max-h-13`}>
                                 <button
                                     onClick={handleAddCategory}
@@ -540,7 +542,7 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
                                          text-slate-700 dark:text-slate-300 cursor-pointer"
                                 >
                                     <FontAwesomeIcon icon={faPlus} className="h-4"/>
-                                    <span>添加分类</span>
+                                    <span>{t('addCategory')}</span>
                                 </button>
                             </div>
 
@@ -595,13 +597,13 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
                                         </span>
                                                 <span
                                                     className="text-xs text-slate-500 dark:text-slate-400 block mt-0.5">
-                                            {category.sites.length} 个网站
+                                            {category.sites.length} {t('sites')}
                                         </span>
                                             </div>
                                             {category.id === 'quick-access' && (
                                                 <span
                                                     className="ml-1 text-xs px-2 py-0.5 bg-amber-100 dark:bg-amber-900/30 rounded-full text-amber-600 dark:text-amber-400 flex-shrink-0">
-                                            固定
+                                            {t('fixed')}
                                         </span>
                                             )}
                                             {category.id !== 'quick-access' && (
@@ -663,9 +665,9 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
                                             <div>
                                                 <h4 className="text-xl font-semibold text-slate-800 dark:text-slate-200">{selectedCategory.name}</h4>
                                                 <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                                                    {selectedCategory.sites.length} 个网站 ·
-                                                    图标色: {selectedCategory.iconColor} ·
-                                                    背景色: {selectedCategory.iconBgColor}
+                                                    {selectedCategory.sites.length} {t('sites')} ·
+                                                    {t('iconColor')}: {selectedCategory.iconColor} ·
+                                                    {t('bgColor')}: {selectedCategory.iconBgColor}
                                                 </p>
                                             </div>
                                         </div>
@@ -674,7 +676,7 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
                                     {/* 编辑表单 */}
                                     <div className="mb-6">
                                         <label
-                                            className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">分类名称</label>
+                                            className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{t('categoryName')}</label>
                                         <input
                                             type="text"
                                             value={selectedCategory.name}
@@ -689,7 +691,7 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
                                     <div className="mb-6">
                                         <label
                                             className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                                            图标来源
+                                            {t('iconSource')}
                                         </label>
                                         <div className="grid grid-cols-3 gap-2 mb-3">
                                             <button
@@ -703,7 +705,7 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
                                                 }`}
                                             >
                                                 <FontAwesomeIcon icon={faImage} className="h-3.5"/>
-                                                <span>预设图标</span>
+                                                <span>{t('presetIcon')}</span>
                                             </button>
                                             <button
                                                 type="button"
@@ -716,7 +718,7 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
                                                 }`}
                                             >
                                                 <FontAwesomeIcon icon={faFont} className="h-3.5"/>
-                                                <span>FA类名</span>
+                                                <span>{t('faClass')}</span>
                                             </button>
                                             <button
                                                 type="button"
@@ -729,14 +731,14 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
                                                 }`}
                                             >
                                                 <FontAwesomeIcon icon={faLink} className="h-3.5"/>
-                                                <span>图标链接</span>
+                                                <span>{t('iconUrl')}</span>
                                             </button>
                                         </div>
 
                                         {/* 图标预览 + 选择区域 */}
                                         <div className="flex items-center gap-3 mt-3 mb-3">
                                             <label
-                                                className="text-sm text-slate-700 dark:text-slate-300">预览: </label>
+                                                className="text-sm text-slate-700 dark:text-slate-300">{t('preview')}: </label>
                                             <div
                                                 className="w-12 h-12 rounded-lg flex items-center justify-center shadow-sm"
                                                 style={{backgroundColor: selectedCategory.iconBgColor}}
@@ -779,7 +781,7 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
                                                         border border-gray-200 dark:border-gray-700
                                                         ${isSaving ? 'opacity-50 cursor-not-allowed' : ''}
                                                     `}
-                                                    title="更多"
+                                                    title={t('more')}
                                                 >
                                                     <FontAwesomeIcon icon={faEllipsis} style={{fontSize: '16px'}}/>
                                                 </button>
@@ -793,7 +795,7 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
                                                         type="text"
                                                         value={selectedCategory.fontAwesomeClass}
                                                         onChange={(e) => handleFontAwesomeClassChange(e)}
-                                                        placeholder="输入FontAwesome类名(格式: fa-solid fa-house)"
+                                                        placeholder={t('faClassPlaceholder')}
                                                         className={`flex-1 px-3 py-2 rounded-lg border transition-all text-sm border-slate-200 dark:border-slate-600 focus:outline-none
                                                                  focus:ring-2 focus:ring-indigo-500/30 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 
                                                                  ${invalidClass ? 'border-red-300 dark:border-red-700 focus:ring-red-500/30' : ''}`}
@@ -822,7 +824,7 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
                                                     <p className="mt-1 text-xs text-red-500 dark:text-red-400 flex items-center gap-1">
                                                         <FontAwesomeIcon icon={faExclamationCircle}
                                                                          className="h-3"/>
-                                                        格式错误,请使用&quot;前缀 图标名&quot;格式
+                                                        {t('invalidClassFormat')}
                                                     </p>
                                                 )}
                                             </div>
@@ -835,7 +837,7 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
                                                         type="url"
                                                         value={selectedCategory.iconUrl}
                                                         onChange={(e) => handleIconUrlChange(e)}
-                                                        placeholder="输入图标图片链接(http/https)"
+                                                        placeholder={t('iconUrlPlaceholder')}
                                                         className={`flex-1 px-3 py-2 rounded-lg border transition-all text-sm border-slate-200 dark:border-slate-600 focus:outline-none
                                                          focus:ring-2 focus:ring-indigo-500/30 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200`}
                                                     />
@@ -866,7 +868,7 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
                                     <div className="mb-6">
                                         <label
                                             className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                                            图标颜色(当前: {selectedCategory.iconColor})
+                                            {t('iconColor')} ({t('current')}: {selectedCategory.iconColor})
                                         </label>
                                         <div className="flex items-center gap-2">
                                             <div className="flex gap-1 flex-wrap flex-1">
@@ -905,7 +907,7 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
                                     <div className="mb-6">
                                         <label
                                             className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                                            图标背景色(当前: {selectedCategory.iconBgColor})
+                                            {t('bgColor')} ({t('current')}: {selectedCategory.iconBgColor})
                                         </label>
                                         <div className="flex items-center gap-2">
                                             <div className="flex gap-1 flex-wrap flex-1">
@@ -955,7 +957,7 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
                                                  hover:bg-indigo-200 dark:hover:bg-indigo-900/50 transition-colors cursor-pointer"
                                         >
                                             <FontAwesomeIcon icon={faPlus} className="h-3.5 mr-1"/>
-                                            新增网页
+                                            {t('addSite')}
                                         </button>
                                     </div>
 
@@ -964,10 +966,11 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
                                         <div className="flex items-center justify-between mb-3">
                                             <label
                                                 className="block text-sm font-medium text-slate-700 dark:text-slate-300">
-                                                包含网站(拖拽排序)
+                                                {t('includedSites')}
                                             </label>
                                             <span className="text-xs text-slate-500 dark:text-slate-400">
-                                                拖动 <FontAwesomeIcon icon={faGripVertical} className="h-3 inline"/> 调整顺序
+                                                {t('dragToReorder')} <FontAwesomeIcon icon={faGripVertical}
+                                                                                      className="h-3 inline"/>
                                             </span>
                                         </div>
 
@@ -1047,8 +1050,8 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
                                                                             ? 'text-slate-300 dark:text-slate-600 cursor-not-allowed'
                                                                             : 'text-slate-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 hover:text-indigo-600 dark:hover:text-indigo-400'
                                                                     }`}
-                                                                    title="编辑网页"
-                                                                    aria-label={`编辑 ${site.name}`}
+                                                                    title={t('editSite')}
+                                                                    aria-label={`${t('edit')} ${site.name}`}
                                                                 >
                                                                     <FontAwesomeIcon icon={faEdit}
                                                                                      className="h-4 w-4"/>
@@ -1064,8 +1067,8 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
                                                                             ? 'text-slate-300 dark:text-slate-600 cursor-not-allowed'
                                                                             : 'text-slate-500 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400'
                                                                     }`}
-                                                                    title="删除网页"
-                                                                    aria-label={`删除 ${site.name}`}
+                                                                    title={t('deleteSite')}
+                                                                    aria-label={`${t('delete')} ${site.name}`}
                                                                 >
                                                                     <FontAwesomeIcon icon={faTrash}
                                                                                      className="h-4 w-4"/>
@@ -1100,7 +1103,7 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
                                                                 className="border-t border-dashed border-indigo-500 dark:border-indigo-400 animate-pulse mx-auto mb-4"
                                                                 style={{width: '4rem', borderWidth: '1px'}}
                                                             />
-                                                            <p>拖放网站到这里</p>
+                                                            <p>{t('dropSiteHere')}</p>
                                                             <div
                                                                 className="border-t border-dashed border-indigo-500 dark:border-indigo-400 animate-pulse mx-auto mt-4"
                                                                 style={{width: '4rem', borderWidth: '1px'}}
@@ -1111,7 +1114,7 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
                                                             <FontAwesomeIcon icon={faLink}
                                                                              className="h-8 text-slate-400 mb-2"/>
                                                             <p className="text-sm text-slate-500 dark:text-slate-400">
-                                                                该分类下暂无网站,点击&quot;新增网页&quot;按钮开始添加
+                                                                {t('noSitesInCategory')}
                                                             </p>
                                                         </div>
                                                     )}
@@ -1127,7 +1130,7 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
                                         className="w-20 h-20 mb-4 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center">
                                         <FontAwesomeIcon icon={faGripVertical} className="h-10 text-slate-400"/>
                                     </div>
-                                    <p className="text-slate-500 dark:text-slate-400">请从左侧选择一个分类进行编辑</p>
+                                    <p className="text-slate-500 dark:text-slate-400">{t('selectCategoryToEdit')}</p>
                                 </div>
                             )}
                         </div>
@@ -1141,8 +1144,8 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
                 onCancel={() => setShowRestoreConfirm(false)}
                 onConfirm={handleRestoreChanges}
                 type="rollback"
-                title="确认恢复修改"
-                message="此操作将放弃所有未保存的更改,恢复到上次保存的状态。确定要继续吗？"
+                title={t('confirmRestoreChanges')}
+                message={t('restoreChangesMessage')}
             />
             {/* 删除分类对话框 */}
             <MessageModal
@@ -1151,8 +1154,8 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
                 onCancel={() => setShowDeleteCategoryConfirm(false)}
                 onConfirm={handleDeleteCategoryConfirm}
                 type="delete"
-                title="确认删除"
-                message={`确定要删除分类「${selectedCategory?.name}」吗？此操作不可撤销`}
+                title={t('confirmDelete')}
+                message={t('deleteCategoryMessage', {categoryName: selectedCategory?.name || ''})}
             />
             {/* 删除网页对话框 */}
             <MessageModal
@@ -1161,8 +1164,8 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
                 onCancel={() => setShowDeleteSiteConfirm(false)}
                 onConfirm={handleDeleteSiteConfirm}
                 type="delete"
-                title="确认删除"
-                message={`确定要删除网页「${deleteSite?.name}」吗？此操作不可撤销`}
+                title={t('confirmDelete')}
+                message={t('deleteSiteMessage', {siteName: deleteSite?.name || ''})}
             />
             {/*网页编辑弹窗*/}
             <SiteEditModal
@@ -1193,7 +1196,6 @@ const CategoryEditModal: React.FC<CategoryEditModalProps> = ({
                                                                  onClose,
                                                                  initialData = [],
                                                                  onSave,
-                                                                 title = "编辑分类",
                                                                  defaultSelectedId,
                                                                  isSaving
                                                              }) => {
@@ -1205,7 +1207,6 @@ const CategoryEditModal: React.FC<CategoryEditModalProps> = ({
             <CategoryEdit
                 initialData={initialData}
                 onSave={onSave}
-                title={title}
                 defaultSelectedId={defaultSelectedId}
                 isSaving={isSaving}
             ></CategoryEdit>
