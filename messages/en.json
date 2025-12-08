@@ -41,5 +41,22 @@
       "confirmPasswordRequired": "Please confirm password",
       "confirmPasswordMismatch": "Two passwords do not match"
     }
+  },
+  "NavigationHub": {
+    "navCenter": "Navigation Center",
+    "discoverAndAccess": "Discover and access your frequently used websites",
+    "oneStopNavigation": "One-stop navigation to all important pages, improving your work efficiency",
+    "searchPlaceholder": "Search websites or services...",
+    "all": "All",
+    "editCategory": "Edit Category",
+    "internal": "Internal",
+    "external": "External",
+    "switchToLightMode": "Switch to Light Mode",
+    "switchToDarkMode": "Switch to Dark Mode",
+    "loadDataFailed": "Loading user page data failed, please try again",
+    "saveSuccess": "Save success",
+    "saveDataFailed": "Save user page data failed, please try again",
+    "copyright": "© {year} Navigation Center | Version {version}",
+    "version": "1.0.0"
   }
 }

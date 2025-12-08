@@ -41,5 +41,22 @@
       "confirmPasswordRequired": "请确认密码",
       "confirmPasswordMismatch": "两次输入的密码不一致"
     }
+  },
+  "NavigationHub": {
+    "navCenter": "导航中心",
+    "discoverAndAccess": "发现并访问你的常用网站",
+    "oneStopNavigation": "一站式导航到所有重要页面,提高你的工作效率",
+    "searchPlaceholder": "搜索网站或服务...",
+    "all": "全部",
+    "editCategory": "编辑分类",
+    "internal": "内网",
+    "external": "外网",
+    "switchToLightMode": "切换到浅色模式",
+    "switchToDarkMode": "切换到深色模式",
+    "loadDataFailed": "加载用户页面数据失败，请重试",
+    "saveSuccess": "保存成功",
+    "saveDataFailed": "保存用户页面数据失败，请重试",
+    "copyright": "© {year} 导航中心 | 版本 {version}",
+    "version": "1.0.0"
   }
 }

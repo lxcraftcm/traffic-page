@@ -21,6 +21,7 @@ import {apis} from "@/utils/RequestUtil";
 import {removeToken} from "@/lib/auth";
 import {useToast} from "@/components/common/Toast";
 import LanguageSelector from "@/components/LanguageSelector";
+import {useTranslations} from 'next-intl';
 
 const NavigationHub = () => {
     // 核心状态
@@ -43,6 +44,7 @@ const NavigationHub = () => {
     });
     // 初始化 Toast
     const {showToast} = useToast();
+    const t = useTranslations('NavigationHub');
 
     // ref引用
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -57,7 +59,7 @@ const NavigationHub = () => {
             setCategories(JSON.parse(res.userPage))
         }).catch((error: any) => {
             showToast({
-                message: error?.message || 'Loading user page data failed, please try again',
+                message: error?.message || t('loadDataFailed'),
                 type: 'error',
                 duration: 3000,
             });
@@ -112,7 +114,7 @@ const NavigationHub = () => {
         setIsSaving(true)
         apis.saveUserPage({userPage: JSON.stringify(data)}).then(res => {
             showToast({
-                message: 'Save success',
+                message: t('saveSuccess'),
                 type: 'success',
                 duration: 3000,
             });
@@ -120,7 +122,7 @@ const NavigationHub = () => {
             setIsEditModalOpen(false);
         }).catch((err: any) => {
             showToast({
-                message: err?.message || 'Save user page data failed, please try again',
+                message: err?.message || t('saveDataFailed'),
                 type: 'error',
                 duration: 3000,
             });
@@ -159,7 +161,7 @@ const NavigationHub = () => {
                             className="text-indigo-600 text-sm hover:underline flex items-center gap-1.5 transition-colors duration-300 cursor-pointer"
                         >
                             <FontAwesomeIcon icon={faEdit} className="h-4.5 w-4.5"/>
-                            <span>编辑分类</span>
+                            <span>{t('editCategory')}</span>
                         </button>
                     </div>
 
@@ -210,7 +212,7 @@ const NavigationHub = () => {
                                                         <FontAwesomeIcon
                                                             icon={isInternal ? faServer : faGlobe}
                                                             className="mr-0.5"/>
-                                                        <span>{isInternal ? '内网' : '外网'}</span>
+                                                        <span>{isInternal ? t('internal') : t('external')}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -246,7 +248,7 @@ const NavigationHub = () => {
                                 className="w-10 h-10 rounded-lg bg-indigo-600 flex items-center justify-center shadow-sm transition-transform duration-300 hover:scale-105">
                                 <FontAwesomeIcon icon={faLayerGroup} className="text-white h-5.5 w-5.5"/>
                             </div>
-                            <h1 className="text-xl font-semibold">导航中心</h1>
+                            <h1 className="text-xl font-semibold">{t('navCenter')}</h1>
                         </div>
 
                         <div className="flex items-center gap-5">
@@ -257,7 +259,7 @@ const NavigationHub = () => {
                                     className={`text-sm font-medium transition-colors duration-300 flex items-center gap-1.5 ${
                                         !isInternal ? 'text-blue-500' : 'text-slate-500 dark:text-slate-400'
                                     }`}>
-                                    <span>外网</span>
+                                    <span>{t('external')}</span>
                                   </span>
 
                                 {/* 切换开关 */}
@@ -285,7 +287,7 @@ const NavigationHub = () => {
                                     className={`text-sm font-medium transition-colors duration-300 flex items-center gap-1.5 ${
                                         isInternal ? 'text-emerald-500' : 'text-slate-500 dark:text-slate-400'
                                     }`}>
-                                    <span>内网</span>
+                                    <span>{t('internal')}</span>
                                   </span>
                             </div>
 
@@ -301,7 +303,7 @@ const NavigationHub = () => {
                                         focus:outline-none focus:ring-2 focus:ring-offset-2
                                         dark:focus:ring-indigo-400 focus:ring-indigo-500
                                       `}
-                                aria-label={isDarkMode ? '切换到浅色模式' : '切换到深色模式'}
+                                aria-label={isDarkMode ? t('switchToLightMode') : t('switchToDarkMode')}
                             >
                                 <FontAwesomeIcon
                                     icon={isDarkMode ? faSun : faMoon}
@@ -349,15 +351,15 @@ const NavigationHub = () => {
 
                     <div id="searchContainer" className="max-w-2xl mx-auto mb-10 animate-fade-in"
                          style={{animationDelay: '50ms'}}>
-                        <h2 className="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-center mb-2">发现并访问你的常用网站</h2>
-                        <p className="text-gray-500 text-center mb-6">一站式导航到所有重要页面,提高你的工作效率</p>
+                        <h2 className="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-center mb-2">{t('discoverAndAccess')}</h2>
+                        <p className="text-gray-500 text-center mb-6">{t('oneStopNavigation')}</p>
 
                         <div className="relative group animate-fade-in" style={{animationDelay: '150ms'}}>
                             <input type="text" id="searchInput"
                                    className={`w-full pl-12 pr-4 py-3 rounded-xl border outline-none transition-all shadow-sm group-hover:shadow-md
                                    border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/30
                                              bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200`}
-                                   placeholder="搜索网站或服务..."/>
+                                   placeholder={t('searchPlaceholder')}/>
                             <FontAwesomeIcon icon={faSearch}
                                              className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 h-5.5 w-5.5 transition-colors duration-300 group-hover:text-indigo-500"/>
                         </div>
@@ -375,7 +377,7 @@ const NavigationHub = () => {
                             }`}
                             disabled={activeCategory === 'all'}
                         >
-                            全部
+                            {t('all')}
                         </button>
                         {categories.map((cat, index) => (
                             isQuickAccess(cat.id) ? <div key={cat.id}></div>
@@ -403,7 +405,7 @@ const NavigationHub = () => {
                             disabled={isLoading}
                         >
                             <FontAwesomeIcon icon={faEdit} className="h-4.5 w-4.5 mr-1.5"/>
-                            编辑分类
+                            {t('editCategory')}
                         </button>
                     </div>
 
@@ -435,7 +437,7 @@ const NavigationHub = () => {
                 <footer className="mt-16 py-5 border-t border-slate-200 dark:border-slate-800 animate-fade-in"
                         style={{animationDelay: '400ms'}}>
                     <div className="max-w-7xl mx-auto px-6 text-center text-sm text-slate-500 dark:text-slate-400">
-                        © {new Date().getFullYear()} 企业导航中心 | 版本 3.6.0
+                        {t('copyright', {year: new Date().getFullYear(), version: t('version')})}
                     </div>
                 </footer>
             </main>

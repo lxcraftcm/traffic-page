@@ -41,5 +41,22 @@
       "confirmPasswordRequired": "비밀번호를 확인하세요",
       "confirmPasswordMismatch": "비밀번호가 일치하지 않습니다"
     }
+  },
+  "NavigationHub": {
+    "navCenter": "네비게이션 센터",
+    "discoverAndAccess": "자주 사용하는 웹사이트를 발견하고 액세스하세요",
+    "oneStopNavigation": "모든 중요한 페이지에 대한 원스톱 내비게이션으로 작업 효율을 향상시킵니다",
+    "searchPlaceholder": "웹사이트나 서비스 검색...",
+    "all": "전체",
+    "editCategory": "카테고리 편집",
+    "internal": "내부",
+    "external": "외부",
+    "switchToLightMode": "라이트 모드로 전환",
+    "switchToDarkMode": "다크 모드로 전환",
+    "loadDataFailed": "사용자 페이지 데이터 로딩에 실패했습니다",
+    "saveSuccess": "저장 성공",
+    "saveDataFailed": "사용자 페이지 데이터 저장에 실패했습니다",
+    "copyright": "© {year} 네비게이션 센터 | 버전 {version}",
+    "version": "1.0.0"
   }
 }

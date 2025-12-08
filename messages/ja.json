@@ -41,5 +41,22 @@
       "confirmPasswordRequired": "パスワードを確認",
       "confirmPasswordMismatch": "パスワードが一致しない"
     }
+  },
+  "NavigationHub": {
+    "navCenter": "ナビセンター",
+    "discoverAndAccess": "よく使うウェブサイトを発見・アクセス",
+    "oneStopNavigation": "全ての重要なページへのワンストップナビゲーションで、作業効率を向上",
+    "searchPlaceholder": "ウェブサイトやサービスを検索...",
+    "all": "すべて",
+    "editCategory": "カテゴリ編集",
+    "internal": "内部",
+    "external": "外部",
+    "switchToLightMode": "ライトモード",
+    "switchToDarkMode": "ダークモード",
+    "loadDataFailed": "ユーザーページデータの読み込みに失敗しました",
+    "saveSuccess": "保存成功",
+    "saveDataFailed": "ユーザーページデータの保存に失敗しました",
+    "copyright": "© {year} ナビセンター | バージョン {version}",
+    "version": "1.0.0"
   }
 }
