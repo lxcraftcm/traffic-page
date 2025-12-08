@@ -12,16 +12,15 @@ import {
     faUserCircle,
     faCheck,
     faShieldHalved,
-    faGlobe,
-    faChevronDown,
 } from '@fortawesome/free-solid-svg-icons';
 import {getLocalStorage, setLocalStorage} from '@/utils/StorageUtil';
 import Link from 'next/link';
-import {LANGUAGE_OPTIONS} from "@/components/common/PreConstants";
 import {apis} from "@/utils/RequestUtil";
 import forge from 'node-forge';
 import {setToken} from "@/lib/auth";
 import {useToast} from "@/components/common/Toast";
+import {useTranslations} from 'next-intl';
+import LanguageSelector from "@/components/LanguageSelector";
 
 const LoginPage = () => {
     // 原有状态
@@ -35,8 +34,6 @@ const LoginPage = () => {
         password?: string;
         confirmPassword?: string
     }>({});
-    const [isLanguageSelectorOpen, setIsLanguageSelectorOpen] = useState(false);
-    const [selectedLanguage, setSelectedLanguage] = useState('zh-CN');
     const [isDarkMode, setIsDarkMode] = useState(() => {
         const saved = getLocalStorage('darkMode');
         if (saved !== null) return saved === 'true';
@@ -52,8 +49,9 @@ const LoginPage = () => {
     const [registerLoading, setRegisterLoading] = useState(false); // 注册加载状态
 
     // 引用
-    const dropdownRef = useRef<HTMLDivElement>(null);
     const pageRef = useRef<HTMLDivElement>(null);
+
+    const t = useTranslations('LoginPage');
 
     // 初始化 Toast
     const {showToast} = useToast();
@@ -72,17 +70,6 @@ const LoginPage = () => {
         }
         setLocalStorage('darkMode', isDarkMode.toString());
     }, [isDarkMode]);
-
-    // 点击外部关闭语言切换
-    useEffect(() => {
-        const handleClickOutside = (e: MouseEvent) => {
-            if (dropdownRef && dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-                setIsLanguageSelectorOpen(false);
-            }
-        };
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
 
     const checkSystemInit = async () => {
         try {
@@ -103,18 +90,6 @@ const LoginPage = () => {
     // 切换深色模式
     const toggleDarkMode = () => {
         setIsDarkMode(!isDarkMode);
-    };
-
-    // 切换语言
-    const handleLanguageChange = (code: string) => {
-        setSelectedLanguage(code);
-        setIsLanguageSelectorOpen(false);
-    };
-
-    // 获取当前语言名称
-    const getCurrentLanguageName = () => {
-        const language = LANGUAGE_OPTIONS.find(option => option.code === selectedLanguage);
-        return language ? language.nativeName : '中文';
     };
 
     // 表单验证
@@ -206,7 +181,7 @@ const LoginPage = () => {
             setPassword('');
             setConfirmPassword('');
             // 显示注册成功提示
-            alert(selectedLanguage === 'zh-CN' ? '注册成功,请登录！' : 'Registration successful, please log in!');
+            // alert(selectedLanguage === 'zh-CN' ? '注册成功,请登录！' : 'Registration successful, please log in!');
         } catch (error: any) {
             showToast({
                 message: error?.message || 'Registration failed, please try again',
@@ -269,7 +244,7 @@ const LoginPage = () => {
                                     <FontAwesomeIcon icon={faShieldHalved} className="text-white h-5 w-5"/>
                                 </div>
                                 <h1 className="text-lg font-semibold dark:text-amber-50">
-                                    {isRegisterMode ? '初始化系统' : '企业导航中心'}
+                                    {isRegisterMode ? '初始化系统' : '导航中心'}
                                 </h1>
                             </div>
 
@@ -293,49 +268,7 @@ const LoginPage = () => {
                                 </button>
 
                                 {/* 语言切换 */}
-                                <div ref={dropdownRef} className="relative inline-block">
-                                    <button
-                                        onClick={() => setIsLanguageSelectorOpen(!isLanguageSelectorOpen)}
-                                        className={`flex items-center gap-1 px-3 py-1.5 rounded-md text-sm font-medium
-                                    bg-white hover:bg-slate-100 border border-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 dark:border-slate-600
-                                    transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 dark:text-amber-50`}
-                                    >
-                                        <FontAwesomeIcon icon={faGlobe} className="h-4 w-4 text-indigo-500"/>
-                                        <span>{getCurrentLanguageName()}</span>
-                                        <FontAwesomeIcon
-                                            icon={faChevronDown}
-                                            className={`h-3.5 w-3.5 text-slate-500 transition-transform duration-200 ${isLanguageSelectorOpen ? 'rotate-180' : ''}`}
-                                        />
-                                    </button>
-
-                                    {/* 语言下拉菜单 */}
-                                    <div className={`
-                                      absolute z-50 mt-1 w-44 rounded-md bg-white dark:bg-slate-800  border border-slate-200 dark:border-slate-700  
-                                      shadow-md  overflow-hidden transition-opacity duration-200
-                                      ${isLanguageSelectorOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}
-                                    `}>
-                                        {LANGUAGE_OPTIONS.map((option, index) => (
-                                            <button
-                                                key={option.code}
-                                                onClick={() => handleLanguageChange(option.code)}
-                                                className={`
-                                        w-full flex items-center justify-between px-4 py-2 text-sm transition-colors duration-150
-                                        ${selectedLanguage === option.code
-                                                    ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50/70 dark:bg-indigo-900/10'
-                                                    : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/30'
-                                                }
-                                      `}
-                                                style={{animationDelay: `${index * 50}ms`}}
-                                            >
-                                                <span>{option.nativeName}</span>
-                                                {selectedLanguage === option.code && (
-                                                    <FontAwesomeIcon icon={faCheck}
-                                                                     className="h-4 w-4 text-indigo-500"/>
-                                                )}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
+                                <LanguageSelector className="bg-white py-1.5"/>
                             </div>
                         </div>
 
