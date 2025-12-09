@@ -325,17 +325,7 @@ const NavigationHub = () => {
                                 <FontAwesomeIcon icon={faCog} className="h-5 w-5"/>
                             </button>
                             <button
-                                onClick={(event) => {
-                                    loadData();
-                                    // 添加旋转动画类
-                                    const button = event.currentTarget;
-                                    if (!button.classList.contains('animate-spin-once')) {
-                                        button.classList.add('animate-spin-once');
-                                        setTimeout(() => {
-                                            button.classList.remove('animate-spin-once');
-                                        }, 700);
-                                    }
-                                }}
+                                onClick={loadData}
                                 className={`
                                         p-2 rounded-full transition-all duration-300 ease-in-out
                                         flex items-center justify-center hover:shadow-sm cursor-pointer
@@ -344,7 +334,16 @@ const NavigationHub = () => {
                                         focus:ring-indigo-500 hover:text-indigo-600
                                       `}
                             >
-                                <FontAwesomeIcon icon={faSync} className="h-5 w-5"/>
+                                <FontAwesomeIcon icon={faSync} className="h-5 w-5" onClick={(event) => {
+                                    // 添加旋转动画类
+                                    const button = event.currentTarget;
+                                    if (!button.classList.contains('animate-spin-once')) {
+                                        button.classList.add('animate-spin-once');
+                                        setTimeout(() => {
+                                            button.classList.remove('animate-spin-once');
+                                        }, 700);
+                                    }
+                                }}/>
                             </button>
                             <button
                                 onClick={() => {
