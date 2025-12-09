@@ -1,10 +1,11 @@
 import {NextRequest, NextResponse} from "next/server";
 import {verifyJwt} from "@/lib/auth";
 import {logger} from "@/lib/logger";
+import {getLocale, getMessages} from "next-intl/server";
 
 export const result = {
     success: (data: any) => {
-        return NextResponse.json({message: '请求成功', ...data}, {status: 200});
+        return NextResponse.json({message: 'success', ...data}, {status: 200});
     },
 
     error: (status: number, message: string) => {
@@ -27,4 +28,11 @@ export const getUser = async (request: NextRequest) => {
         logger.warn("common,getUser error: ", e.message)
         return null;
     }
+}
+
+export const getMessage = async () => {
+    // 获取请求的语言偏好
+    const locale = await getLocale();
+    // 获取对应语言的翻译消息
+    return await getMessages({locale});
 }

@@ -163,5 +163,14 @@
       "cancel": "취소",
       "confirm": "확인"
     }
+  },
+  "api": {
+    "errors": {
+      "invalidCredentials": "잘못된 자격 증명",
+      "internalServerError": "서버 내부 오류",
+      "invalidToken": "유효하지 않은 토큰",
+      "jsonError": "JSON 오류",
+      "systemInitialized": "시스템이 이미 초기화되었습니다. 등록이 허용되지 않습니다. 관리자에게 문의하세요."
+    }
   }
 }

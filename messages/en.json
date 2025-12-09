@@ -163,5 +163,14 @@
       "cancel": "Cancel",
       "confirm": "Confirm"
     }
+  },
+  "api": {
+    "errors": {
+      "invalidCredentials": "Invalid credentials",
+      "internalServerError": "Internal server error",
+      "invalidToken": "Invalid token",
+      "jsonError": "Json error",
+      "systemInitialized": "System has been initialized, registration is not allowed. Please contact the administrator."
+    }
   }
 }

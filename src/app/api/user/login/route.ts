@@ -1,24 +1,26 @@
 import {sign} from 'jsonwebtoken';
 import {NextRequest} from "next/server";
-import {result} from "@/utils/ApiUtil";
+import {getMessage, result} from "@/utils/ApiUtil";
 import db from "@/lib/db";
 import bcrypt from 'bcryptjs';
 import {decryptedRsa} from "@/utils/CryptoUtil";
+import {getTranslation} from '@/lib/i18n'
 
 // 登录接口
 export async function POST(
     req: NextRequest
 ) {
-    const {keyId, username, password, rememberMe} = await req.json()
+    const messages = await getMessage();
+    const {keyId, username, password, rememberMe} = await req.json();
     try {
         const decryptedPsw = decryptedRsa(keyId, password);
         if (!decryptedPsw) {
-            return result.error(403, 'Invalid credentials');
+            return result.error(403, await getTranslation(messages, 'api.errors.invalidCredentials', 'Invalid credentials'));
         }
         // 验证用户凭证
         const user = await validateUser(username, decryptedPsw);
         if (!user) {
-            return result.error(403, 'Invalid credentials');
+            return result.error(403, await getTranslation(messages, 'api.errors.invalidCredentials', 'Invalid credentials'));
         }
         // 生成JWT token
         const token = sign(
@@ -30,9 +32,9 @@ export async function POST(
             }
         );
         // 返回响应
-        return result.success({user, token})
+        return result.success({user, token});
     } catch (error: any) {
-        return result.error(500, 'Internal server error ' + error.message);
+        return result.error(500, `${await getTranslation(messages, 'api.errors.internalServerError', 'Internal server error')} + ${error.message}`);
     }
 }
 

@@ -163,5 +163,14 @@
       "cancel": "取消",
       "confirm": "确认"
     }
+  },
+  "api": {
+    "errors": {
+      "invalidCredentials": "无效的凭证",
+      "internalServerError": "服务器内部错误",
+      "invalidToken": "无效的令牌",
+      "jsonError": "JSON格式错误",
+      "systemInitialized": "系统已经初始化,无法注册,请联系管理员"
+    }
   }
 }

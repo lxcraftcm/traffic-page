@@ -163,5 +163,14 @@
       "cancel": "キャンセル",
       "confirm": "確認"
     }
+  },
+  "api": {
+    "errors": {
+      "invalidCredentials": "無効な認証情報",
+      "internalServerError": "サーバー内部エラー",
+      "invalidToken": "無効なトークン",
+      "jsonError": "JSONエラー",
+      "systemInitialized": "システムはすでに初期化されています。登録は許可されていません。管理者にお問い合わせください。"
+    }
   }
 }
