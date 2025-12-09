@@ -10,6 +10,7 @@ import {
     faUser,
     faInfoCircle
 } from '@fortawesome/free-solid-svg-icons';
+import GeneralSetting from "@/components/SystemEdit/GeneralSetting";
 
 // 系统设置项类型
 type SettingItem = {
@@ -53,7 +54,7 @@ const SystemEdit: React.FC = () => {
     // 系统设置项列表 导航数据
     const settingItems: SettingItem[] = [
         // 通用设置
-        {id: 'general', icon: faCog, label: t('general.title'), color: '#6366f1', render: defaultSetting},
+        {id: 'general', icon: faCog, label: t('general.title'), color: '#6366f1', render: () => <GeneralSetting/>},
         // 偏好设置
         {id: 'preference', icon: faHeart, label: t('preference.title'), color: '#ec4899', render: defaultSetting},
         // 安全设置
