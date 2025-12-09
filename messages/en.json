@@ -46,7 +46,6 @@
     "navCenter": "Navigation Center",
     "discoverAndAccess": "Discover and access your frequently used websites",
     "oneStopNavigation": "One-stop navigation to all important pages, improving your work efficiency",
-    "searchPlaceholder": "Search websites or services...",
     "all": "All",
     "editCategory": "Edit Category",
     "internal": "Internal",
@@ -172,5 +171,8 @@
       "jsonError": "Json error",
       "systemInitialized": "System has been initialized, registration is not allowed. Please contact the administrator."
     }
+  },
+  "SearchBar": {
+    "searchPlaceholder": "Search content or switch search engine"
   }
 }

@@ -46,7 +46,6 @@
     "navCenter": "ナビセンター",
     "discoverAndAccess": "よく使うウェブサイトを発見・アクセス",
     "oneStopNavigation": "全ての重要なページへのワンストップナビゲーションで、作業効率を向上",
-    "searchPlaceholder": "ウェブサイトやサービスを検索...",
     "all": "すべて",
     "editCategory": "カテゴリ編集",
     "internal": "内部",
@@ -172,5 +171,8 @@
       "jsonError": "JSONエラー",
       "systemInitialized": "システムはすでに初期化されています。登録は許可されていません。管理者にお問い合わせください。"
     }
+  },
+  "SearchBar": {
+    "searchPlaceholder": "コンテンツを検索または検索エンジンを切り替え"
   }
 }

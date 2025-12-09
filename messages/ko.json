@@ -46,7 +46,6 @@
     "navCenter": "네비게이션 센터",
     "discoverAndAccess": "자주 사용하는 웹사이트를 발견하고 액세스하세요",
     "oneStopNavigation": "모든 중요한 페이지에 대한 원스톱 내비게이션으로 작업 효율을 향상시킵니다",
-    "searchPlaceholder": "웹사이트나 서비스 검색...",
     "all": "전체",
     "editCategory": "카테고리 편집",
     "internal": "내부",
@@ -172,5 +171,8 @@
       "jsonError": "JSON 오류",
       "systemInitialized": "시스템이 이미 초기화되었습니다. 등록이 허용되지 않습니다. 관리자에게 문의하세요."
     }
+  },
+  "SearchBar": {
+    "searchPlaceholder": "콘텐츠 검색 또는 검색 엔진 전환"
   }
 }

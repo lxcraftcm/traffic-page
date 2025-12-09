@@ -46,7 +46,6 @@
     "navCenter": "导航中心",
     "discoverAndAccess": "发现并访问你的常用网站",
     "oneStopNavigation": "一站式导航到所有重要页面,提高你的工作效率",
-    "searchPlaceholder": "搜索网站或服务...",
     "all": "全部",
     "editCategory": "编辑分类",
     "internal": "内网",
@@ -172,5 +171,8 @@
       "jsonError": "JSON格式错误",
       "systemInitialized": "系统已经初始化,无法注册,请联系管理员"
     }
+  },
+  "SearchBar": {
+    "searchPlaceholder": "搜索内容或切换搜索引擎"
   }
 }
