@@ -2,7 +2,6 @@
 import React, {useState, useEffect, useRef} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {
-    faSearch,
     faCog,
     faSync,
     faEdit,
@@ -23,6 +22,7 @@ import {useToast} from "@/components/common/Toast";
 import LanguageSelector from "@/components/LanguageSelector";
 import {useTranslations} from 'next-intl';
 import SearchBar from "@/components/SearchBar";
+import SystemEditModal from "@/components/SystemEdit/SystemEditModal";
 
 const NavigationHub = () => {
     // 核心状态
@@ -46,9 +46,6 @@ const NavigationHub = () => {
     // 初始化 Toast
     const {showToast} = useToast();
     const t = useTranslations('NavigationHub');
-
-    // ref引用
-    const dropdownRef = useRef<HTMLDivElement>(null);
 
     // 加载数据
     const loadData = () => {
@@ -313,7 +310,10 @@ const NavigationHub = () => {
 
                             {/* 功能按钮 */}
                             <button
-                                onClick={() => setIsSystemEditModalOpen(true)}
+                                onClick={() => {
+                                    setIsSystemEditModalOpen(true);
+                                    setIsEditModalOpen(false);
+                                }}
                                 className={`
                                         p-2 rounded-full transition-all duration-300 ease-in-out
                                         flex items-center justify-center hover:shadow-sm cursor-pointer
@@ -327,7 +327,6 @@ const NavigationHub = () => {
                             <button
                                 onClick={(event) => {
                                     loadData();
-                                    setIsSystemEditModalOpen(true);
                                     // 添加旋转动画类
                                     const button = event.currentTarget;
                                     if (!button.classList.contains('animate-spin-once')) {
@@ -481,18 +480,12 @@ const NavigationHub = () => {
                 isSaving={isSaving}
             />
             {/*系统属性编辑组件 */}
-            {/*<SystemEditModal*/}
-            {/*    visible={isSystemEditModalOpen}*/}
-            {/*    onClose={() => {*/}
-            {/*        setIsSystemEditModalOpen(false)*/}
-            {/*    }}*/}
-            {/*    onSave={(data: any) => {*/}
-            {/*        console.log("saveData", data)*/}
-            {/*        setCategories(data)*/}
-            {/*        setIsSystemEditModalOpen(false)*/}
-            {/*        loadData()*/}
-            {/*    }}*/}
-            {/*/>*/}
+            <SystemEditModal
+                visible={isSystemEditModalOpen}
+                onClose={() => {
+                    setIsSystemEditModalOpen(false)
+                }}
+            />
         </div>
     );
 };
