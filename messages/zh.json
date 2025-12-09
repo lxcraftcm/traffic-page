@@ -156,5 +156,12 @@
       "cancel": "取消",
       "confirm": "确定选择"
     }
+  },
+  "Modal": {
+    "close": "关闭",
+    "buttons": {
+      "cancel": "取消",
+      "confirm": "确认"
+    }
   }
 }

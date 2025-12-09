@@ -156,5 +156,12 @@
       "cancel": "Cancel",
       "confirm": "Confirm Selection"
     }
+  },
+  "Modal": {
+    "close": "Close",
+    "buttons": {
+      "cancel": "Cancel",
+      "confirm": "Confirm"
+    }
   }
 }

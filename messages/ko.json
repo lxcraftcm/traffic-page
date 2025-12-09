@@ -156,5 +156,12 @@
       "cancel": "취소",
       "confirm": "선택 확인"
     }
+  },
+  "Modal": {
+    "close": "닫기",
+    "buttons": {
+      "cancel": "취소",
+      "confirm": "확인"
+    }
   }
 }

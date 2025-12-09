@@ -156,5 +156,12 @@
       "cancel": "キャンセル",
       "confirm": "選択を確定"
     }
+  },
+  "Modal": {
+    "close": "閉じる",
+    "buttons": {
+      "cancel": "キャンセル",
+      "confirm": "確認"
+    }
   }
 }
