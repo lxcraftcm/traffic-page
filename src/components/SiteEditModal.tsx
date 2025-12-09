@@ -18,7 +18,7 @@ import Modal, {MessageModal} from "@/components/common/Modal";
 import {getIconClass, renderIcon} from "@/utils/IconUtil";
 import {validateFaClassFormat, validateNotEmpty, validateUrlFormat} from "@/utils/ValidateUtil";
 import IconPickerModal from '@/components/IconPickerModal'
-
+import {useTranslations} from 'next-intl';
 
 // 核心入参
 interface SiteEditProps {
@@ -40,6 +40,8 @@ const SiteEdit: React.FC<SiteEditProps> = ({
                                                onSubmit,
                                                onCancel
                                            }) => {
+    // 翻译钩子
+    const t = useTranslations('SiteEdit');
 
     const init = (): Site => {
         if (editSite) {
@@ -76,23 +78,23 @@ const SiteEdit: React.FC<SiteEditProps> = ({
         }
     } = {
         name: {
-            name: "网站名称",
+            name: t('siteName'),
             validate: validateNotEmpty
         },
         internalUrl: {
-            name: "内网地址",
+            name: t('internalUrl'),
             validate: validateUrlFormat
         },
         externalUrl: {
-            name: "外网地址",
+            name: t('externalUrl'),
             validate: validateUrlFormat
         },
         fontAwesomeClass: {
-            name: "FA类名",
+            name: t('faClassName'),
             validate: validateFaClassFormat
         },
         iconUrl: {
-            name: "图片地址",
+            name: t('imageUrl'),
             validate: validateUrlFormat
         }
     }
@@ -208,18 +210,18 @@ const SiteEdit: React.FC<SiteEditProps> = ({
                                 {form.internalUrl && (
                                     <div className="flex items-center gap-1.5 truncate">
                                         <FontAwesomeIcon icon={faServer} className="h-4 text-indigo-500"/>
-                                        <span className="truncate">内网地址: {form.internalUrl}</span>
+                                        <span className="truncate">{t('internalUrl')}: {form.internalUrl}</span>
                                     </div>
                                 )}
                                 {form.externalUrl && (
                                     <div className="flex items-center gap-1.5 truncate">
                                         <FontAwesomeIcon icon={faExternalLink} className="h-4 text-indigo-500"/>
-                                        <span className="truncate">外网地址: {form.externalUrl}</span>
+                                        <span className="truncate">{t('externalUrl')}: {form.externalUrl}</span>
                                     </div>
                                 )}
                                 {!form.internalUrl && !form.externalUrl && (
                                     <div className="text-slate-500 dark:text-slate-500">
-                                        暂无关联地址,可在下方表单中添加
+                                        {t('noAssociatedUrls')}
                                     </div>
                                 )}
                             </div>
@@ -241,10 +243,10 @@ const SiteEdit: React.FC<SiteEditProps> = ({
                     </div>
                     <div>
                         <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-200">
-                            新增网页信息
+                            {t('addSiteInfo')}
                         </h3>
                         <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                            填写网页名称、地址及图标信息,完成后点击「新增网页」按钮保存
+                            {t('fillSiteInfo')}
                         </p>
                     </div>
                 </div>
@@ -260,7 +262,7 @@ const SiteEdit: React.FC<SiteEditProps> = ({
                 className="min-h-15 border-b border-slate-200 dark:border-slate-700 px-6 py-3 flex items-center justify-between bg-slate-50 dark:bg-slate-900/50">
                 <h2 className="text-xl font-semibold flex items-center gap-2 text-slate-800 dark:text-slate-100">
                     <FontAwesomeIcon icon={faLayerGroup} className="h-5 text-indigo-500"/>
-                    <span>{isEditing ? '编辑网页' : '新增网页'}</span>
+                    <span>{isEditing ? t('editSite') : t('addSite')}</span>
                 </h2>
             </div>
 
@@ -275,19 +277,19 @@ const SiteEdit: React.FC<SiteEditProps> = ({
                     <div className="space-y-4">
                         <h5 className="text-sm font-medium text-slate-600 dark:text-slate-400 flex items-center gap-1.5">
                             <FontAwesomeIcon icon={faGlobe} className="h-4 text-indigo-500"/>
-                            基本信息
+                            {t('basicInfo')}
                         </h5>
 
                         {/* 网页名称 */}
                         <div>
                             <label className="block text-sm font-medium mb-2 text-slate-700 dark:text-slate-300">
-                                网页名称 <span className="text-red-500">*</span>
+                                {t('siteName')} <span className="text-red-500">*</span>
                             </label>
                             <input
                                 type="text"
                                 value={form.name}
                                 onChange={(e) => handleFieldChange('name', e.target.value)}
-                                placeholder="请输入网页名称(如: 百度搜索、内网管理系统)"
+                                placeholder={t('siteNamePlaceholder')}
                                 className={`w-full px-4 py-2.5 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 ${
                                     errors.invalidName
                                         ? 'border-red-300 dark:border-red-700 focus:ring-red-500/30'
@@ -297,7 +299,7 @@ const SiteEdit: React.FC<SiteEditProps> = ({
                             {hasError('name') && (
                                 <p className="mt-1 text-xs text-red-500 dark:text-red-400 flex items-center gap-1">
                                     <FontAwesomeIcon icon={faExclamationCircle} className="h-3"/>
-                                    请输入网页名称
+                                    {t('pleaseEnterSiteName')}
                                 </p>
                             )}
                         </div>
@@ -307,13 +309,13 @@ const SiteEdit: React.FC<SiteEditProps> = ({
                             <label
                                 className="block text-sm font-medium mb-2 text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                                 <FontAwesomeIcon icon={faServer} className="h-3.5 text-indigo-500"/>
-                                内网地址
+                                {t('internalUrl')}
                             </label>
                             <input
                                 type="url"
                                 value={form.internalUrl}
                                 onChange={(e) => handleFieldChange('internalUrl', e.target.value)}
-                                placeholder="如: http://192.168.1.100 或 http://10.0.0.5:8080"
+                                placeholder={t('internalUrlPlaceholder')}
                                 className={`w-full px-4 py-2.5 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 ${
                                     errors.invalidInternalUrl
                                         ? 'border-red-300 dark:border-red-700 focus:ring-red-500/30'
@@ -323,7 +325,7 @@ const SiteEdit: React.FC<SiteEditProps> = ({
                             {hasError('internalUrl') && (
                                 <p className="mt-1 text-xs text-red-500 dark:text-red-400 flex items-center gap-1">
                                     <FontAwesomeIcon icon={faExclamationCircle} className="h-3"/>
-                                    请输入有效的URL(需以http://或https://开头)
+                                    {t('pleaseEnterValidUrl')}
                                 </p>
                             )}
                         </div>
@@ -333,13 +335,13 @@ const SiteEdit: React.FC<SiteEditProps> = ({
                             <label
                                 className="block text-sm font-medium mb-2 text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                                 <FontAwesomeIcon icon={faExternalLink} className="h-3.5 text-indigo-500"/>
-                                外网地址
+                                {t('externalUrl')}
                             </label>
                             <input
                                 type="url"
                                 value={form.externalUrl}
                                 onChange={(e) => handleFieldChange('externalUrl', e.target.value)}
-                                placeholder="如: https://www.baidu.com 或 https://github.com"
+                                placeholder={t('externalUrlPlaceholder')}
                                 className={`w-full px-4 py-2.5 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 ${
                                     errors.invalidExternalUrl
                                         ? 'border-red-300 dark:border-red-700 focus:ring-red-500/30'
@@ -349,7 +351,7 @@ const SiteEdit: React.FC<SiteEditProps> = ({
                             {hasError('externalUrl') && (
                                 <p className="mt-1 text-xs text-red-500 dark:text-red-400 flex items-center gap-1">
                                     <FontAwesomeIcon icon={faExclamationCircle} className="h-3"/>
-                                    请输入有效的URL(需以http://或https://开头)
+                                    {t('pleaseEnterValidUrl')}
                                 </p>
                             )}
                         </div>
@@ -359,7 +361,7 @@ const SiteEdit: React.FC<SiteEditProps> = ({
                     <div className="space-y-4">
                         <h5 className="text-sm font-medium text-slate-600 dark:text-slate-400 flex items-center gap-1.5">
                             <FontAwesomeIcon icon={faImage} className="h-4 text-indigo-500"/>
-                            图标设置
+                            {t('iconSettings')}
                         </h5>
 
                         {/* 图标模式切换 */}
@@ -375,7 +377,7 @@ const SiteEdit: React.FC<SiteEditProps> = ({
                                 }`}
                             >
                                 <FontAwesomeIcon icon={faImage} className="h-3.5"/>
-                                <span>预设图标</span>
+                                <span>{t('presetIcon')}</span>
                             </button>
                             <button
                                 type="button"
@@ -388,7 +390,7 @@ const SiteEdit: React.FC<SiteEditProps> = ({
                                 }`}
                             >
                                 <FontAwesomeIcon icon={faFont} className="h-3.5"/>
-                                <span>FA类名</span>
+                                <span>{t('faClass')}</span>
                             </button>
                             <button
                                 type="button"
@@ -401,13 +403,13 @@ const SiteEdit: React.FC<SiteEditProps> = ({
                                 } `}
                             >
                                 <FontAwesomeIcon icon={faLink} className="h-3.5"/>
-                                <span>图标链接</span>
+                                <span>{t('iconUrl')}</span>
                             </button>
                         </div>
 
                         {/* 图标预览 + 选择区域 */}
                         <div className="flex items-center gap-3 mt-3">
-                            <label className="text-sm text-slate-700 dark:text-slate-300">预览: </label>
+                            <label className="text-sm text-slate-700 dark:text-slate-300">{t('preview')}: </label>
                             <div
                                 className="w-12 h-12 rounded-lg flex items-center justify-center shadow-sm"
                                 style={{backgroundColor: form.iconBgColor}}
@@ -446,7 +448,7 @@ const SiteEdit: React.FC<SiteEditProps> = ({
                                         dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-gray-200
                                         border border-gray-200 dark:border-gray-700
                                     `}
-                                    title="更多"
+                                    title={t('more')}
                                 >
                                     <FontAwesomeIcon icon={faEllipsis} style={{fontSize: '16px'}}/>
                                 </button>
@@ -457,14 +459,14 @@ const SiteEdit: React.FC<SiteEditProps> = ({
                             <div>
                                 <label
                                     className="block text-sm font-medium mb-2 text-slate-700 dark:text-slate-300">
-                                    FontAwesome类名 <span className="text-red-500">*</span>
+                                    {t('faClassName')} <span className="text-red-500">*</span>
                                 </label>
                                 <div className="flex gap-2">
                                     <input
                                         type="text"
                                         value={form.fontAwesomeClass}
                                         onChange={(e) => handleFieldChange('fontAwesomeClass', e.target.value)}
-                                        placeholder="格式: fa-solid fa-link(前缀+图标名)"
+                                        placeholder={t('faClassPlaceholder')}
                                         className={`flex-1 px-4 py-2.5 rounded-lg border text-sm focus:outline-none focus:ring-2 ${
                                             errors.invalidFaClass
                                                 ? 'border-red-300 dark:border-red-700 focus:ring-red-500/30'
@@ -483,7 +485,7 @@ const SiteEdit: React.FC<SiteEditProps> = ({
                                 {hasError('fontAwesomeClass') && (
                                     <p className="mt-1 text-xs text-red-500 dark:text-red-400 flex items-center gap-1">
                                         <FontAwesomeIcon icon={faExclamationCircle} className="h-3"/>
-                                        格式错误,需输入「前缀 图标名」(如: fa-solid fa-link)
+                                        {t('invalidClassFormat')}
                                     </p>
                                 )}
                             </div>
@@ -493,14 +495,14 @@ const SiteEdit: React.FC<SiteEditProps> = ({
                             <div>
                                 <label
                                     className="block text-sm font-medium mb-2 text-slate-700 dark:text-slate-300">
-                                    图标图片链接
+                                    {t('iconImageUrl')}
                                 </label>
                                 <div className="flex gap-2">
                                     <input
                                         type="url"
                                         value={form.iconUrl}
                                         onChange={(e) => handleFieldChange('iconUrl', e.target.value)}
-                                        placeholder="请输入图标图片的HTTP/HTTPS链接"
+                                        placeholder={t('iconImageUrlPlaceholder')}
                                         className={`flex-1 px-4 py-2.5 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 border-slate-200
                                          dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200`}
                                     />
@@ -516,7 +518,7 @@ const SiteEdit: React.FC<SiteEditProps> = ({
                                 {hasError('iconUrl') && (
                                     <p className="mt-1 text-xs text-red-500 dark:text-red-400 flex items-center gap-1">
                                         <FontAwesomeIcon icon={faExclamationCircle} className="h-3"/>
-                                        请输入有效的URL(需以http://或https://开头)
+                                        {t('pleaseEnterValidUrl')}
                                     </p>
                                 )}
                             </div>
@@ -527,13 +529,13 @@ const SiteEdit: React.FC<SiteEditProps> = ({
                     <div className="space-y-4">
                         <h5 className="text-sm font-medium text-slate-600 dark:text-slate-400 flex items-center gap-1.5">
                             <FontAwesomeIcon icon={faPalette} className="h-4 text-indigo-500"/>
-                            颜色设置
+                            {t('colorSettings')}
                         </h5>
 
                         {/* 图标颜色选择 */}
                         <div>
                             <label className="block text-sm font-medium mb-2 text-slate-700 dark:text-slate-300">
-                                图标颜色(当前: {form.iconColor})
+                                {t('iconColor')} ({t('current')}: {form.iconColor})
                             </label>
                             <div className="flex items-center gap-2">
                                 <div className="flex gap-1 flex-wrap flex-1">
@@ -572,7 +574,7 @@ const SiteEdit: React.FC<SiteEditProps> = ({
                         {/* 图标背景色选择 */}
                         <div>
                             <label className="block text-sm font-medium mb-2 text-slate-700 dark:text-slate-300">
-                                图标背景色(当前: {form.iconBgColor})
+                                {t('bgColor')} ({t('current')}: {form.iconBgColor})
                             </label>
                             <div className="flex items-center gap-2">
                                 <div className="flex gap-1 flex-wrap flex-1">
@@ -617,7 +619,7 @@ const SiteEdit: React.FC<SiteEditProps> = ({
                         className={`px-6 py-3 rounded-lg text-sm transition-colors bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 cursor-pointer`}
                     >
                         <FontAwesomeIcon icon={faTimes} className="h-4 mr-1.5"/>
-                        取消
+                        {t('cancel')}
                     </button>
                     {editSite && hasChanges ? (
                         <button
@@ -626,7 +628,7 @@ const SiteEdit: React.FC<SiteEditProps> = ({
                                  dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 cursor-pointer"
                         >
                             <FontAwesomeIcon icon={faUndo} className="h-4"/>
-                            <span>恢复修改</span>
+                            <span>{t('restoreChanges')}</span>
                         </button>
                     ) : (<></>)}
                     <button
@@ -636,7 +638,7 @@ const SiteEdit: React.FC<SiteEditProps> = ({
                         disabled:bg-slate-200 disabled:dark:bg-slate-700 disabled:text-slate-500 disabled:hover:bg-slate-200 disabled:dark:hover:bg-slate-700 disabled:cursor-not-allowed`}
                     >
                         <FontAwesomeIcon icon={faCheck} className="h-4"/>
-                        <span>{isEditing ? '保存修改' : '新增网页'}</span>
+                        <span>{isEditing ? t('saveChanges') : t('addSite')}</span>
                     </button>
                 </div>
             </div>
@@ -651,8 +653,8 @@ const SiteEdit: React.FC<SiteEditProps> = ({
                     setErrors({})
                 }}
                 type="rollback"
-                title="确认恢复修改"
-                message="此操作将放弃所有未保存的更改,恢复到上次保存的状态。确定要继续吗？"
+                title={t('confirmRestoreChanges')}
+                message={t('restoreChangesMessage')}
             />
             {/*更多图标选择*/}
             <IconPickerModal
@@ -697,5 +699,3 @@ const SiteEditModal: React.FC<SiteEditModalProps> = ({
 };
 
 export default SiteEditModal;
-
-
