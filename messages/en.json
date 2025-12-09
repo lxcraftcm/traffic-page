@@ -135,5 +135,26 @@
     "saveChanges": "Save Changes",
     "confirmRestoreChanges": "Confirm Restore Changes",
     "restoreChangesMessage": "This operation will discard all unsaved changes and restore to the last saved state. Are you sure you want to continue?"
+  },
+  "IconPicker": {
+    "title": "Select Icon",
+    "searchPlaceholder": "Search icon name (e.g., home, user)",
+    "loading": "Loading icons...",
+    "noIconsFound": {
+      "title": "No icons found",
+      "message": "Try changing your search term or selecting another icon library"
+    },
+    "library": {
+      "all": "All"
+    },
+    "pagination": {
+      "total": "All",
+      "previous": "Previous page",
+      "next": "Next page"
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "confirm": "Confirm Selection"
+    }
   }
 }

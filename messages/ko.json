@@ -135,5 +135,26 @@
     "saveChanges": "변경 저장",
     "confirmRestoreChanges": "변경 복원 확인",
     "restoreChangesMessage": "이 작업은 저장되지 않은 모든 변경 사항을 삭제하고 마지막으로 저장된 상태로 복원합니다. 계속하시겠습니까?"
+  },
+  "IconPicker": {
+    "title": "아이콘 선택",
+    "searchPlaceholder": "아이콘 이름 검색 (예: home, user)",
+    "loading": "아이콘 로딩 중...",
+    "noIconsFound": {
+      "title": "일치하는 아이콘이 없습니다",
+      "message": "검색어를 변경하거나 다른 아이콘 라이브러리를 선택하세요"
+    },
+    "library": {
+      "all": "전체"
+    },
+    "pagination": {
+      "total": "전체",
+      "previous": "이전 페이지",
+      "next": "다음 페이지"
+    },
+    "buttons": {
+      "cancel": "취소",
+      "confirm": "선택 확인"
+    }
   }
 }

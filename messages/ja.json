@@ -135,5 +135,26 @@
     "saveChanges": "変更を保存",
     "confirmRestoreChanges": "変更の復元を確認",
     "restoreChangesMessage": "この操作により、保存されていないすべての変更が破棄され、最後に保存された状態に復元されます。続行しますか？"
+  },
+  "IconPicker": {
+    "title": "アイコンを選択",
+    "searchPlaceholder": "アイコン名を検索（例：home、user）",
+    "loading": "アイコンを読み込み中...",
+    "noIconsFound": {
+      "title": "一致するアイコンが見つかりません",
+      "message": "検索キーワードを変更するか、別のアイコンライブラリを選択してください"
+    },
+    "library": {
+      "all": "すべて"
+    },
+    "pagination": {
+      "total": "すべて",
+      "previous": "前のページ",
+      "next": "次のページ"
+    },
+    "buttons": {
+      "cancel": "キャンセル",
+      "confirm": "選択を確定"
+    }
   }
 }

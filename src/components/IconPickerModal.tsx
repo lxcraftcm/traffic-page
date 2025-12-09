@@ -8,6 +8,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCheck, faLayerGroup, faTimes, faSearch, faAngleLeft, faAngleRight} from "@fortawesome/free-solid-svg-icons";
 import ResizeCard from "./common/ResizeCard";
 import {IconProp} from "@fortawesome/fontawesome-svg-core";
+import {useTranslations} from 'next-intl';
 
 interface IconItem {
     id: string;
@@ -32,6 +33,9 @@ const MAX_VISIBLE_PAGES = 5;
 const LIBRARY_OPTIONS = ['all', 'solid', 'regular', 'brands'] as const;
 
 const IconPicker: React.FC<IconPickerProps> = ({onSubmit, onCancel}) => {
+    // 翻译钩子
+    const t = useTranslations('IconPicker');
+
     // 状态管理
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedLibrary, setSelectedLibrary] = useState<'all' | 'solid' | 'regular' | 'brands'>('all');
@@ -106,7 +110,7 @@ const IconPicker: React.FC<IconPickerProps> = ({onSubmit, onCancel}) => {
     // 获取库显示名称
     const getLibraryName = (library: typeof LIBRARY_OPTIONS[number]) => {
         const nameMap = {
-            all: 'All',
+            all: t('library.all'),
             solid: 'Solid',
             regular: 'Regular',
             brands: 'Brands'
@@ -270,7 +274,7 @@ const IconPicker: React.FC<IconPickerProps> = ({onSubmit, onCancel}) => {
             >
                 <h2 className="text-xl font-semibold flex items-center gap-2 text-slate-800 dark:text-slate-100">
                     <FontAwesomeIcon icon={faLayerGroup} className="h-5 text-indigo-500"/>
-                    <span>选择图标</span>
+                    <span>{t('title')}</span>
                 </h2>
             </div>
 
@@ -296,7 +300,7 @@ const IconPicker: React.FC<IconPickerProps> = ({onSubmit, onCancel}) => {
                                        className={`w-full pl-12 pr-4 py-3 rounded-lg border outline-none transition-all shadow-sm group-hover:shadow-md
                                    border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/30
                                              bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200`}
-                                       placeholder="搜索图标名称(如:home、user)"/>
+                                       placeholder={t('searchPlaceholder')}/>
                             </div>
 
                             {/* 库筛选按钮 */}
@@ -347,7 +351,7 @@ const IconPicker: React.FC<IconPickerProps> = ({onSubmit, onCancel}) => {
                             <div
                                 className="inline-block animate-spin rounded-lg h-16 w-16 border-t-2 border-b-2 border-indigo-500 dark:border-indigo-400 mb-6"
                             ></div>
-                            <p className="text-gray-600 dark:text-gray-400 animate-pulse text-lg">加载图标中...</p>
+                            <p className="text-gray-600 dark:text-gray-400 animate-pulse text-lg">{t('loading')}</p>
                         </div>
                     ) : (
                         <>
@@ -363,8 +367,8 @@ const IconPicker: React.FC<IconPickerProps> = ({onSubmit, onCancel}) => {
                                             <FontAwesomeIcon icon={faSearch}
                                                              className="w-10 h-10 text-gray-400 dark:text-gray-500"/>
                                         </div>
-                                        <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-3">未找到匹配图标</h3>
-                                        <p className="text-gray-500 dark:text-gray-500">尝试更换搜索关键词或选择其他图标库</p>
+                                        <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-3">{t('noIconsFound.title')}</h3>
+                                        <p className="text-gray-500 dark:text-gray-500">{t('noIconsFound.message')}</p>
                                     </div>
                                 ) : (
                                     <div
@@ -379,7 +383,7 @@ const IconPicker: React.FC<IconPickerProps> = ({onSubmit, onCancel}) => {
                                     <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
                                         <div className="flex flex-col sm:flex-row items-center justify-between gap-5">
                                             <div className="text-sm text-gray-600 dark:text-gray-400">
-                                                All: {filteredIcons.length}, {((currentPage - 1) * ICONS_PER_PAGE) + 1} - {Math.min(currentPage * ICONS_PER_PAGE, filteredIcons.length)}
+                                                {t('pagination.total')}: {filteredIcons.length}, {((currentPage - 1) * ICONS_PER_PAGE) + 1} - {Math.min(currentPage * ICONS_PER_PAGE, filteredIcons.length)}
                                             </div>
 
                                             <div className="flex items-center gap-3">
@@ -389,7 +393,7 @@ const IconPicker: React.FC<IconPickerProps> = ({onSubmit, onCancel}) => {
                                                     disabled={currentPage === 1}
                                                     className={`px-3 py-2.5 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 cursor-pointer
                                                     hover:bg-gray-100 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 hover:shadow-md text-sm font-medium`}
-                                                    aria-label="上一页"
+                                                    aria-label={t('pagination.previous')}
                                                 >
                                                     <FontAwesomeIcon icon={faAngleLeft}
                                                                      className="h-5 w-5   dark:text-gray-300"/>
@@ -405,7 +409,7 @@ const IconPicker: React.FC<IconPickerProps> = ({onSubmit, onCancel}) => {
                                                     disabled={currentPage === totalPages}
                                                     className={`px-3 py-2.5 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 cursor-pointer
                                                     hover:bg-gray-100 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 hover:shadow-md text-sm font-medium`}
-                                                    aria-label="下一页"
+                                                    aria-label={t('pagination.next')}
                                                 >
                                                     <FontAwesomeIcon icon={faAngleRight}
                                                                      className="h-5 w-5  dark:text-gray-300"/>
@@ -427,7 +431,7 @@ const IconPicker: React.FC<IconPickerProps> = ({onSubmit, onCancel}) => {
                         text-slate-700 dark:text-slate-300 cursor-pointer`}
                     >
                         <FontAwesomeIcon icon={faTimes} className="h-4 mr-1.5"/>
-                        取消
+                        {t('buttons.cancel')}
                     </button>
                     <button
                         disabled={!selectedIcon}
@@ -436,7 +440,7 @@ const IconPicker: React.FC<IconPickerProps> = ({onSubmit, onCancel}) => {
                         disabled:bg-slate-200 disabled:dark:bg-slate-700 disabled:text-slate-500 disabled:hover:bg-slate-200 disabled:dark:hover:bg-slate-700 disabled:cursor-not-allowed`}
                     >
                         <FontAwesomeIcon icon={faCheck} className="h-4"/>
-                        <span>确定选择</span>
+                        <span>{t('buttons.confirm')}</span>
                     </button>
                 </div>
             </div>
