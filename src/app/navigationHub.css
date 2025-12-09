@@ -23,6 +23,11 @@
         animation: spinReverse 2s linear infinite;
     }
 
+    /* 添加旋转一圈动画 */
+    .animate-spin-once {
+        animation: spinOnce 0.5s ease-in-out forwards;
+    }
+
     /* Toast 出现*/
     .animate-toast-in {
         animation: toastIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
@@ -58,6 +63,12 @@
 @keyframes spinReverse {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(-360deg); }
+}
+
+/* 添加旋转一圈关键帧 */
+@keyframes spinOnce {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 /* Toast 入场关键帧 */

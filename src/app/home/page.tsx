@@ -22,6 +22,7 @@ import {removeToken} from "@/lib/auth";
 import {useToast} from "@/components/common/Toast";
 import LanguageSelector from "@/components/LanguageSelector";
 import {useTranslations} from 'next-intl';
+import SearchBar from "@/components/SearchBar";
 
 const NavigationHub = () => {
     // 核心状态
@@ -300,7 +301,6 @@ const NavigationHub = () => {
                                         dark:bg-slate-800 dark:text-amber-300 dark:hover:bg-slate-700
                                         bg-slate-100 text-slate-700 hover:bg-slate-200
                                         hover:scale-110 active:scale-95
-                                        focus:outline-none focus:ring-2 focus:ring-offset-2
                                         dark:focus:ring-indigo-400 focus:ring-indigo-500
                                       `}
                                 aria-label={isDarkMode ? t('switchToLightMode') : t('switchToDarkMode')}
@@ -314,12 +314,37 @@ const NavigationHub = () => {
                             {/* 功能按钮 */}
                             <button
                                 onClick={() => setIsSystemEditModalOpen(true)}
-                                className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-all duration-300 hover:text-indigo-600 cursor-pointer">
+                                className={`
+                                        p-2 rounded-full transition-all duration-300 ease-in-out
+                                        flex items-center justify-center hover:shadow-sm cursor-pointer
+                                        dark:hover:bg-slate-800 dark:text-slate-300 hover:bg-slate-100
+                                        text-slate-700 hover:scale-110 active:scale-95 dark:focus:ring-indigo-400
+                                        focus:ring-indigo-500 hover:text-indigo-600
+                                      `}
+                            >
                                 <FontAwesomeIcon icon={faCog} className="h-5 w-5"/>
                             </button>
                             <button
-                                onClick={loadData}
-                                className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-all duration-300 hover:text-indigo-600 cursor-pointer">
+                                onClick={(event) => {
+                                    loadData();
+                                    setIsSystemEditModalOpen(true);
+                                    // 添加旋转动画类
+                                    const button = event.currentTarget;
+                                    if (!button.classList.contains('animate-spin-once')) {
+                                        button.classList.add('animate-spin-once');
+                                        setTimeout(() => {
+                                            button.classList.remove('animate-spin-once');
+                                        }, 700);
+                                    }
+                                }}
+                                className={`
+                                        p-2 rounded-full transition-all duration-300 ease-in-out
+                                        flex items-center justify-center hover:shadow-sm cursor-pointer
+                                        dark:hover:bg-slate-800 dark:text-slate-300 hover:bg-slate-100
+                                        text-slate-700 hover:scale-110 active:scale-95 dark:focus:ring-indigo-400
+                                        focus:ring-indigo-500 hover:text-indigo-600
+                                      `}
+                            >
                                 <FontAwesomeIcon icon={faSync} className="h-5 w-5"/>
                             </button>
                             <button
@@ -327,7 +352,14 @@ const NavigationHub = () => {
                                     removeToken();
                                     window.location.href = '/login'
                                 }}
-                                className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-all duration-300 hover:text-indigo-600 cursor-pointer">
+                                className={`
+                                        p-2 rounded-full transition-all duration-300 ease-in-out
+                                        flex items-center justify-center hover:shadow-sm cursor-pointer
+                                        dark:hover:bg-slate-800 dark:text-slate-300 hover:bg-slate-100
+                                        text-slate-700 hover:scale-110 active:scale-95 dark:focus:ring-indigo-400
+                                        focus:ring-indigo-500 hover:text-indigo-600
+                                      `}
+                            >
                                 <FontAwesomeIcon icon={faRightFromBracket} className="h-5 w-5"/>
                             </button>
 
@@ -354,15 +386,7 @@ const NavigationHub = () => {
                         <h2 className="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-center mb-2">{t('discoverAndAccess')}</h2>
                         <p className="text-gray-500 text-center mb-6">{t('oneStopNavigation')}</p>
 
-                        <div className="relative group animate-fade-in" style={{animationDelay: '150ms'}}>
-                            <input type="text" id="searchInput"
-                                   className={`w-full pl-12 pr-4 py-3 rounded-xl border outline-none transition-all shadow-sm group-hover:shadow-md
-                                   border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/30
-                                             bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200`}
-                                   placeholder={t('searchPlaceholder')}/>
-                            <FontAwesomeIcon icon={faSearch}
-                                             className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 h-5.5 w-5.5 transition-colors duration-300 group-hover:text-indigo-500"/>
-                        </div>
+                        <SearchBar/>
                     </div>
 
                     {/* 分类标签栏 */}
