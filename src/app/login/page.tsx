@@ -140,7 +140,7 @@ const LoginPage = () => {
         try {
             const rsaInfo = await apis.generateKey();
             const {keyId, publicKey} = rsaInfo;
-            const res = await apis.login({keyId, username, password: encryptPassword(password, publicKey)});
+            const res = await apis.login({keyId, username, password: encryptPassword(password, publicKey), rememberMe});
             setToken(res.token);
             // 记住用户名
             if (rememberMe) {
