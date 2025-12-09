@@ -174,5 +174,33 @@
   },
   "SearchBar": {
     "searchPlaceholder": "Search content or switch search engine"
+  },
+  "SystemEdit": {
+    "title": "System Settings",
+    "unsavedChanges": "Unsaved Changes",
+    "resetSettings": "Reset Settings",
+    "saving": "Saving...",
+    "saveAllChanges": "Save All Changes",
+    "confirmReset": "Confirm Reset",
+    "resetSettingsMessage": "Are you sure you want to reset all settings? This action cannot be undone.",
+    "settingsMenu": "Settings Menu",
+    "selectSettingToEdit": "Select Setting to Edit",
+    "selectSettingDesc": "You have selected \"{name}\", the corresponding settings will be displayed on the right.",
+    "general": {
+      "title": "General Settings"
+    },
+    "preference": {
+      "title": "Preference Settings"
+    },
+    "security": {
+      "title": "Security Settings"
+    },
+    "user": {
+      "title": "User Settings"
+    },
+    "helpText": {
+      "selectOption": "Click on the left options to configure corresponding functions.",
+      "refreshPage": "Please refresh the page to make settings take effect after modification."
+    }
   }
 }

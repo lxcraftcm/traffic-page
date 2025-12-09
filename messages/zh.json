@@ -174,5 +174,33 @@
   },
   "SearchBar": {
     "searchPlaceholder": "搜索内容或切换搜索引擎"
+  },
+  "SystemEdit": {
+    "title": "系统设置",
+    "unsavedChanges": "未保存的更改",
+    "resetSettings": "重置设置",
+    "saving": "保存中...",
+    "saveAllChanges": "保存所有更改",
+    "confirmReset": "确认重置",
+    "resetSettingsMessage": "确定要重置所有设置吗？此操作不可恢复。",
+    "settingsMenu": "设置菜单",
+    "selectSettingToEdit": "选择要编辑的设置",
+    "selectSettingDesc": "已选择 \"{name}\" 设置项，右侧将显示对应的设置内容。",
+    "general": {
+      "title": "通用设置"
+    },
+    "preference": {
+      "title": "偏好设置"
+    },
+    "security": {
+      "title": "安全设置"
+    },
+    "user": {
+      "title": "用户设置"
+    },
+    "helpText": {
+      "selectOption": "点击左侧选项，配置对应功能。",
+      "refreshPage": "修改后请刷新页面使设置生效。"
+    }
   }
 }

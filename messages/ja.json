@@ -174,5 +174,33 @@
   },
   "SearchBar": {
     "searchPlaceholder": "コンテンツを検索または検索エンジンを切り替え"
+  },
+  "SystemEdit": {
+    "title": "システム設定",
+    "unsavedChanges": "保存されていない変更",
+    "resetSettings": "設定をリセット",
+    "saving": "保存中...",
+    "saveAllChanges": "すべての変更を保存",
+    "confirmReset": "リセットの確認",
+    "resetSettingsMessage": "すべての設定をリセットしてもよろしいですか？この操作は元に戻せません。",
+    "settingsMenu": "設定メニュー",
+    "selectSettingToEdit": "編集する設定を選択",
+    "selectSettingDesc": "\"{name}\" を選択しました。右側に対応する設定内容が表示されます。",
+    "general": {
+      "title": "一般設定"
+    },
+    "preference": {
+      "title": "環境設定"
+    },
+    "security": {
+      "title": "セキュリティ設定"
+    },
+    "user": {
+      "title": "ユーザー設定"
+    },
+    "helpText": {
+      "selectOption": "左側のオプションをクリックして、対応する機能を設定してください。",
+      "refreshPage": "変更後はページをリフレッシュして設定を有効にしてください。"
+    }
   }
 }
