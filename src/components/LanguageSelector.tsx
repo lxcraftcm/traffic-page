@@ -38,7 +38,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({className}) => {
     // 获取当前语言名称
     const getCurrentLanguageName = () => {
         const language = LANGUAGE_OPTIONS.find(option => option.code === selectedLanguage);
-        return language ? language.nativeName : '中文';
+        return language ? language.nativeName : 'English';
     };
 
     return (
