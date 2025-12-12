@@ -1,4 +1,4 @@
-import {result, getUser, getMessage} from "@/utils/ApiUtil";
+import {result, getUser} from "@/utils/ApiUtil";
 import db from "@/lib/db";
 import {NextRequest} from "next/server";
 import {getTranslation} from "@/lib/i18n";
@@ -472,10 +472,9 @@ const defaultPage = [
 ];
 
 export async function GET(req: NextRequest) {
-    const messages = await getMessage();
     const user = await getUser(req) as { userId: number } | null;
     if (!user) {
-        return result.error(401, await getTranslation(messages, 'api.errors.invalidToken', 'Invalid token'));
+        return result.error(401, await getTranslation(req, 'api.errors.invalidToken', 'Invalid token'));
     }
     const selectStatement = db.prepare("SELECT up.* FROM t_user_page up LEFT JOIN t_user u WHERE u.id = ?");
     const userPage = selectStatement.get(user.userId) as { page_json: string };
@@ -483,14 +482,13 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-    const messages = await getMessage();
     const user = await getUser(req) as { userId: number } | null;
     if (!user) {
-        return result.error(401, await getTranslation(messages, 'api.errors.invalidToken', 'Invalid token'));
+        return result.error(401, await getTranslation(req, 'api.errors.invalidToken', 'Invalid token'));
     }
     const {userPage: savePage} = await req.json()
     if (!isValidJsonArray(savePage)) {
-        return result.error(400, await getTranslation(messages, 'api.errors.jsonError', 'Json error'));
+        return result.error(400, await getTranslation(req, 'api.errors.jsonError', 'Json error'));
     }
     const selectStatement = db.prepare("SELECT up.* FROM t_user_page up LEFT JOIN t_user u WHERE u.id = ?");
     const userPage = selectStatement.get(user.userId) as { id: number, page_json: string };

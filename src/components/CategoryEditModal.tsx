@@ -29,10 +29,9 @@ import {
     faFont,
     faExclamationCircle
 } from '@fortawesome/free-solid-svg-icons';
-import ResizeCard from "@/components/common/ResizeCard";
 import {getIconClass, renderIcon} from "@/utils/IconUtil";
 import IconPickerModal from "@/components/IconPickerModal";
-import {useTranslations} from 'next-intl';
+import {useAppTranslation} from "@/providers/I18nProvider";
 
 // 初始化FontAwesome库
 library.add(fas, far, fab);
@@ -118,7 +117,7 @@ const CategoryEdit: React.FC<CategoryEditProps> = ({
     }, [localCategories, originalData]);
 
     // 翻译钩子
-    const t = useTranslations('CategoryEdit');
+    const {t} = useAppTranslation('CategoryEdit');
 
     // 分类拖拽相关函数
     const handleCategoryDragStart = (id: string, e: React.DragEvent) => {

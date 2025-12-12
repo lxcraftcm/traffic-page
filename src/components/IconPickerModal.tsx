@@ -8,7 +8,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCheck, faLayerGroup, faTimes, faSearch, faAngleLeft, faAngleRight} from "@fortawesome/free-solid-svg-icons";
 import ResizeCard from "./common/ResizeCard";
 import {IconProp} from "@fortawesome/fontawesome-svg-core";
-import {useTranslations} from 'next-intl';
+import {useAppTranslation} from "@/providers/I18nProvider";
 
 interface IconItem {
     id: string;
@@ -34,7 +34,7 @@ const LIBRARY_OPTIONS = ['all', 'solid', 'regular', 'brands'] as const;
 
 const IconPicker: React.FC<IconPickerProps> = ({onSubmit, onCancel}) => {
     // 翻译钩子
-    const t = useTranslations('IconPicker');
+    const {t} = useAppTranslation('IconPicker');
 
     // 状态管理
     const [searchTerm, setSearchTerm] = useState('');

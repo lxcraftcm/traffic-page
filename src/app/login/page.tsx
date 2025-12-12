@@ -19,8 +19,8 @@ import {apis} from "@/utils/RequestUtil";
 import forge from 'node-forge';
 import {setToken} from "@/lib/auth";
 import {useToast} from "@/components/common/Toast";
-import {useTranslations} from 'next-intl';
 import LanguageSelector from "@/components/LanguageSelector";
+import {useAppTranslation} from "@/providers/I18nProvider";
 
 const LoginPage = () => {
     // 原有状态
@@ -51,7 +51,7 @@ const LoginPage = () => {
     // 引用
     const pageRef = useRef<HTMLDivElement>(null);
 
-    const t = useTranslations('LoginPage');
+    const {t} = useAppTranslation('LoginPage');
 
     // 初始化 Toast
     const {showToast} = useToast();

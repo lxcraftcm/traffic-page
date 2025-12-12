@@ -2,9 +2,9 @@
 import React, {useState, useRef, useLayoutEffect} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faChevronDown, faSearch} from '@fortawesome/free-solid-svg-icons';
-import {useTranslations} from 'next-intl';
 import {Baidu, Google, Bing} from "@lobehub/icons";
 import ReactDOM from 'react-dom';
+import {useAppTranslation} from "@/providers/I18nProvider";
 
 // 搜索引擎选项
 const SEARCH_ENGINES = [
@@ -14,7 +14,7 @@ const SEARCH_ENGINES = [
 ];
 
 const SearchBar = () => {
-    const t = useTranslations('SearchBar');
+    const {t} = useAppTranslation('SearchBar');
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedEngine, setSelectedEngine] = useState(SEARCH_ENGINES[0]);
     const [isEngineMenuOpen, setIsEngineMenuOpen] = useState(false);

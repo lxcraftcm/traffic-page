@@ -20,9 +20,9 @@ import {apis} from "@/utils/RequestUtil";
 import {removeToken} from "@/lib/auth";
 import {useToast} from "@/components/common/Toast";
 import LanguageSelector from "@/components/LanguageSelector";
-import {useTranslations} from 'next-intl';
 import SearchBar from "@/components/SearchBar";
 import SystemEditModal from "@/components/SystemEdit/SystemEditModal";
+import {useAppTranslation} from "@/providers/I18nProvider";
 
 const NavigationHub = () => {
     // 核心状态
@@ -43,9 +43,11 @@ const NavigationHub = () => {
         }
         return false;
     });
+    // 初始化i18n
+    const {t} = useAppTranslation("NavigationHub");
+
     // 初始化 Toast
     const {showToast} = useToast();
-    const t = useTranslations('NavigationHub');
 
     // 加载数据
     const loadData = () => {

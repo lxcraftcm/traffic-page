@@ -2,7 +2,6 @@
 import React, {useState} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {Modal} from "@/components/common/Modal";
-import {useTranslations} from 'next-intl';
 import {
     faCog,
     faHeart,
@@ -12,6 +11,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import GeneralSetting from "@/components/SystemEdit/GeneralSetting";
 import ResizeCard from "@/components/common/ResizeCard";
+import {useAppTranslation} from "@/providers/I18nProvider";
 
 // 系统设置项类型
 type SettingItem = {
@@ -30,7 +30,7 @@ interface SystemEditModalProps {
 
 const SystemEdit: React.FC = () => {
     // 翻译钩子
-    const t = useTranslations('SystemEdit');
+    const {t} = useAppTranslation('SystemEdit');
 
     // 默认渲染
     const defaultSetting = () => {

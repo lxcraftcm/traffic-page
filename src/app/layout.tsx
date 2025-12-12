@@ -2,8 +2,7 @@ import type {Metadata} from "next";
 import "./globals.css";
 import "./navigationHub.css";
 import {ToastProvider} from '@/components/common/Toast';
-import {NextIntlClientProvider} from 'next-intl';
-import {getLocale} from "next-intl/server";
+import {AppProviders} from "@/providers/AppProvider";
 
 export const metadata: Metadata = {
     title: "Traffic Page",
@@ -11,19 +10,18 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({
-                                       children
-                                   }: Readonly<{
+                                             children
+                                         }: Readonly<{
     children: React.ReactNode;
 }>) {
-    const locale = await getLocale();
     return (
-        <html lang={locale}>
+        <html lang='en'>
         <body className={`antialiased`}>
-        <NextIntlClientProvider locale={locale} >
+        <AppProviders>
             <ToastProvider>
                 {children}
             </ToastProvider>
-        </NextIntlClientProvider>
+        </AppProviders>
         </body>
         </html>
     );

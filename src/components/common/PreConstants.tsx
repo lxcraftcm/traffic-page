@@ -58,10 +58,10 @@ import {
 
 // 预设语言选项
 export const LANGUAGE_OPTIONS: LanguageOption[] = [
-    {code: 'en', name: 'English', nativeName: 'English'},
-    {code: 'zh', name: '中文', nativeName: '中文'},
-    {code: 'ja', name: 'Japanese', nativeName: '日本語'},
-    {code: 'ko', name: 'Korean', nativeName: '한국어'},
+    {code: 'en-US', name: 'English', nativeName: 'English'},
+    {code: 'zh-CN', name: '中文', nativeName: '中文'},
+    {code: 'ja-JP', name: 'Japanese', nativeName: '日本語'},
+    {code: 'ko-KR', name: 'Korean', nativeName: '한국어'},
 ];
 
 

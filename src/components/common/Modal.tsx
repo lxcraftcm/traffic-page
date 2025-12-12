@@ -11,7 +11,7 @@ import {
     faTrash,
     faUndo
 } from "@fortawesome/free-solid-svg-icons";
-import {useTranslations} from 'next-intl';
+import {useAppTranslation} from "@/providers/I18nProvider";
 
 interface ModalBase {
     visible: boolean;
@@ -41,7 +41,7 @@ const IconMap = {
 
 export const Modal = ({visible, onClose, children, className}: ModalBase) => {
     // 翻译钩子
-    const t = useTranslations('Modal');
+    const {t} = useAppTranslation('Modal');
 
     const modalRef = useRef<HTMLDivElement>(null);
     const backdropRef = useRef(null);
@@ -94,7 +94,7 @@ export const Modal = ({visible, onClose, children, className}: ModalBase) => {
                     visible
                         ? 'scale-100 opacity-100 translate-y-0'
                         : 'scale-95 opacity-0 translate-y-4'
-                } ${className? (className) :''}}`}
+                } ${className ? (className) : ''}}`}
             >
                 <button
                     onClick={onClose}
@@ -117,7 +117,7 @@ export const Modal = ({visible, onClose, children, className}: ModalBase) => {
 // 预设消息弹窗
 export const MessageModal = ({visible, onClose, onCancel, onConfirm, type, title, message}: ModalMessage) => {
     // 翻译钩子
-    const t = useTranslations('Modal');
+    const {t} = useAppTranslation('Modal');
 
     return (
         <Modal visible={visible} onClose={onClose}>

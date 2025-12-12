@@ -3,16 +3,16 @@ import React, {useEffect, useRef, useState} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faGlobe, faChevronDown, faCheck} from '@fortawesome/free-solid-svg-icons';
 import {LANGUAGE_OPTIONS} from '@/components/common/PreConstants';
-import {useLocale} from "use-intl";
-import {setLocale} from "@/lib/i18n";
+import {useAppTranslation, useI18n} from "@/providers/I18nProvider";
 
 interface LanguageSelectorProps {
     className?: string;
 }
 
 const LanguageSelector: React.FC<LanguageSelectorProps> = ({className}) => {
-    const locale = useLocale();
-    const [selectedLanguage, setSelectedLanguage] = useState(locale);
+    const {language, supportedLanguages, changeLanguage, isChanging} = useI18n();
+
+    const [selectedLanguage, setSelectedLanguage] = useState<string>(language);
     const [isLanguageSelectorOpen, setIsLanguageSelectorOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -29,10 +29,10 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({className}) => {
 
     // 切换语言
     const handleLanguageChange = (code: string) => {
-        setLocale(code).then(() => {
+        changeLanguage(code).then(() => {
             setSelectedLanguage(code);
             setIsLanguageSelectorOpen(false);
-        });
+        })
     };
 
     // 获取当前语言名称

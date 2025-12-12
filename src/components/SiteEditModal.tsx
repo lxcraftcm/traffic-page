@@ -18,8 +18,7 @@ import Modal, {MessageModal} from "@/components/common/Modal";
 import {getIconClass, renderIcon} from "@/utils/IconUtil";
 import {validateFaClassFormat, validateNotEmpty, validateUrlFormat} from "@/utils/ValidateUtil";
 import IconPickerModal from '@/components/IconPickerModal'
-import {useTranslations} from 'next-intl';
-
+import {useAppTranslation} from "@/providers/I18nProvider";
 // 核心入参
 interface SiteEditProps {
     isEditing: boolean;
@@ -41,7 +40,7 @@ const SiteEdit: React.FC<SiteEditProps> = ({
                                                onCancel
                                            }) => {
     // 翻译钩子
-    const t = useTranslations('SiteEdit');
+    const {t} = useAppTranslation('SiteEdit');
 
     const init = (): Site => {
         if (editSite) {
