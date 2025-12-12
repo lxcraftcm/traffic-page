@@ -28,3 +28,14 @@ CREATE TABLE
                             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                             deleted_at DATETIME
 );
+
+CREATE TABLE
+    IF NOT EXISTS t_system_setting (
+                            id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            system_name STRING NOT NULL,
+                            copyright STRING NOT NULL,
+                            default_language STRING NOT NULL,
+                            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                            deleted_at DATETIME
+);
