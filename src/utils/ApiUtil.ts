@@ -36,3 +36,20 @@ export const getMessage = async () => {
     // 获取对应语言的翻译消息
     return await getMessages({locale});
 }
+
+const toCamelCase = (str: string): string => {
+    return str.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
+}
+
+export const snakeToCamel = (obj: any): any => {
+    if (Array.isArray(obj)) {
+        return obj.map(v => snakeToCamel(v));
+    } else if (obj !== null && typeof obj === 'object') {
+        return Object.keys(obj).reduce((result, key) => {
+            const camelKey = toCamelCase(key);
+            result[camelKey] = snakeToCamel(obj[key]);
+            return result;
+        }, {} as any);
+    }
+    return obj;
+}
