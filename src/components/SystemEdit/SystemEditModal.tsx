@@ -9,7 +9,7 @@ import {
     faUser,
     faInfoCircle
 } from '@fortawesome/free-solid-svg-icons';
-import GeneralSetting from "@/components/SystemEdit/GeneralSetting";
+import GeneralSettingModal from "@/components/SystemEdit/GeneralSettingModal";
 import ResizeCard from "@/components/common/ResizeCard";
 import {useAppTranslation} from "@/providers/I18nProvider";
 
@@ -55,7 +55,7 @@ const SystemEdit: React.FC = () => {
     // 系统设置项列表 导航数据
     const settingItems: SettingItem[] = [
         // 通用设置
-        {id: 'general', icon: faCog, label: t('general.title'), color: '#6366f1', render: () => <GeneralSetting/>},
+        {id: 'general', icon: faCog, label: t('general.title'), color: '#6366f1', render: () => <GeneralSettingModal/>},
         // 偏好设置
         {id: 'preference', icon: faHeart, label: t('preference.title'), color: '#ec4899', render: defaultSetting},
         // 安全设置

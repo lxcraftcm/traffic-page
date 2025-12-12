@@ -80,5 +80,11 @@ export const apis = {
     },
     saveUserPage: (data: any) => {
         return requestUtil({url: '/api/user/page', method: 'POST', data: JSON.stringify(data)});
+    },
+    getGeneralSetting: () => {
+        return requestUtil({url: '/api/systemSetting/generalSetting', method: 'GET'});
+    },
+    saveGeneralSetting: (data: any) => {
+        return requestUtil({url: '/api/systemSetting/generalSetting', method: 'POST', data: JSON.stringify(data)});
     }
 }
