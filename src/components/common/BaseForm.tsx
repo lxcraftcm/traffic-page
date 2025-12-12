@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useEffect} from 'react';
+import React, {useState, useCallback} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {
     faCheck,
@@ -6,6 +6,7 @@ import {
     faExclamationCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import BaseInput, {InputType, Option} from "@/components/common/BaseInput";
+import {IconProp} from "@fortawesome/fontawesome-svg-core";
 
 // 表单字段配置
 export interface FormField {
@@ -58,10 +59,14 @@ interface BaseFormProps {
     layout?: 'vertical' | 'horizontal';
     /** 提交按钮文本 */
     submitText?: string;
+    /** 提交按钮icon */
+    submitIcon?: IconProp;
     /** 是否显示重置按钮 */
     showReset?: boolean;
     /** 重置按钮文本 */
     resetText?: string;
+    /** 重置按钮icon */
+    resetIcon?: IconProp;
     /** 表单容器样式 */
     formClass?: string;
     /** 表单字段间距 */
@@ -77,8 +82,10 @@ const BaseForm: React.FC<BaseFormProps> = ({
                                                disabled = false,
                                                layout = 'horizontal',
                                                submitText = '提交',
+                                               submitIcon = faCheck,
                                                showReset = true,
                                                resetText = '重置',
+                                               resetIcon = faTimes,
                                                formClass = '',
                                                fieldGap = '1rem',
                                            }) => {
@@ -94,11 +101,6 @@ const BaseForm: React.FC<BaseFormProps> = ({
     const [formValues, setFormValues] = useState<Record<string, any>>(getInitialValues());
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [touched, setTouched] = useState<Record<string, boolean>>({});
-
-    // 初始值变化时同步更新
-    // useEffect(() => {
-    //     // setFormValues(getInitialValues());
-    // }, [initialValues]);
 
     // 处理字段值变化
     const handleChange = (name: string, value: any) => {
@@ -266,10 +268,10 @@ const BaseForm: React.FC<BaseFormProps> = ({
                     className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
                         disabled
                             ? 'bg-slate-200 dark:bg-slate-700 text-slate-500 cursor-not-allowed'
-                            : 'bg-indigo-600 text-white hover:bg-indigo-700'
+                            : 'bg-indigo-600 text-white hover:bg-indigo-700 cursor-pointer'
                     }`}
                 >
-                    <FontAwesomeIcon icon={faCheck} className="h-4 w-4"/>
+                    <FontAwesomeIcon icon={submitIcon} className="h-4 w-4"/>
                     <span>{submitText}</span>
                 </button>
 
@@ -281,10 +283,10 @@ const BaseForm: React.FC<BaseFormProps> = ({
                         className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
                             disabled
                                 ? 'bg-slate-200 dark:bg-slate-700 text-slate-500 cursor-not-allowed'
-                                : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                                : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer'
                         }`}
                     >
-                        <FontAwesomeIcon icon={faTimes} className="h-4 w-4"/>
+                        <FontAwesomeIcon icon={resetIcon} className="h-4 w-4"/>
                         <span>{resetText}</span>
                     </button>
                 )}
@@ -293,4 +295,13 @@ const BaseForm: React.FC<BaseFormProps> = ({
     );
 };
 
-export default BaseForm;
+const BaseFormParent: React.FC<BaseFormProps> = (baseFormProps) => {
+    return (
+        <BaseForm
+            key={JSON.stringify(baseFormProps.initialValues)}
+            {...baseFormProps}
+        />
+    );
+};
+
+export default BaseFormParent;
