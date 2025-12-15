@@ -1,5 +1,5 @@
 'use client';
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {
     faCog,
@@ -7,14 +7,11 @@ import {
     faEdit,
     faLayerGroup,
     faGlobe,
-    faSun,
-    faMoon,
     faServer,
     faRightFromBracket
 } from '@fortawesome/free-solid-svg-icons';
 import CategoryEditModal from '@/components/CategoryEditModal';
 import {Category} from "@/types/base"
-import {getLocalStorage, setLocalStorage} from '@/utils/StorageUtil';
 import {renderIcon} from "@/utils/IconUtil";
 import {apis} from "@/utils/RequestUtil";
 import {removeToken} from "@/lib/auth";
@@ -24,6 +21,7 @@ import SearchBar from "@/components/SearchBar";
 import SystemEditModal from "@/components/SystemEdit/SystemEditModal";
 import {useAppTranslation} from "@/providers/I18nProvider";
 import ThemeSelector from "@/components/ThemeSelector";
+import {usePreferences} from "@/providers/PreferencesProvider";
 
 const NavigationHub = () => {
     // 核心状态
@@ -37,8 +35,8 @@ const NavigationHub = () => {
     const [categories, setCategories] = useState<Category[]>([]);
     const [isSaving, setIsSaving] = useState<boolean>(false);
     // 初始化i18n
+    const {generalSetting} = usePreferences();
     const {t} = useAppTranslation("NavigationHub");
-
     // 初始化 Toast
     const {showToast} = useToast();
 
@@ -421,7 +419,7 @@ const NavigationHub = () => {
                 <footer className="mt-16 py-5 border-t border-slate-200 dark:border-slate-800 animate-fade-in"
                         style={{animationDelay: '400ms'}}>
                     <div className="max-w-7xl mx-auto px-6 text-center text-sm text-slate-500 dark:text-slate-400">
-                        {t('copyright', {year: new Date().getFullYear(), version: t('version')})}
+                        © {generalSetting.copyright + ' | Version:' + t('version')}
                     </div>
                 </footer>
             </main>

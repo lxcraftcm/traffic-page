@@ -1,7 +1,6 @@
 import axios, {AxiosRequestConfig} from 'axios';
 import {getToken, removeToken} from '@/lib/auth';
 import {getLocalStorage} from "@/utils/StorageUtil";
-import {defaultPreference} from "@/i18n/config";
 
 // 创建 axios 实例
 const api = axios.create({
@@ -20,7 +19,7 @@ api.interceptors.request.use(
             config.headers.Authorization = `Bearer ${token}`;
         }
         const language = getLocalStorage("language");
-        config.headers['Accept-Language'] = language ? language : defaultPreference;
+        if (language) config.headers['Accept-Language'] = language;
         return config;
     },
     error => Promise.reject(error.response.data)

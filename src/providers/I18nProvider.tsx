@@ -3,6 +3,7 @@
 import React, {createContext, useContext, useEffect, useState, ReactNode} from 'react';
 import {I18nextProvider, useTranslation} from 'react-i18next';
 import {defaultPreference, i18nInstance} from '@/i18n/config';
+import {usePreferences} from "@/providers/PreferencesProvider";
 
 interface I18nContextType {
     language: string;
@@ -22,11 +23,12 @@ export function I18nProvider({children}: { children: ReactNode }) {
     const [supportedLanguages, setSupportedLanguages] = useState<I18nContextType['supportedLanguages']>([]);
     const [isChanging, setIsChanging] = useState(false);
     const [i18n, setI18n] = useState<any>(null);
+    const {generalSetting} = usePreferences();
 
     // 初始化 i18n 实例
     useEffect(() => {
         const init = async () => {
-            const instance = await i18nInstance.initialize();
+            const instance = await i18nInstance.initialize(generalSetting.defaultLanguage);
             setI18n(instance);
             // 获取当前语言
             setLanguage(instance.language);

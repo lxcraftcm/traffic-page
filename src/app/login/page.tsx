@@ -22,6 +22,7 @@ import {useToast} from "@/components/common/Toast";
 import LanguageSelector from "@/components/LanguageSelector";
 import {useAppTranslation} from "@/providers/I18nProvider";
 import ThemeSelector from "@/components/ThemeSelector";
+import {usePreferences} from "@/providers/PreferencesProvider";
 
 const LoginPage = () => {
     // 原有状态
@@ -44,6 +45,7 @@ const LoginPage = () => {
     // 引用
     const pageRef = useRef<HTMLDivElement>(null);
 
+    const {generalSetting} = usePreferences();
     const {t} = useAppTranslation('LoginPage');
 
     // 初始化 Toast
@@ -51,6 +53,7 @@ const LoginPage = () => {
 
     // 检测系统初始化状态
     useEffect(() => {
+        console.log("generalSetting1", generalSetting)
         checkSystemInit()
     }, []);
 
@@ -226,7 +229,7 @@ const LoginPage = () => {
                                     <FontAwesomeIcon icon={faShieldHalved} className="text-white h-5 w-5"/>
                                 </div>
                                 <h1 className="text-lg font-semibold dark:text-amber-50">
-                                    {isRegisterMode ? t('systemInit') : t('navCenter')}
+                                    {generalSetting.systemName}
                                 </h1>
                             </div>
 
@@ -419,7 +422,7 @@ const LoginPage = () => {
                         {/* 版权信息 */}
                         <div className="mb-8 text-center text-sm text-slate-500 dark:text-slate-400 animate-fade-in"
                              style={{animationDelay: '800ms'}}>
-                            {t('copyright', {year: new Date().getFullYear(), version: t('version')})}
+                            © {generalSetting.copyright + ' | Version:' + t('version')}
                         </div>
                     </div>
 

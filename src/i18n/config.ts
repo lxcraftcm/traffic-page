@@ -20,6 +20,31 @@ export const SUPPORTED_LANGUAGES = Object.keys(resources) as SupportedLanguage[]
 
 export const defaultPreference = "en-US";
 
+// 获取浏览器语言
+export const getBrowserLanguage = () => {
+    // 检测浏览器语言
+    if (typeof navigator !== 'undefined') {
+        const browserLanguages = navigator.languages || [navigator.language];
+
+        for (const lang of browserLanguages) {
+            // 完全匹配
+            if (SUPPORTED_LANGUAGES.includes(lang as SupportedLanguage)) {
+                return lang;
+            }
+
+            // 语言代码匹配（忽略地区）
+            const langCode = lang.split('-')[0];
+            const matchedLang = Object.keys(resources).find(key =>
+                key.startsWith(langCode)
+            );
+
+            if (matchedLang) {
+                return matchedLang;
+            }
+        }
+    }
+}
+
 // 获取对应
 const getPreference = () => {
     return getLocalStorage("language");
@@ -28,8 +53,10 @@ const getPreference = () => {
 // 扩展的 i18n 实例，集成偏好管理
 class I18nWithPreferences {
     private initialized = false;
+    private generalLanguage = defaultPreference;
 
-    async initialize() {
+    async initialize(generalLanguage: string) {
+        this.generalLanguage = generalLanguage;
         if (this.initialized) return i18n;
         const savedPrefs = getPreference();
         const detectedLanguage = this.detectLanguage(savedPrefs);
@@ -89,30 +116,12 @@ class I18nWithPreferences {
         if (savedPref && SUPPORTED_LANGUAGES.includes(savedPref as SupportedLanguage)) {
             return savedPref;
         }
-
-        // 检测浏览器语言
-        if (typeof navigator !== 'undefined') {
-            const browserLanguages = navigator.languages || [navigator.language];
-
-            for (const lang of browserLanguages) {
-                // 完全匹配
-                if (SUPPORTED_LANGUAGES.includes(lang as SupportedLanguage)) {
-                    return lang;
-                }
-
-                // 语言代码匹配（忽略地区）
-                const langCode = lang.split('-')[0];
-                const matchedLang = Object.keys(resources).find(key =>
-                    key.startsWith(langCode)
-                );
-
-                if (matchedLang) {
-                    return matchedLang;
-                }
-            }
+        if (this.generalLanguage === 'auto') {
+            const browserLanguage = getBrowserLanguage();
+            return browserLanguage || defaultPreference;
+        } else {
+            return this.generalLanguage || defaultPreference;
         }
-
-        return defaultPreference;
     }
 
     // 获取支持的语言列表
