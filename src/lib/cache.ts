@@ -1,30 +1,39 @@
 import NodeCache from 'node-cache';
 import {createHash} from 'crypto'; // 使用 ES6 import
 
+// 声明全局类型
+declare global {
+    var __nodeCacheInstance: NodeCache | undefined;
+}
+
+
 // 单例封装
 export class DBCache {
     private static instance: DBCache;
     private cache: NodeCache;
 
     private constructor() {
-        this.cache = new NodeCache({
-            stdTTL: 300, // 默认5分钟（秒）
-            checkperiod: 60, // 定期检查过期（秒）
-            useClones: false, // 禁用克隆，提高性能
-            deleteOnExpire: true,
-        });
-
-        // 统计信息
-        this.cache.on('expired', (key: string) => {
-            console.log(`[Cache] Expired: ${key}`);
-        });
+        // 使用全局变量存储 NodeCache 实例
+        if (!global.__nodeCacheInstance) {
+            global.__nodeCacheInstance = new NodeCache({
+                stdTTL: 300, // 默认5分钟（秒）
+                checkperiod: 60, // 定期检查过期（秒）
+                useClones: false, // 禁用克隆，提高性能
+                deleteOnExpire: true,
+            });
+        }
+        this.cache = global.__nodeCacheInstance;
     }
 
-    static getInstance(): DBCache {
+    public static getInstance(): DBCache {
         if (!DBCache.instance) {
             DBCache.instance = new DBCache();
         }
         return DBCache.instance;
+    }
+
+    public getCache(): NodeCache {
+        return this.cache;
     }
 
     // 生成查询的缓存键
@@ -95,3 +104,4 @@ export class DBCache {
 
 // 导出单例实例
 export const dbCache = DBCache.getInstance();
+export const nodeCache = dbCache.getCache();
