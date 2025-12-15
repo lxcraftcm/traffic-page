@@ -35,6 +35,7 @@ CREATE TABLE
                             system_name STRING NOT NULL,
                             copyright STRING NOT NULL,
                             default_language STRING NOT NULL,
+                            default_theme STRING NOT NULL,
                             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                             deleted_at DATETIME

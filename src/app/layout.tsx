@@ -3,6 +3,7 @@ import "./globals.css";
 import "./navigationHub.css";
 import {ToastProvider} from '@/components/common/Toast';
 import {AppProviders} from "@/providers/AppProvider";
+import {getGeneralSettingByCache} from "@/app/api/systemSetting/generalSetting/route";
 
 export const metadata: Metadata = {
     title: "Traffic Page",
@@ -14,10 +15,12 @@ export default async function RootLayout({
                                          }: Readonly<{
     children: React.ReactNode;
 }>) {
+    // 从服务端直接获取设置
+    const generalSetting = await getGeneralSettingByCache();
     return (
         <html lang='en'>
         <body className={`antialiased`}>
-        <AppProviders>
+        <AppProviders generalSetting={generalSetting}>
             <ToastProvider>
                 {children}
             </ToastProvider>
