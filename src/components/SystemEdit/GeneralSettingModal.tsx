@@ -18,18 +18,6 @@ const GeneralSettingModal = () => {
             rules: [{required: true}]
         },
         {
-            label: '系统标题',
-            name: 'systemTitle',
-            type: 'input',
-            placeholder: '请输入系统标题'
-        },
-        {
-            label: '系统子标题',
-            name: 'systemSubTitle',
-            type: 'textarea',
-            placeholder: '请输入系统子标题'
-        },
-        {
             label: '版权信息',
             name: 'copyright',
             type: 'input',
@@ -42,13 +30,27 @@ const GeneralSettingModal = () => {
             type: 'select',
             placeholder: '请选择系统默认语言',
             options: [
-                {label: '英语', value: "en"},
-                {label: '中文', value: 'zh'},
-                {label: '日语', value: 'ja'},
-                {label: '韩语', value: 'ko'}
+                {label: '自动', value: "auto"},
+                {label: '英语', value: "en-US"},
+                {label: '中文', value: 'zh-CN'},
+                {label: '日语', value: 'ja-JP'},
+                {label: '韩语', value: 'ko-KR'}
             ],
             isSearch: true,
             rules: [{required: true}]
+        },
+        {
+            label: '默认主题',
+            name: 'defaultTheme',
+            type: 'radio',
+            placeholder: '请选择主题偏好',
+            options: [
+                {label: '自动', value: 'auto'},
+                {label: '明亮', value: 'light'},
+                {label: '黑暗', value: 'dark'}
+            ],
+            rules: [{required: true}],
+            optionLayout: 'horizontal'
         },
         {
             name: 'status1',
@@ -63,17 +65,6 @@ const GeneralSettingModal = () => {
             ],
             optionLayout: 'horizontal'
         },
-        {
-            name: 'status2',
-            type: 'radio',
-            label: '状态2',
-            placeholder: '所有状态',
-            options: [
-                {label: '选项1', value: 'option1'},
-                {label: '选项2', value: 'option2'}
-            ],
-            optionLayout: 'horizontal'
-        }
     ];
 
     // 加载数据
@@ -120,7 +111,8 @@ const GeneralSettingModal = () => {
                     apis.saveGeneralSetting({
                         systemName: values.systemName,
                         copyright: values.copyright,
-                        defaultLanguage: values.defaultLanguage
+                        defaultLanguage: values.defaultLanguage,
+                        defaultTheme: values.defaultTheme
                     }).then(() => {
                         loadData(); // 重新加载数据
                     }).catch(err => {
