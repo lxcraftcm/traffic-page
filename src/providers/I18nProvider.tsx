@@ -2,7 +2,7 @@
 
 import React, {createContext, useContext, useEffect, useState, ReactNode} from 'react';
 import {I18nextProvider, useTranslation} from 'react-i18next';
-import {i18nInstance} from '@/i18n/config';
+import {defaultPreference, i18nInstance} from '@/i18n/config';
 
 interface I18nContextType {
     language: string;
@@ -18,7 +18,7 @@ interface I18nContextType {
 const I18nContext = createContext<I18nContextType | null>(null);
 
 export function I18nProvider({children}: { children: ReactNode }) {
-    const [language, setLanguage] = useState<string>('zh-CN');
+    const [language, setLanguage] = useState<string>(defaultPreference);
     const [supportedLanguages, setSupportedLanguages] = useState<I18nContextType['supportedLanguages']>([]);
     const [isChanging, setIsChanging] = useState(false);
     const [i18n, setI18n] = useState<any>(null);
@@ -28,20 +28,16 @@ export function I18nProvider({children}: { children: ReactNode }) {
         const init = async () => {
             const instance = await i18nInstance.initialize();
             setI18n(instance);
-
             // 获取当前语言
             setLanguage(instance.language);
-
             // 获取支持的语言列表
             setSupportedLanguages(i18nInstance.getSupportedLanguages());
         };
-
         init();
     }, []);
 
     // 切换语言
     const changeLanguage = async (languageCode: string) => {
-        console.log('languageCode',languageCode)
         if (!i18n || languageCode === language || isChanging) return;
 
         setIsChanging(true);

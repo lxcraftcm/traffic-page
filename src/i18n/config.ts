@@ -32,9 +32,7 @@ class I18nWithPreferences {
     async initialize() {
         if (this.initialized) return i18n;
         const savedPrefs = getPreference();
-        console.log("savedPrefs", savedPrefs)
         const detectedLanguage = this.detectLanguage(savedPrefs);
-        console.log("detectedLanguage", detectedLanguage)
         // 初始化 i18next
         await i18n
             .use(initReactI18next)

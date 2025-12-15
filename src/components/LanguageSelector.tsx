@@ -3,14 +3,14 @@ import React, {useEffect, useRef, useState} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faGlobe, faChevronDown, faCheck} from '@fortawesome/free-solid-svg-icons';
 import {LANGUAGE_OPTIONS} from '@/components/common/PreConstants';
-import {useAppTranslation, useI18n} from "@/providers/I18nProvider";
+import {useI18n} from "@/providers/I18nProvider";
 
 interface LanguageSelectorProps {
     className?: string;
 }
 
 const LanguageSelector: React.FC<LanguageSelectorProps> = ({className}) => {
-    const {language, supportedLanguages, changeLanguage, isChanging} = useI18n();
+    const {language, changeLanguage} = useI18n();
 
     const [selectedLanguage, setSelectedLanguage] = useState<string>(language);
     const [isLanguageSelectorOpen, setIsLanguageSelectorOpen] = useState(false);
