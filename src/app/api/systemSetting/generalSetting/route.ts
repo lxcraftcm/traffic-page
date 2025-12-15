@@ -6,6 +6,7 @@ import {dbCache} from "@/lib/cache";
 
 export interface GeneralSetting {
     systemName: string;
+    description: string;
     copyright: string;
     defaultLanguage: 'auto' | 'zh-CN' | 'en-US' | 'ja-JP' | 'ko-KR';
     defaultTheme: 'auto' | 'light' | 'dark';
@@ -13,6 +14,7 @@ export interface GeneralSetting {
 
 const defaultSetting: GeneralSetting = {
     systemName: "Navigation Center",
+    description: "One-stop navigation to all important pages, improving your work efficiency",
     copyright: "2025 TrafficPage",
     defaultLanguage: "auto",
     defaultTheme: "auto"
@@ -30,19 +32,20 @@ export async function GET(req: NextRequest) {
 export async function POST(
     req: NextRequest
 ) {
-    const {systemName, copyright, defaultLanguage, defaultTheme} = await req.json();
+    const {systemName, description, copyright, defaultLanguage, defaultTheme} = await req.json();
     try {
         const statement = db.prepare(`
-            INSERT INTO t_system_setting (id, system_name, copyright, default_language, default_theme)
-            VALUES (1, ?, ?, ?, ?) ON CONFLICT(id) DO
+            INSERT INTO t_system_setting (id, system_name, description, copyright, default_language, default_theme)
+            VALUES (1, ?, ?, ?, ?, ?) ON CONFLICT(id) DO
             UPDATE
                 SET system_name = excluded.system_name,
+                description = excluded.description,
                 copyright = excluded.copyright,
                 default_language = excluded.default_language,
                 default_theme = excluded.default_theme
                 RETURNING *;
         `);
-        statement.run(systemName, copyright, defaultLanguage, defaultTheme);
+        statement.run(systemName, description, copyright, defaultLanguage, defaultTheme);
         // 更新缓存
         updateCache();
         // 返回响应

@@ -33,6 +33,7 @@ CREATE TABLE
     IF NOT EXISTS t_system_setting (
                             id INTEGER PRIMARY KEY AUTOINCREMENT,
                             system_name STRING NOT NULL,
+                            description STRING NOT NULL,
                             copyright STRING NOT NULL,
                             default_language STRING NOT NULL,
                             default_theme STRING NOT NULL,

@@ -18,6 +18,13 @@ const GeneralSettingModal = () => {
             rules: [{required: true}]
         },
         {
+            label: '系统介绍',
+            name: 'description',
+            type: 'textarea',
+            placeholder: '请输入系统介绍',
+            rules: [{required: true}],
+        },
+        {
             label: '版权信息',
             name: 'copyright',
             type: 'input',
@@ -110,6 +117,7 @@ const GeneralSettingModal = () => {
                     setLoading(true);
                     apis.saveGeneralSetting({
                         systemName: values.systemName,
+                        description: values.description,
                         copyright: values.copyright,
                         defaultLanguage: values.defaultLanguage,
                         defaultTheme: values.defaultTheme
