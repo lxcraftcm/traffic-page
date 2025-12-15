@@ -22,8 +22,6 @@
     "loginNow": "今すぐログイン",
     "registering": "登録中...",
     "loggingIn": "ログイン中...",
-    "switchToLightMode": "ライトモード",
-    "switchToDarkMode": "ダークモード",
     "hidePassword": "パスワードを隠す",
     "showPassword": "パスワードを表示",
     "copyright": "© {year} ナビセンター | バージョン {version}",
@@ -50,8 +48,6 @@
     "editCategory": "カテゴリ編集",
     "internal": "内部",
     "external": "外部",
-    "switchToLightMode": "ライトモード",
-    "switchToDarkMode": "ダークモード",
     "loadDataFailed": "ユーザーページデータの読み込みに失敗しました",
     "saveSuccess": "保存成功",
     "saveDataFailed": "ユーザーページデータの保存に失敗しました",
@@ -155,6 +151,10 @@
       "cancel": "キャンセル",
       "confirm": "選択を確定"
     }
+  },
+  "ThemeSelector": {
+    "switchToLightMode": "ライトモード",
+    "switchToDarkMode": "ダークモード"
   },
   "Modal": {
     "close": "閉じる",

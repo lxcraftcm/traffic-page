@@ -22,8 +22,6 @@
     "loginNow": "Login Now",
     "registering": "Registering...",
     "loggingIn": "Logging in...",
-    "switchToLightMode": "Switch to Light Mode",
-    "switchToDarkMode": "Switch to Dark Mode",
     "hidePassword": "Hide Password",
     "showPassword": "Show Password",
     "copyright": "© {year} Navigation Center | Version {version}",
@@ -50,8 +48,6 @@
     "editCategory": "Edit Category",
     "internal": "Internal",
     "external": "External",
-    "switchToLightMode": "Switch to Light Mode",
-    "switchToDarkMode": "Switch to Dark Mode",
     "loadDataFailed": "Loading user page data failed, please try again",
     "saveSuccess": "Save success",
     "saveDataFailed": "Save user page data failed, please try again",
@@ -155,6 +151,10 @@
       "cancel": "Cancel",
       "confirm": "Confirm Selection"
     }
+  },
+  "ThemeSelector": {
+    "switchToLightMode": "Switch to Light Mode",
+    "switchToDarkMode": "Switch to Dark Mode"
   },
   "Modal": {
     "close": "Close",

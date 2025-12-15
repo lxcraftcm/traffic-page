@@ -22,8 +22,6 @@
     "loginNow": "지금 로그인",
     "registering": "등록 중...",
     "loggingIn": "로그인 중...",
-    "switchToLightMode": "라이트 모드로 전환",
-    "switchToDarkMode": "다크 모드로 전환",
     "hidePassword": "비밀번호 숨기기",
     "showPassword": "비밀번호 표시",
     "copyright": "© {year} 네비게이션 센터 | 버전 {version}",
@@ -50,8 +48,6 @@
     "editCategory": "카테고리 편집",
     "internal": "내부",
     "external": "외부",
-    "switchToLightMode": "라이트 모드로 전환",
-    "switchToDarkMode": "다크 모드로 전환",
     "loadDataFailed": "사용자 페이지 데이터 로딩에 실패했습니다",
     "saveSuccess": "저장 성공",
     "saveDataFailed": "사용자 페이지 데이터 저장에 실패했습니다",
@@ -155,6 +151,10 @@
       "cancel": "취소",
       "confirm": "선택 확인"
     }
+  },
+  "ThemeSelector": {
+    "switchToLightMode": "라이트 모드로 전환",
+    "switchToDarkMode": "다크 모드로 전환"
   },
   "Modal": {
     "close": "닫기",

@@ -21,6 +21,7 @@ import {setToken} from "@/lib/auth";
 import {useToast} from "@/components/common/Toast";
 import LanguageSelector from "@/components/LanguageSelector";
 import {useAppTranslation} from "@/providers/I18nProvider";
+import ThemeSelector from "@/components/ThemeSelector";
 
 const LoginPage = () => {
     // 原有状态
@@ -34,14 +35,6 @@ const LoginPage = () => {
         password?: string;
         confirmPassword?: string
     }>({});
-    const [isDarkMode, setIsDarkMode] = useState(() => {
-        const saved = getLocalStorage('darkMode');
-        if (saved !== null) return saved === 'true';
-        if (typeof window !== 'undefined') {
-            return window.matchMedia('(prefers-color-scheme: dark)').matches;
-        }
-        return false;
-    });
 
     // 新增状态：系统初始化判断与注册相关
     const [isRegisterMode, setIsRegisterMode] = useState<boolean | null>(null);
@@ -61,16 +54,6 @@ const LoginPage = () => {
         checkSystemInit()
     }, []);
 
-    // 应用黑暗模式
-    useEffect(() => {
-        if (isDarkMode) {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
-        setLocalStorage('darkMode', isDarkMode.toString());
-    }, [isDarkMode]);
-
     const checkSystemInit = async () => {
         try {
             // 调用接口检测系统是否初始化
@@ -85,11 +68,6 @@ const LoginPage = () => {
             // 出错时默认视为已初始化
             setIsRegisterMode(false);
         }
-    };
-
-    // 切换深色模式
-    const toggleDarkMode = () => {
-        setIsDarkMode(!isDarkMode);
     };
 
     // 表单验证
@@ -254,22 +232,7 @@ const LoginPage = () => {
 
                             <div className="flex items-center gap-2">
                                 {/* 深色模式切换 */}
-                                <button
-                                    onClick={toggleDarkMode}
-                                    className={`
-                    p-2 rounded-full transition-all duration-300 ease-in-out
-                    flex items-center justify-center shadow-sm cursor-pointer
-                    dark:bg-slate-800 dark:text-amber-300 dark:hover:bg-slate-700 bg-white text-slate-700 hover:bg-slate-100
-                    hover:scale-110 active:scale-95
-                    focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500/30
-                  `}
-                                    aria-label={isDarkMode ? t('switchToLightMode') : t('switchToDarkMode')}
-                                >
-                                    <FontAwesomeIcon
-                                        icon={isDarkMode ? faSun : faMoon}
-                                        className={`h-4.5 w-4.5 transition-transform duration-500 dark:rotate-0 dark:scale-100 rotate-180 scale-90`}
-                                    />
-                                </button>
+                                <ThemeSelector/>
 
                                 {/* 语言切换 */}
                                 <LanguageSelector className="bg-white py-1.5"/>

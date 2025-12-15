@@ -22,8 +22,6 @@
     "loginNow": "立即登录",
     "registering": "注册中...",
     "loggingIn": "登录中...",
-    "switchToLightMode": "切换到浅色模式",
-    "switchToDarkMode": "切换到深色模式",
     "hidePassword": "隐藏密码",
     "showPassword": "显示密码",
     "copyright": "© {year} 导航中心 | 版本 {version}",
@@ -50,8 +48,6 @@
     "editCategory": "编辑分类",
     "internal": "内网",
     "external": "外网",
-    "switchToLightMode": "切换到浅色模式",
-    "switchToDarkMode": "切换到深色模式",
     "loadDataFailed": "加载用户页面数据失败，请重试",
     "saveSuccess": "保存成功",
     "saveDataFailed": "保存用户页面数据失败，请重试",
@@ -155,6 +151,10 @@
       "cancel": "取消",
       "confirm": "确定选择"
     }
+  },
+  "ThemeSelector": {
+    "switchToLightMode": "切换到浅色模式",
+    "switchToDarkMode": "切换到深色模式"
   },
   "Modal": {
     "close": "关闭",

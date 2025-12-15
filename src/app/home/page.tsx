@@ -23,6 +23,7 @@ import LanguageSelector from "@/components/LanguageSelector";
 import SearchBar from "@/components/SearchBar";
 import SystemEditModal from "@/components/SystemEdit/SystemEditModal";
 import {useAppTranslation} from "@/providers/I18nProvider";
+import ThemeSelector from "@/components/ThemeSelector";
 
 const NavigationHub = () => {
     // 核心状态
@@ -35,14 +36,6 @@ const NavigationHub = () => {
     const [isSystemEditModalOpen, setIsSystemEditModalOpen] = useState(false);
     const [categories, setCategories] = useState<Category[]>([]);
     const [isSaving, setIsSaving] = useState<boolean>(false);
-    const [isDarkMode, setIsDarkMode] = useState(() => {
-        const saved = getLocalStorage('darkMode');
-        if (saved !== null) return saved === 'true';
-        if (typeof window !== 'undefined') {
-            return window.matchMedia('(prefers-color-scheme: dark)').matches;
-        }
-        return false;
-    });
     // 初始化i18n
     const {t} = useAppTranslation("NavigationHub");
 
@@ -75,26 +68,10 @@ const NavigationHub = () => {
         document.body.style.scrollbarGutter = 'stable';
     }, [isLoading]);
 
-    // 应用黑暗模式到文档
-    useEffect(() => {
-        if (isDarkMode) {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
-        // 保存到本地存储
-        setLocalStorage('darkMode', isDarkMode.toString());
-    }, [isDarkMode]);
-
     //
     useEffect(() => {
         setTimeout(loadData, 1);
     }, []);
-
-    // 切换模式
-    const toggleDarkMode = () => {
-        setIsDarkMode(!isDarkMode);
-    };
 
     // 打开编辑弹窗
     const openEditModal = (defaultSelectedId?: string) => {
@@ -291,24 +268,7 @@ const NavigationHub = () => {
                                   </span>
                             </div>
 
-
-                            <button
-                                onClick={toggleDarkMode}
-                                className={`
-                                        p-2 rounded-full transition-all duration-300 ease-in-out
-                                        flex items-center justify-center shadow-sm cursor-pointer
-                                        dark:bg-slate-800 dark:text-amber-300 dark:hover:bg-slate-700
-                                        bg-slate-100 text-slate-700 hover:bg-slate-200
-                                        hover:scale-110 active:scale-95
-                                        dark:focus:ring-indigo-400 focus:ring-indigo-500
-                                      `}
-                                aria-label={isDarkMode ? t('switchToLightMode') : t('switchToDarkMode')}
-                            >
-                                <FontAwesomeIcon
-                                    icon={isDarkMode ? faSun : faMoon}
-                                    className={`h-5 w-5 transition-transform duration-500 dark:rotate-0 dark:scale-100 rotate-180 scale-90`}
-                                />
-                            </button>
+                            <ThemeSelector/>
 
                             {/* 功能按钮 */}
                             <button
