@@ -1,6 +1,7 @@
 'use client'
 import {createContext, ReactNode, useContext, useEffect, useState} from "react";
 import {getLocalStorage, removeLocalStorage, setLocalStorage} from "@/utils/StorageUtil";
+import {usePreferences} from "@/providers/PreferencesProvider";
 
 type SupportedTheme = 'light' | 'dark';
 
@@ -9,10 +10,6 @@ interface ThemeContextType {
     setTheme: (theme: SupportedTheme) => void;
     toggleTheme: () => void;
 }
-
-// 是否更随浏览器
-const isAuto = true;
-const defaultTheme = 'light';
 
 const ThemeContext = createContext<ThemeContextType | null>(null);
 
@@ -44,8 +41,12 @@ const getBrowserColorScheme = () => {
 };
 
 export function ThemeProvider({children}: { children: ReactNode }) {
-    const [theme, setTheme] = useState<SupportedTheme>(defaultTheme);
+    const {generalSetting} = usePreferences()
+    // 是否更随浏览器
+    const isAuto = generalSetting.defaultTheme === 'auto';
+    const defaultTheme = generalSetting.defaultTheme === 'auto' ? 'light' : generalSetting.defaultTheme;
 
+    const [theme, setTheme] = useState<SupportedTheme>(defaultTheme);
     const setHtml = (theme: string) => {
         const html = document.documentElement;
         // 移除旧的类
