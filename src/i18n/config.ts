@@ -1,6 +1,5 @@
 import i18n from 'i18next';
 import {initReactI18next} from 'react-i18next';
-import {getLocalStorage, setLocalStorage} from '@/utils/StorageUtil';
 import zhCN from '@/i18n/locales/zh-CN.json';
 import enUS from '@/i18n/locales/en-US.json';
 import jaJP from '@/i18n/locales/ja-JP.json';
@@ -45,22 +44,15 @@ export const getBrowserLanguage = () => {
     }
 }
 
-// 获取对应
-const getPreference = () => {
-    return getLocalStorage("language");
-}
-
 // 扩展的 i18n 实例，集成偏好管理
 class I18nWithPreferences {
     private initialized = false;
     private generalLanguage = defaultPreference;
 
-    async initialize(generalLanguage: string) {
-        console.log('generalLanguage',generalLanguage)
+    async initialize(generalLanguage: string, preferenceLanguage?: string) {
         this.generalLanguage = generalLanguage;
         if (this.initialized) return i18n;
-        const savedPrefs = getPreference();
-        const detectedLanguage = this.detectLanguage(savedPrefs);
+        const detectedLanguage = this.detectLanguage(preferenceLanguage);
         // 初始化 i18next
         await i18n
             .use(initReactI18next)
@@ -95,7 +87,6 @@ class I18nWithPreferences {
 
         // 监听语言变化
         i18n.on('languageChanged', (lng) => {
-            setLocalStorage("language", lng);
             // 同时更新 HTML lang 属性
             if (typeof document !== 'undefined') {
                 document.documentElement.lang = lng;
@@ -112,7 +103,7 @@ class I18nWithPreferences {
     }
 
     // 语言检测逻辑
-    private detectLanguage(savedPref: string | null): string {
+    private detectLanguage(savedPref?: string | null): string {
         // 优先级: 1. Preferences保存 > 2. 浏览器设置 > 3. 默认
         if (savedPref && SUPPORTED_LANGUAGES.includes(savedPref as SupportedLanguage)) {
             return savedPref;
