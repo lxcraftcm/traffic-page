@@ -1,9 +1,6 @@
 'use client'
 import {createContext, ReactNode, useContext, useEffect, useState} from "react";
-import {getLocalStorage, removeLocalStorage, setLocalStorage} from "@/utils/StorageUtil";
-import {usePreferences} from "@/providers/PreferencesProvider";
-
-type SupportedTheme = 'light' | 'dark';
+import {SupportedTheme, usePreferences} from "@/providers/PreferencesProvider";
 
 interface ThemeContextType {
     theme: SupportedTheme;
@@ -12,18 +9,6 @@ interface ThemeContextType {
 }
 
 const ThemeContext = createContext<ThemeContextType | null>(null);
-
-const getPreference = () => {
-    return getLocalStorage("theme");
-}
-
-const setPreference = (theme: SupportedTheme) => {
-    return setLocalStorage("theme", theme);
-}
-
-const clearPreference = () => {
-    removeLocalStorage("theme");
-}
 
 // 检测浏览器设置的网站配色偏好
 const getBrowserColorScheme = () => {
@@ -41,7 +26,7 @@ const getBrowserColorScheme = () => {
 };
 
 export function ThemeProvider({children}: { children: ReactNode }) {
-    const {generalSetting} = usePreferences()
+    const {generalSetting, userPreferences, setPreferences} = usePreferences()
     // 是否更随浏览器
     const isAuto = generalSetting.defaultTheme === 'auto';
     const defaultTheme = generalSetting.defaultTheme === 'auto' ? 'light' : generalSetting.defaultTheme;
@@ -53,6 +38,18 @@ export function ThemeProvider({children}: { children: ReactNode }) {
         html.classList.remove('light', 'dark');
         // 添加新类
         html.classList.add(theme);
+    }
+
+    const getPreference = () => {
+        return userPreferences.theme;
+    }
+
+    const setPreference = (theme: SupportedTheme) => {
+        setPreferences("theme", theme);
+    }
+
+    const clearPreference = () => {
+        setPreferences("theme", undefined);
     }
 
     // 设置主题
