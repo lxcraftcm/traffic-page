@@ -6,14 +6,12 @@ import {
     faUser,
     faEye,
     faEyeSlash,
-    faSun,
-    faMoon,
     faArrowRight,
     faUserCircle,
     faCheck,
     faShieldHalved,
 } from '@fortawesome/free-solid-svg-icons';
-import {getLocalStorage, setLocalStorage} from '@/utils/StorageUtil';
+import {setLocalStorage} from '@/utils/StorageUtil';
 import Link from 'next/link';
 import {apis} from "@/utils/RequestUtil";
 import forge from 'node-forge';
@@ -53,7 +51,6 @@ const LoginPage = () => {
 
     // 检测系统初始化状态
     useEffect(() => {
-        console.log("generalSetting1", generalSetting)
         checkSystemInit()
     }, []);
 

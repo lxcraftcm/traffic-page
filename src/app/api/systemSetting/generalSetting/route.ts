@@ -58,7 +58,6 @@ export async function POST(
 // 查询通用配置
 export const getGeneralSettingByCache = async (): Promise<GeneralSetting> => {
     let generalSetting = dbCache.get<GeneralSetting>(generalSettingCacheKey);
-    console.log("generalSetting cache", generalSetting)
     if (generalSetting) {
         return snakeToCamel(generalSetting);
     } else {

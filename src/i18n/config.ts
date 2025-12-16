@@ -56,6 +56,7 @@ class I18nWithPreferences {
     private generalLanguage = defaultPreference;
 
     async initialize(generalLanguage: string) {
+        console.log('generalLanguage',generalLanguage)
         this.generalLanguage = generalLanguage;
         if (this.initialized) return i18n;
         const savedPrefs = getPreference();
