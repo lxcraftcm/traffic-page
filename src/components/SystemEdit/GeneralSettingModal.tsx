@@ -3,6 +3,7 @@ import React, {useEffect, useState} from 'react';
 import BaseForm, {FormField} from '@/components/common/BaseForm';
 import {apis} from "@/utils/RequestUtil";
 import {faSave, faUndo} from '@fortawesome/free-solid-svg-icons';
+import CommonLoading from "@/components/common/CommonLoading";
 
 const GeneralSettingModal = () => {
     const [loading, setLoading] = useState(true);
@@ -77,7 +78,6 @@ const GeneralSettingModal = () => {
     // 加载数据
     const loadData = () => {
         apis.getGeneralSetting().then(res => {
-            console.log(res.setting);
             setInitialValues(res.setting);
         }).catch(err => {
             console.error('加载通用设置失败:', err);
@@ -90,29 +90,13 @@ const GeneralSettingModal = () => {
 
     return (
         <div className={'p-5 relative'}>
-            {loading && (
-                <div
-                    className="absolute inset-0 bg-white/10 dark:bg-slate-800/10 flex items-center justify-center z-50 backdrop-blur-sm transition-all duration-300 ease-in-out">
-                    <div className="relative">
-                        <div className="w-14 h-14 rounded-full border-4 border-indigo-100 dark:border-indigo-900/30"/>
-                        <div
-                            className="absolute inset-0 w-14 h-14 rounded-full border-4 border-transparent border-t-indigo-500 dark:border-t-indigo-400 animate-spin [animation-duration:1.2s] [animation-timing-function:cubic-bezier(0.4,0,0.2,1)]"/>
-                        <div className="absolute inset-0 flex items-center justify-center">
-                            <div className="w-2 h-2 rounded-full bg-indigo-500 dark:bg-indigo-400 opacity-70"/>
-                        </div>
-                        <div
-                            className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-12 h-1 rounded-full bg-indigo-500/10 dark:bg-indigo-400/10 blur-md"/>
-                    </div>
-                </div>
-            )}
-
+            {loading && <CommonLoading/>}
 
             {/* 表单内容 - 加载完成后显示 */}
             <BaseForm
                 fields={searchFields}
                 initialValues={initialValues}
                 onSubmit={(values) => {
-                    console.log("submit", values);
                     // 提交时也可添加加载状态
                     setLoading(true);
                     apis.saveGeneralSetting({
