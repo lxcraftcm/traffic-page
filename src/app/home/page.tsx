@@ -24,8 +24,9 @@ import ThemeSelector from "@/components/ThemeSelector";
 import {usePreferences} from "@/providers/PreferencesProvider";
 
 const NavigationHub = () => {
+    const {generalSetting, userPreferences, setPreferences} = usePreferences();
     // 核心状态
-    const [isInternal, setIsInternal] = useState(true);
+    const [isInternal, setIsInternal] = useState(userPreferences.networkType === 'internal');
     const [isLoading, setIsLoading] = useState(false);
     const [activeCategory, setActiveCategory] = useState('all');
     const [renderKey, setRenderKey] = useState(0);
@@ -35,7 +36,6 @@ const NavigationHub = () => {
     const [categories, setCategories] = useState<Category[]>([]);
     const [isSaving, setIsSaving] = useState<boolean>(false);
     // 初始化i18n
-    const {generalSetting} = usePreferences();
     const {t} = useAppTranslation("NavigationHub");
     // 初始化 Toast
     const {showToast} = useToast();
@@ -68,7 +68,10 @@ const NavigationHub = () => {
 
     //
     useEffect(() => {
-        setTimeout(loadData, 1);
+        const init = async () => {
+            loadData();
+        }
+        init();
     }, []);
 
     // 打开编辑弹窗
@@ -242,7 +245,10 @@ const NavigationHub = () => {
                                     <input
                                         type="checkbox"
                                         checked={isInternal}
-                                        onChange={() => setIsInternal(!isInternal)}
+                                        onChange={() => {
+                                            setIsInternal(!isInternal)
+                                            setPreferences('networkType', isInternal ? 'external' : 'internal')
+                                        }}
                                         className="sr-only peer"
                                     />
                                     {/* 开关背景 */}

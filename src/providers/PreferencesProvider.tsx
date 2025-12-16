@@ -11,9 +11,12 @@ interface ThemeContextType {
 
 interface UserPreferences {
     theme?: SupportedTheme;
+    networkType?: NetworkType;
 }
 
 export type SupportedTheme = 'light' | 'dark';
+
+export type NetworkType = 'external' | 'internal';
 
 const PreferencesContext = createContext<ThemeContextType | null>(null);
 
@@ -24,7 +27,7 @@ export function PreferencesProvider({
     children: React.ReactNode;
     generalSetting: GeneralSetting;
 }) {
-    const [userPreferences, setUserPreferences] = useState<UserPreferences>({theme: 'light'})
+    const [userPreferences, setUserPreferences] = useState<UserPreferences>({})
 
     useEffect(() => {
         const init = async () => {
@@ -46,6 +49,11 @@ export function PreferencesProvider({
             setUserPreferences(prev => ({
                 ...prev,
                 theme: value,
+            }))
+        } else if (key === 'networkType') {
+            setUserPreferences(prev => ({
+                ...prev,
+                networkType: value,
             }))
         }
     }
