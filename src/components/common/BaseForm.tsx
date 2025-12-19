@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback, useEffect} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {
     faCheck,
@@ -18,7 +18,7 @@ export interface FormField {
     type: InputType;
     /** 占位符（input/textarea） */
     placeholder?: string;
-    /** 选项列表（select/radio） */
+    /** 选项列表（select/radio/icon） */
     options?: Option[];
     /** 是否搜索（select） */
     isSearch?: boolean;
@@ -41,6 +41,8 @@ export interface FormField {
     style?: React.CSSProperties;
     /** 选项布局（垂直/水平）（checkbox/radio）*/
     optionLayout?: 'horizontal' | 'vertical';
+    /** 是否展示更多图标选择 */
+    isShowMoreIcon?: boolean;
 }
 
 // 表单组件属性
@@ -211,7 +213,8 @@ const BaseForm: React.FC<BaseFormProps> = ({
             width = '100%',
             style = {},
             isSearch,
-            optionLayout
+            optionLayout,
+            isShowMoreIcon
         } = field;
         const value = formValues[name];
         const isDisabled = disabled || fieldDisabled;
@@ -239,6 +242,7 @@ const BaseForm: React.FC<BaseFormProps> = ({
                         isSearch={isSearch}
                         disabled={isDisabled}
                         optionLayout={optionLayout}
+                        isShowMoreIcon={isShowMoreIcon}
                         onChange={(newValue) => {
                             handleChange(name, newValue)
                         }}

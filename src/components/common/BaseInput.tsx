@@ -1,11 +1,14 @@
 import React, {useState, useEffect, useRef} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {
-    faCheck, faChevronDown
+    faCheck, faChevronDown, faEllipsis
 } from '@fortawesome/free-solid-svg-icons';
+import {PRESET_ICONS} from "@/components/common/PreConstants";
+import {getIconClass, renderIcon} from "@/utils/IconUtil";
+import IconPickerModal from "@/components/IconPickerModal";
 
 // 类型定义
-export type InputType = 'input' | 'select' | 'checkbox' | 'radio' | 'textarea';
+export type InputType = 'input' | 'select' | 'checkbox' | 'radio' | 'textarea' | 'iconSelect';
 
 // 选项类型（用于select/radio）
 export interface Option {
@@ -36,7 +39,9 @@ interface BaseInputProps {
     /** 改变时 */
     onChange?: (newValue: any) => void;
     /** 失焦时 */
-    onBlur?: (newValue: any) => void
+    onBlur?: (newValue: any) => void;
+    /** 是否展示更多图标选择 */
+    isShowMoreIcon?: boolean;
 }
 
 /** 通用表单组件 */
@@ -51,7 +56,8 @@ const BaseInput: React.FC<BaseInputProps> = ({
                                                  isSearch,
                                                  optionLayout,
                                                  onChange,
-                                                 onBlur
+                                                 onBlur,
+                                                 isShowMoreIcon = true
                                              }) => {
     const getInitialValue = () => {
         if (initialValue) {
@@ -71,6 +77,7 @@ const BaseInput: React.FC<BaseInputProps> = ({
     const [selectLabel, setSelectLabel] = useState<string>()
     const [relOptions, setRelOptions] = useState<Option[] | undefined>(options)
     const [searchValue, setSearchValue] = useState<string>('')
+    const [isShowIconPickerModal, setIsShowIconPickerModal] = useState<boolean>(false);
 
     // 点击外部关闭语言切换
     useEffect(() => {
@@ -124,7 +131,7 @@ const BaseInput: React.FC<BaseInputProps> = ({
     const handleSelectChange = (value: any) => {
         setSearchValue(value)
         if (value) {
-            let newOptions: Option[] = []
+            const newOptions: Option[] = []
             if (options) {
                 options.map(option => {
                     if (option.label.includes(value)) {
@@ -340,6 +347,90 @@ const BaseInput: React.FC<BaseInputProps> = ({
         );
     };
 
+    // 渲染icon选择
+    const renderIconSelect = () => {
+        // 获取默认图标选择列表
+        const getDefaultIconSelect = () => {
+            return PRESET_ICONS.map(({icon, label}) => {
+                return {label, value: getIconClass(icon)}
+            })
+        }
+        // 选择列表容器样式
+        const optionsContainerClass = `
+              ${optionLayout === 'horizontal' ? 'flex flex-wrap gap-4' : 'flex flex-col gap-2.5'}
+              ${hasError ? 'border-l-2 border-red-500 pl-3' : ''}`;
+        return (
+            <div className={`mb-2 ${optionsContainerClass}`}>
+                <div className={'flex items-center w-full'}>
+                    {isShowMoreIcon && <button
+                        type="button"
+                        className={`w-11 h-11 rounded-lg flex items-center justify-center transition-all duration-200 bg-gray-100
+                         text-gray-700 dark:bg-gray-800 dark:text-gray-300 border border-gray-200 dark:border-gray-700 mr-2
+                    }`}
+                        style={{background: '#e0f2fe'}}
+                    >
+                        {renderIcon({iconMode: 'class', fontAwesomeClass: value as string, iconColor: '#06b6d4'}, 5)}
+                    </button>}
+                    <input
+                        id={id}
+                        type="text"
+                        value={value ? value.toString() : ''}
+                        readOnly={true}
+                        placeholder={''}
+                        className={`w-auto flex-1 h-full ${inputBaseClass}`}
+                        onBlur={() => {
+                            if (onBlur) onBlur(value)
+                        }}
+                    />
+                </div>
+                <div className="flex gap-2 flex-wrap">
+                    {(options ? options : getDefaultIconSelect()).map(({label, value: className}, i) => (
+                        <button
+                            key={"edit_preset_icon_" + i}
+                            type="button"
+                            title={`${label} (${className})`}
+                            onClick={() => !disabled && handleChange(className)}
+                            className={`w-11 h-11 rounded-lg flex items-center justify-center transition-all duration-200 cursor-pointer 
+                                bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-gray-900
+                                dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-gray-200
+                                border border-gray-200 dark:border-gray-700 ${
+                                value === className ? 'ring-2 ring-indigo-500' : ''
+                            }`}
+                        >
+                            {renderIcon({
+                                iconMode: 'class',
+                                fontAwesomeClass: className as string,
+                                iconColor: '#6366f1'
+                            }, 5)}
+                        </button>
+                    ))}
+                    {isShowMoreIcon && <button
+                        onClick={() => setIsShowIconPickerModal(true)}
+                        className={`
+                            w-11 h-11 rounded-lg flex items-center justify-center transition-all cursor-pointer
+                            bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-gray-900
+                            dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-gray-200
+                            border border-gray-200 dark:border-gray-700
+                        `}
+                        title={'more'}
+                    >
+                        <FontAwesomeIcon icon={faEllipsis} style={{fontSize: '16px'}}/>
+                    </button>}
+                </div>
+                {/*更多图标选择*/}
+                {isShowMoreIcon && <IconPickerModal
+                    visible={isShowIconPickerModal}
+                    onClose={() => setIsShowIconPickerModal(false)}
+                    onSubmit={(icon) => {
+                        handleChange(getIconClass(icon))
+                        setIsShowIconPickerModal(false)
+                    }}
+                    onCancel={() => setIsShowIconPickerModal(false)}
+                />}
+            </div>
+        );
+    };
+
 
     return (
         <>
@@ -382,6 +473,10 @@ const BaseInput: React.FC<BaseInputProps> = ({
 
             {inputType === 'radio' && (
                 renderRadio()
+            )}
+
+            {inputType === 'iconSelect' && (
+                renderIconSelect()
             )}
         </>
     );
