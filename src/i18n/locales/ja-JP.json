@@ -202,5 +202,30 @@
       "selectOption": "左側のオプションをクリックして、対応する機能を設定してください。",
       "refreshPage": "変更後はページをリフレッシュして設定を有効にしてください。"
     }
+  },
+  "GeneralSetting": {
+    "systemName": "システム名",
+    "systemNamePlaceholder": "システム名を入力してください",
+    "systemNameRequired": "システム名は必須です",
+    "description": "システムの説明",
+    "descriptionPlaceholder": "システムの説明を入力してください",
+    "descriptionRequired": "システムの説明は必須です",
+    "copyright": "著作権情報",
+    "copyrightPlaceholder": "著作権情報を入力してください",
+    "copyrightRequired": "著作権情報は必須です",
+    "defaultLanguage": "システムのデフォルト言語",
+    "defaultLanguagePlaceholder": "システムのデフォルト言語を選択してください",
+    "defaultLanguageRequired": "デフォルト言語は必須です",
+    "defaultTheme": "デフォルトテーマ",
+    "defaultThemePlaceholder": "テーマの設定を選択してください",
+    "defaultThemeRequired": "デフォルトテーマは必須です",
+    "language.auto": "自動",
+    "theme.auto": "自動",
+    "theme.light": "明るい",
+    "theme.dark": "暗い",
+    "save": "保存",
+    "reset": "リセット",
+    "saveSuccess": "設定の保存が成功しました！",
+    "saveFailed": "設定の保存に失敗しました："
   }
 }

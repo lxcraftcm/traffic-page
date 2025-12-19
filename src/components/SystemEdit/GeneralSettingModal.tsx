@@ -4,60 +4,64 @@ import BaseForm, {FormField} from '@/components/common/BaseForm';
 import {apis} from "@/utils/RequestUtil";
 import {faSave, faUndo} from '@fortawesome/free-solid-svg-icons';
 import CommonLoading from "@/components/common/CommonLoading";
+import {useAppTranslation} from "@/providers/I18nProvider";
+import {useToast} from "@/components/common/Toast";
 
 const GeneralSettingModal = () => {
     const [loading, setLoading] = useState(true);
-    const [initialValues, setInitialValues] = useState<any>({}); // 明确类型
+    const [initialValues, setInitialValues] = useState<any>({});
+    const {t} = useAppTranslation('GeneralSetting');
+    const {showToast} = useToast();
 
     // 表单配置
     const searchFields: FormField[] = [
         {
-            label: '系统名称',
+            label: t('systemName'),
             name: 'systemName',
             type: 'input',
-            placeholder: '请输入系统名称',
-            rules: [{required: true}]
+            placeholder: t('systemNamePlaceholder'),
+            rules: [{required: true, message: t('systemNameRequired')}]
         },
         {
-            label: '系统介绍',
+            label: t('description'),
             name: 'description',
             type: 'textarea',
-            placeholder: '请输入系统介绍',
-            rules: [{required: true}],
+            placeholder: t('descriptionPlaceholder'),
+            rules: [{required: true, message: t('descriptionRequired')}],
         },
         {
-            label: '版权信息',
+            label: t('copyright'),
             name: 'copyright',
             type: 'input',
-            placeholder: '请输入版权信息',
-            rules: [{required: true}]
+            placeholder: t('copyrightPlaceholder'),
+            rules: [{required: true, message: t('copyrightRequired')}]
         },
         {
-            label: '系统默认语言',
+            label: t('defaultLanguage'),
             name: 'defaultLanguage',
             type: 'select',
-            placeholder: '请选择系统默认语言',
+            placeholder: t('defaultLanguagePlaceholder'),
             options: [
-                {label: '自动', value: "auto"},
-                {label: '英语', value: "en-US"},
+                {label: t('language.auto'), value: "auto"},
+                {label: 'English', value: "en-US"},
                 {label: '中文', value: 'zh-CN'},
-                {label: '日语', value: 'ja-JP'},
-                {label: '韩语', value: 'ko-KR'}
+                {label: '日本語', value: 'ja-JP'},
+                {label: '한국어', value: 'ko-KR'}
             ],
             isSearch: true,
-            rules: [{required: true}]
+            rules: [{required: true, message: t('defaultLanguageRequired')}]
         },
         {
-            label: '默认主题',
+            label: t('defaultTheme'),
             name: 'defaultTheme',
             type: 'radio',
-            placeholder: '请选择主题偏好',
+            placeholder: t('defaultThemePlaceholder'),
             options: [
-                {label: '自动', value: 'auto'},
-                {label: '明亮', value: 'light'},
-                {label: '黑暗', value: 'dark'}
+                {label: t('theme.auto'), value: 'auto'},
+                {label: t('theme.light'), value: 'light'},
+                {label: t('theme.dark'), value: 'dark'}
             ],
-            rules: [{required: true}],
+            rules: [{required: true, message: t('defaultThemeRequired')}],
             optionLayout: 'horizontal'
         },
         {
@@ -80,7 +84,7 @@ const GeneralSettingModal = () => {
         apis.getGeneralSetting().then(res => {
             setInitialValues(res.setting);
         }).catch(err => {
-            console.error('加载通用设置失败:', err);
+            console.error('loadData error:', err);
         }).finally(() => setLoading(false));
     };
 
@@ -97,7 +101,6 @@ const GeneralSettingModal = () => {
                 fields={searchFields}
                 initialValues={initialValues}
                 onSubmit={(values) => {
-                    // 提交时也可添加加载状态
                     setLoading(true);
                     apis.saveGeneralSetting({
                         systemName: values.systemName,
@@ -106,20 +109,30 @@ const GeneralSettingModal = () => {
                         defaultLanguage: values.defaultLanguage,
                         defaultTheme: values.defaultTheme
                     }).then(() => {
-                        loadData(); // 重新加载数据
+                        loadData();
+                        showToast({
+                            message: t('saveSuccess'),
+                            type: 'success',
+                            duration: 3000,
+                        });
                     }).catch(err => {
-                        console.error('保存失败:', err);
-                        setLoading(false); // 保存失败也需关闭加载
+                        showToast({
+                            message: t('saveFailed') + err,
+                            type: 'error',
+                            duration: 3000,
+                        })
+                        console.error('save error:', err);
+                        setLoading(false);
                     });
                 }}
                 onReset={() => {
                     // 重置时可清空表单或重新加载初始数据
                 }}
-                disabled={loading} // 加载中禁用表单
+                disabled={loading}
                 layout={'vertical'}
-                submitText={'保存'}
+                submitText={t('save')}
                 submitIcon={faSave}
-                resetText={'重置'}
+                resetText={t('reset')}
                 resetIcon={faUndo}
                 fieldGap="1.5rem"
             />

@@ -202,5 +202,30 @@
       "selectOption": "Click on the left options to configure corresponding functions.",
       "refreshPage": "Please refresh the page to make settings take effect after modification."
     }
+  },
+  "GeneralSetting": {
+    "systemName": "System Name",
+    "systemNamePlaceholder": "Please enter system name",
+    "systemNameRequired": "System name is required",
+    "description": "System Description",
+    "descriptionPlaceholder": "Please enter system description",
+    "descriptionRequired": "System description is required",
+    "copyright": "Copyright Information",
+    "copyrightPlaceholder": "Please enter copyright information",
+    "copyrightRequired": "Copyright information is required",
+    "defaultLanguage": "Default System Language",
+    "defaultLanguagePlaceholder": "Please select default system language",
+    "defaultLanguageRequired": "Default language is required",
+    "defaultTheme": "Default Theme",
+    "defaultThemePlaceholder": "Please select theme preference",
+    "defaultThemeRequired": "Default theme is required",
+    "language.auto": "Auto",
+    "theme.auto": "Auto",
+    "theme.light": "Light",
+    "theme.dark": "Dark",
+    "save": "Save",
+    "reset": "Reset",
+    "saveSuccess": "Settings saved successfully!",
+    "saveFailed": "Failed to save settings:"
   }
 }
