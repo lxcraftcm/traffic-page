@@ -139,6 +139,19 @@ const BaseForm: React.FC<BaseFormProps> = ({
         return true;
     };
 
+    useEffect(() => {
+        // 处理errors的i18n更新
+        const errorsUpdate = async () => {
+            if (errors) {
+                Object.keys(errors).map((errorKey) => {
+                    const value = formValues[errorKey];
+                    validateField(errorKey, value)
+                })
+            }
+        }
+        errorsUpdate();
+    }, [fields]);
+
     // 整体表单验证
     const validateForm = (): boolean => {
         let isValid = true;
