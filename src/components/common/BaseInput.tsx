@@ -84,15 +84,18 @@ const BaseInput: React.FC<BaseInputProps> = ({
     }, []);
 
     useEffect(() => {
-        if (initialValue) setValue(getInitialValue())
-        if (inputType === 'select' && options) {
-            options.map(option => {
-                if (option.value === value) {
-                    setSelectLabel(option.label);
-                }
-            })
+        const init = async () => {
+            if (initialValue) setValue(getInitialValue())
+            if (inputType === 'select' && options) {
+                options.map(option => {
+                    if (option.value === value) {
+                        setSelectLabel(option.label);
+                    }
+                })
+            }
         }
-    }, [initialValue])
+        init();
+    }, [initialValue, options])
 
     // 输入框样式
     const inputBaseClass = `w-full px-4 py-2.5 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 text-slate-800 dark:text-slate-200
