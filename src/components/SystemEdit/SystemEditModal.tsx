@@ -158,11 +158,13 @@ const SystemEdit: React.FC = () => {
                 </div>
 
                 {/* 右侧内容区 */}
-                <ResizeCard duration={300} className={"flex-1 flex flex-col"}>
-                    <div className="flex-1 flex flex-col bg-white dark:bg-slate-800">
-                        {activeSettingOption ? activeSettingOption.render() : defaultSetting()}
-                    </div>
-                </ResizeCard>
+                <div className={'flex-1 flex flex-col overflow-y-auto'}>
+                    <ResizeCard duration={300}>
+                        <div className="flex-1 flex flex-col bg-white dark:bg-slate-800">
+                            {activeSettingOption ? activeSettingOption.render() : defaultSetting()}
+                        </div>
+                    </ResizeCard>
+                </div>
             </div>
         </div>
     );

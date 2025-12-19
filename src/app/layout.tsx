@@ -1,4 +1,3 @@
-import type {Metadata} from "next";
 import "./globals.css";
 import "./navigationHub.css";
 import {ToastProvider} from '@/components/common/Toast';
