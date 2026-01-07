@@ -1,5 +1,7 @@
 # Traffic Page
 
+[English](README.md) | [简体中文](README.zh-CN.md) | [日本語](README.ja.md) | [한국어](README.ko.md)
+
 A modern, customizable navigation hub built with Next.js 16 and React 19.
 
 ## Features

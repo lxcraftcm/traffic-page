@@ -1,5 +1,7 @@
 # Traffic Page 导航中心
 
+[English](README.md) | [简体中文](README.zh-CN.md) | [日本語](README.ja.md) | [한국어](README.ko.md)
+
 基于 Next.js 16 和 React 19 构建的现代化、可定制的导航中心。
 
 ## 功能特性

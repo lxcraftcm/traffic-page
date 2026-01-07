@@ -1,5 +1,7 @@
 # Traffic Page
 
+[English](README.md) | [简体中文](README.zh-CN.md) | [日本語](README.ja.md) | [한국어](README.ko.md)
+
 Next.js 16과 React 19로 구축된 현대적이고 사용자 정의 가능한 내비게이션 허브입니다.
 
 ## 기능

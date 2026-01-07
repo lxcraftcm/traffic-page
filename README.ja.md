@@ -1,5 +1,7 @@
 # Traffic Page
 
+[English](README.md) | [简体中文](README.zh-CN.md) | [日本語](README.ja.md) | [한국어](README.ko.md)
+
 Next.js 16 と React 19 で構築されたモダンでカスタマイズ可能なナビゲーションハブ。
 
 ## 機能
