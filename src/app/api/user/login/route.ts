@@ -5,6 +5,7 @@ import db from "@/lib/db";
 import bcrypt from 'bcryptjs';
 import {decryptedRsa} from "@/utils/CryptoUtil";
 import {getTranslation} from '@/lib/i18n'
+import {JWT_SECRET} from "@/lib/config";
 
 // 登录接口
 export async function POST(
@@ -24,7 +25,7 @@ export async function POST(
         // 生成JWT token
         const token = sign(
             {userId: user.id, email: user.email},
-            process.env.JWT_SECRET!,
+            JWT_SECRET,
             {
                 expiresIn: rememberMe ? '30d' : '1h',
                 issuer: 'your-domain.com'

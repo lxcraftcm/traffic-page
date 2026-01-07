@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import {getLocalStorage, removeLocalStorage, setLocalStorage} from "@/utils/StorageUtil";
+import {JWT_SECRET} from "@/lib/config";
 
 interface JwtPayload {
     id: string;
@@ -7,9 +8,7 @@ interface JwtPayload {
 }
 
 export const verifyJwt = (token: string) => {
-    if (!process.env.JWT_SECRET) throw new Error('JWT_SECRET not configured');
-
-    return jwt.verify(token, process.env.JWT_SECRET, {
+    return jwt.verify(token, JWT_SECRET, {
         algorithms: ['HS256']
     }) as JwtPayload;
 };
