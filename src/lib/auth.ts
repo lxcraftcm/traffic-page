@@ -3,7 +3,8 @@ import {getLocalStorage, removeLocalStorage, setLocalStorage} from "@/utils/Stor
 import {JWT_SECRET} from "@/lib/config";
 
 interface JwtPayload {
-    id: string;
+    userId: string;
+    email: string;
     role: 'user' | 'admin';
 }
 

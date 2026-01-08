@@ -35,11 +35,17 @@ export async function proxy(request: NextRequest) {
         const token = authHeader.split('Bearer ')[1];
         try {
             const user = await verifyJwt(token);
-            logger.info(`Authenticated user: ${user.id}`);
+            logger.info(`Authenticated user: ${JSON.stringify(user)}`);
             // 附加用户信息到请求头
-            request.headers.set('X-User-ID', user.id);
-            request.headers.set('X-User-Role', user.role);
-            return NextResponse.next();
+            const requestHeaders = new Headers(request.headers);
+            requestHeaders.set('X-User-ID', user.userId);
+            requestHeaders.set('X-User-Role', user.role);
+
+            return NextResponse.next({
+                request: {
+                    headers: requestHeaders
+                }
+            });
         } catch (error) {
             logger.error(`Authentication failed: ${error}`);
             return NextResponse.json(

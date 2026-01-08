@@ -38,7 +38,7 @@ api.interceptors.response.use(
             // 服务器端返回 401 响应
             return Promise.reject(error.response.data);
         }
-        return Promise.reject(error.response.data);
+        return Promise.reject(error.response?.data);
     }
 );
 

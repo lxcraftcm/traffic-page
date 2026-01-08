@@ -21,6 +21,7 @@ import LanguageSelector from "@/components/LanguageSelector";
 import {useAppTranslation} from "@/providers/I18nProvider";
 import ThemeSelector from "@/components/ThemeSelector";
 import {usePreferences} from "@/providers/PreferencesProvider";
+import CommonLoading from "@/components/common/CommonLoading";
 
 const LoginPage = () => {
     // 原有状态
@@ -188,12 +189,7 @@ const LoginPage = () => {
     // 加载中占位
     if (isRegisterMode === null) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900">
-                <div className="w-16 h-16 relative">
-                    <div
-                        className="absolute inset-0 rounded-full border-4 border-indigo-100 dark:border-indigo-900/30 border-t-indigo-500 dark:border-t-indigo-400 animate-spin"></div>
-                </div>
-            </div>
+            <CommonLoading message={'Check system init...'}/>
         );
     }
 
