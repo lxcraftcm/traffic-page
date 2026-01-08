@@ -45,6 +45,7 @@
     "discoverAndAccess": "よく使うウェブサイトを発見・アクセス",
     "oneStopNavigation": "全ての重要なページへのワンストップナビゲーションで、作業効率を向上",
     "all": "すべて",
+    "edit": "編集",
     "editCategory": "カテゴリ編集",
     "internal": "内部",
     "external": "外部",
@@ -52,7 +53,10 @@
     "saveSuccess": "保存成功",
     "saveDataFailed": "ユーザーページデータの保存に失敗しました",
     "copyright": "© {year} ナビセンター | バージョン {version}",
-    "version": "1.0.0"
+    "version": "1.0.0",
+    "settings": "設定",
+    "logout": "ログアウト",
+    "auto": "自動"
   },
   "CategoryEdit": {
     "editCategory": "カテゴリを編集",

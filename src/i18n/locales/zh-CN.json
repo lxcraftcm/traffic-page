@@ -45,6 +45,7 @@
     "discoverAndAccess": "发现并访问你的常用网站",
     "oneStopNavigation": "一站式导航到所有重要页面,提高你的工作效率",
     "all": "全部",
+    "edit": "编辑",
     "editCategory": "编辑分类",
     "internal": "内网",
     "external": "外网",
@@ -52,7 +53,10 @@
     "saveSuccess": "保存成功",
     "saveDataFailed": "保存用户页面数据失败，请重试",
     "copyright": "© {year} 导航中心 | 版本 {version}",
-    "version": "1.0.0"
+    "version": "1.0.0",
+    "settings": "设置",
+    "logout": "退出登录",
+    "auto": "自动"
   },
   "CategoryEdit": {
     "editCategory": "编辑分类",

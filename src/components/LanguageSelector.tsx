@@ -7,9 +7,10 @@ import {useI18n} from "@/providers/I18nProvider";
 
 interface LanguageSelectorProps {
     className?: string;
+    onChange?: (newValue: any) => void;
 }
 
-const LanguageSelector: React.FC<LanguageSelectorProps> = ({className}) => {
+const LanguageSelector: React.FC<LanguageSelectorProps> = ({className, onChange}) => {
     const {language, changeLanguage} = useI18n();
 
     const [selectedLanguage, setSelectedLanguage] = useState<string>(language);
@@ -32,6 +33,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({className}) => {
         changeLanguage(code).then(() => {
             setSelectedLanguage(code);
             setIsLanguageSelectorOpen(false);
+            if (onChange) onChange(code);
         })
     };
 

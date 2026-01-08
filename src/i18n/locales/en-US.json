@@ -45,6 +45,7 @@
     "discoverAndAccess": "Discover and access your frequently used websites",
     "oneStopNavigation": "One-stop navigation to all important pages, improving your work efficiency",
     "all": "All",
+    "edit": "Edit",
     "editCategory": "Edit Category",
     "internal": "Internal",
     "external": "External",
@@ -52,7 +53,10 @@
     "saveSuccess": "Save success",
     "saveDataFailed": "Save user page data failed, please try again",
     "copyright": "© {year} Navigation Center | Version {version}",
-    "version": "1.0.0"
+    "version": "1.0.0",
+    "settings": "Settings",
+    "logout": "Logout",
+    "auto": "Auto"
   },
   "CategoryEdit": {
     "editCategory": "Edit Category",
