@@ -18,8 +18,18 @@ api.interceptors.request.use(
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
-        const language = getLocalStorage("language");
-        if (language) config.headers['Accept-Language'] = language;
+        // 从 userPreferences 中读取语言设置
+        const userPreferencesStr = getLocalStorage("userPreferences");
+        if (userPreferencesStr) {
+            try {
+                const userPreferences = JSON.parse(userPreferencesStr);
+                if (userPreferences?.language) {
+                    config.headers['Accept-Language'] = userPreferences.language;
+                }
+            } catch (e) {
+                // 忽略解析错误
+            }
+        }
         return config;
     },
     error => Promise.reject(error.response.data)
