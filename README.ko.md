@@ -63,12 +63,68 @@ npm start
 
 ## Docker 배포
 
+### 옵션 1: Docker Hub에서 이미지 가져오기
+
+```bash
+# 이미지 가져오기
+docker pull lxcraftcm/traffic-page
+
+# 컨테이너 실행
+docker run -d \
+  --name traffic-page \
+  -p 3000:3000 \
+  -v /path/to/data:/app/data \
+  -e JWT_SECRET=your-secret-key \
+  lxcraftcm/traffic-page
+```
+
+### 옵션 2: Docker Compose 사용 (권장)
+
+`docker-compose.yml` 생성:
+
+```yaml
+version: '3.8'
+services:
+  traffic-page:
+    image: lxcraftcm/traffic-page
+    container_name: traffic-page
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - JWT_SECRET=your-secret-key
+    restart: unless-stopped
+```
+
+실행:
+
+```bash
+docker-compose up -d
+```
+
+### 설정
+
+- **기본 포트**: `3000`
+- **데이터 디렉토리**: `/app/data` (데이터 지속성을 위해 이 볼륨을 마운트)
+- **환경 변수**:
+  - `JWT_SECRET`: JWT 토큰 서명용 시크릿 키 (선택 사항, 설정되지 않으면 자동 생성)
+    - ⚠️ **중요**: 설정되지 않으면 랜덤 키가 자동 생성되지만, **컨테이너 재시작 후 모든 토큰이 무효화됩니다**
+  - `PORT`: 애플리케이션 포트 (기본값: 3000)
+  - `NODE_ENV`: 환경 모드 (production/development)
+
+### 소스에서 빌드
+
 ```bash
 # Docker 이미지 빌드
 docker build -t traffic-page .
 
 # 컨테이너 실행
-docker run -p 3000:3000 -v $(pwd)/data:/app/data traffic-page
+docker run -d \
+  --name traffic-page \
+  -p 3000:3000 \
+  -v $(pwd)/data:/app/data \
+  traffic-page
 ```
 
 ## 프로젝트 구조

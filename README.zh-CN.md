@@ -63,12 +63,68 @@ npm start
 
 ## Docker 部署
 
+### 方式一：从 Docker Hub 拉取镜像
+
+```bash
+# 拉取镜像
+docker pull lxcraftcm/traffic-page
+
+# 运行容器
+docker run -d \
+  --name traffic-page \
+  -p 3000:3000 \
+  -v /path/to/data:/app/data \
+  -e JWT_SECRET=your-secret-key \
+  lxcraftcm/traffic-page
+```
+
+### 方式二：使用 Docker Compose（推荐）
+
+创建 `docker-compose.yml`：
+
+```yaml
+version: '3.8'
+services:
+  traffic-page:
+    image: lxcraftcm/traffic-page
+    container_name: traffic-page
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - JWT_SECRET=your-secret-key
+    restart: unless-stopped
+```
+
+然后运行：
+
+```bash
+docker-compose up -d
+```
+
+### 配置说明
+
+- **默认端口**: `3000`
+- **数据持久化目录**: `/app/data`（挂载此卷以实现数据持久化）
+- **环境变量**:
+  - `JWT_SECRET`: JWT 令牌签名的密钥（可选，未设置时自动生成）
+    - ⚠️ **重要提示**: 如不设置，系统会自动生成随机密钥，但**容器重启后所有登录令牌将失效**
+  - `PORT`: 应用端口（默认: 3000）
+  - `NODE_ENV`: 环境模式（production/development）
+
+### 从源码构建
+
 ```bash
 # 构建 Docker 镜像
 docker build -t traffic-page .
 
 # 运行容器
-docker run -p 3000:3000 -v $(pwd)/data:/app/data traffic-page
+docker run -d \
+  --name traffic-page \
+  -p 3000:3000 \
+  -v $(pwd)/data:/app/data \
+  traffic-page
 ```
 
 ## 项目结构

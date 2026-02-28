@@ -63,12 +63,68 @@ npm start
 
 ## Docker デプロイ
 
+### オプション1：Docker Hub からプル
+
+```bash
+# イメージをプル
+docker pull lxcraftcm/traffic-page
+
+# コンテナを実行
+docker run -d \
+  --name traffic-page \
+  -p 3000:3000 \
+  -v /path/to/data:/app/data \
+  -e JWT_SECRET=your-secret-key \
+  lxcraftcm/traffic-page
+```
+
+### オプション2：Docker Compose（推奨）
+
+`docker-compose.yml` を作成：
+
+```yaml
+version: '3.8'
+services:
+  traffic-page:
+    image: lxcraftcm/traffic-page
+    container_name: traffic-page
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - JWT_SECRET=your-secret-key
+    restart: unless-stopped
+```
+
+実行：
+
+```bash
+docker-compose up -d
+```
+
+### 設定
+
+- **デフォルトポート**: `3000`
+- **データディレクトリ**: `/app/data`（データ永続化のためにこのボリュームをマウント）
+- **環境変数**:
+  - `JWT_SECRET`: JWT トークン署名用シークレットキー（オプション、未設定時は自動生成）
+    - ⚠️ **重要**: 未設定の場合、ランダムキーが自動生成されますが、**コンテナ再起動後にすべてのトークンが無効になります**
+  - `PORT`: アプリケーションポート（デフォルト: 3000）
+  - `NODE_ENV`: 環境モード（production/development）
+
+### ソースからビルド
+
 ```bash
 # Docker イメージをビルド
 docker build -t traffic-page .
 
 # コンテナを実行
-docker run -p 3000:3000 -v $(pwd)/data:/app/data traffic-page
+docker run -d \
+  --name traffic-page \
+  -p 3000:3000 \
+  -v $(pwd)/data:/app/data \
+  traffic-page
 ```
 
 ## プロジェクト構造

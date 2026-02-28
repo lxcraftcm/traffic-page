@@ -63,12 +63,68 @@ npm start
 
 ## Docker Deployment
 
+### Option 1: Pull from Docker Hub
+
+```bash
+# Pull the image
+docker pull lxcraftcm/traffic-page
+
+# Run the container
+docker run -d \
+  --name traffic-page \
+  -p 3000:3000 \
+  -v /path/to/data:/app/data \
+  -e JWT_SECRET=your-secret-key \
+  lxcraftcm/traffic-page
+```
+
+### Option 2: Docker Compose (Recommended)
+
+Create `docker-compose.yml`:
+
+```yaml
+version: '3.8'
+services:
+  traffic-page:
+    image: lxcraftcm/traffic-page
+    container_name: traffic-page
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - JWT_SECRET=your-secret-key
+    restart: unless-stopped
+```
+
+Then run:
+
+```bash
+docker-compose up -d
+```
+
+### Configuration
+
+- **Default Port**: `3000`
+- **Data Directory**: `/app/data` (mount this volume for data persistence)
+- **Environment Variables**:
+  - `JWT_SECRET`: Secret key for JWT token signing (optional, auto-generated if not set)
+    - ⚠️ **Important**: If not set, a random key will be auto-generated, but **all tokens will become invalid after container restart**
+  - `PORT`: Application port (default: 3000)
+  - `NODE_ENV`: Environment mode (production/development)
+
+### Build from Source
+
 ```bash
 # Build the Docker image
 docker build -t traffic-page .
 
 # Run the container
-docker run -p 3000:3000 -v $(pwd)/data:/app/data traffic-page
+docker run -d \
+  --name traffic-page \
+  -p 3000:3000 \
+  -v $(pwd)/data:/app/data \
+  traffic-page
 ```
 
 ## Project Structure
