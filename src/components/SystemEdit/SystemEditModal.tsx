@@ -10,6 +10,7 @@ import {
     faInfoCircle
 } from '@fortawesome/free-solid-svg-icons';
 import GeneralSettingModal from "@/components/SystemEdit/GeneralSettingModal";
+import UserSettingModal from "@/components/SystemEdit/UserSettingModal";
 import ResizeCard from "@/components/common/ResizeCard";
 import {useAppTranslation} from "@/providers/I18nProvider";
 
@@ -61,7 +62,7 @@ const SystemEdit: React.FC = () => {
         // 安全设置
         {id: 'security', icon: faShieldAlt, label: t('security.title'), color: '#ef4444', render: defaultSetting},
         // 用户设置
-        {id: 'user', icon: faUser, label: t('user.title'), color: '#10b981', render: defaultSetting}
+        {id: 'user', icon: faUser, label: t('user.title'), color: '#10b981', render: () => <UserSettingModal/>}
     ];
     // 状态管理
     const [activeSetting, setActiveSetting] = useState<SettingItem['id']>();

@@ -78,7 +78,8 @@ const LoginPage = () => {
         // 用户名验证
         if (!username.trim()) {
             errors.username = t('errors.usernameRequired');
-        } else if (username.length < 3 || username.length > 20) {
+        } else if (isRegisterMode && (username.length < 3 || username.length > 20)) {
+            // 注册模式下验证用户名长度，登录模式不验证（支持邮箱）
             errors.username = t('errors.usernameLength');
         }
 

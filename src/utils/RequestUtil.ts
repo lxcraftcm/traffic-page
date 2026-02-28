@@ -85,5 +85,11 @@ export const apis = {
     },
     saveGeneralSetting: (data: any) => {
         return requestUtil({url: '/api/systemSetting/generalSetting', method: 'POST', data: JSON.stringify(data)});
+    },
+    updateUserInfo: (data: any) => {
+        return requestUtil({url: '/api/user/update', method: 'POST', data: JSON.stringify(data)});
+    },
+    changePassword: (data: any) => {
+        return requestUtil({url: '/api/user/changePassword', method: 'POST', data: JSON.stringify(data)});
     }
 }

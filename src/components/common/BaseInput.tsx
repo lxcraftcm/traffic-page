@@ -1,14 +1,14 @@
 import React, {useState, useEffect, useRef} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {
-    faCheck, faChevronDown, faEllipsis
+    faCheck, faChevronDown, faEllipsis, faEye, faEyeSlash
 } from '@fortawesome/free-solid-svg-icons';
 import {PRESET_ICONS} from "@/components/common/PreConstants";
 import {getIconClass, renderIcon} from "@/utils/IconUtil";
 import IconPickerModal from "@/components/IconPickerModal";
 
 // 类型定义
-export type InputType = 'input' | 'select' | 'checkbox' | 'radio' | 'textarea' | 'iconSelect';
+export type InputType = 'input' | 'select' | 'checkbox' | 'radio' | 'textarea' | 'iconSelect' | 'password';
 
 // 选项类型（用于select/radio）
 export interface Option {
@@ -78,6 +78,7 @@ const BaseInput: React.FC<BaseInputProps> = ({
     const [relOptions, setRelOptions] = useState<Option[] | undefined>(options)
     const [searchValue, setSearchValue] = useState<string>('')
     const [isShowIconPickerModal, setIsShowIconPickerModal] = useState<boolean>(false);
+    const [showPassword, setShowPassword] = useState<boolean>(false);
 
     // 点击外部关闭语言切换
     useEffect(() => {
@@ -447,6 +448,31 @@ const BaseInput: React.FC<BaseInputProps> = ({
                         if (onBlur) onBlur(value)
                     }}
                 />
+            )}
+
+            {inputType === 'password' && (
+                <div className="relative">
+                    <input
+                        id={id}
+                        type={showPassword ? 'text' : 'password'}
+                        value={value ? value.toString() : ''}
+                        onChange={(e) => handleChange(e.target.value)}
+                        placeholder={placeholder}
+                        disabled={disabled}
+                    className={`${inputBaseClass} pr-10`}
+                        onBlur={() => {
+                            if (onBlur) onBlur(value)
+                        }}
+                    />
+                    <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-indigo-500 transition-colors duration-300"
+                        disabled={disabled}
+                    >
+                        <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} className="h-4 w-4"/>
+                    </button>
+                </div>
             )}
 
             {inputType === 'textarea' && (
