@@ -58,14 +58,14 @@ const SystemEdit: React.FC = () => {
         // 通用设置
         {id: 'general', icon: faCog, label: t('general.title'), color: '#6366f1', render: () => <GeneralSettingModal/>},
         // 偏好设置
-        {id: 'preference', icon: faHeart, label: t('preference.title'), color: '#ec4899', render: defaultSetting},
+        // {id: 'preference', icon: faHeart, label: t('preference.title'), color: '#ec4899', render: defaultSetting},
         // 安全设置
-        {id: 'security', icon: faShieldAlt, label: t('security.title'), color: '#ef4444', render: defaultSetting},
+        // {id: 'security', icon: faShieldAlt, label: t('security.title'), color: '#ef4444', render: defaultSetting},
         // 用户设置
         {id: 'user', icon: faUser, label: t('user.title'), color: '#10b981', render: () => <UserSettingModal/>}
     ];
     // 状态管理
-    const [activeSetting, setActiveSetting] = useState<SettingItem['id']>();
+    const [activeSetting, setActiveSetting] = useState<SettingItem['id']>('general');
 
     const activeSettingOption = settingItems.find(i => i.id === activeSetting);
 

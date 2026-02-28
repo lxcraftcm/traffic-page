@@ -64,19 +64,34 @@ const GeneralSettingModal = () => {
             rules: [{required: true, message: t('defaultThemeRequired')}],
             optionLayout: 'horizontal'
         },
-        {
-            name: 'status1',
-            type: 'checkbox',
-            label: '状态1',
-            placeholder: '所有状态',
-            options: [
-                {label: '选项1', value: 'option1'},
-                {label: '选项2', value: 'option2'},
-                {label: '选项3', value: 'option3'},
-                {label: '选项4', value: 'option4'}
-            ],
-            optionLayout: 'horizontal'
-        },
+        // {
+        //     name: 'status1',
+        //     type: 'checkbox',
+        //     label: '状态1',
+        //     placeholder: '所有状态',
+        //     options: [
+        //         {label: '选项1', value: 'option1'},
+        //         {label: '选项2', value: 'option2'},
+        //         {label: '选项3', value: 'option3'},
+        //         {label: '选项4', value: 'option4'}
+        //     ],
+        //     optionLayout: 'horizontal'
+        // },
+        // {
+        //     name: 'iconTest',
+        //     type: 'iconSelect',
+        //     label: 'iconTest',
+        //     placeholder: '所有图标',
+        //     options: [
+        //         {label: '选项1', value: 'fa-solid fa-home'},
+        //         {label: '选项2', value: 'fa-solid fa-layer-group'},
+        //         {label: '选项3', value: 'fa-solid fa-tasks'},
+        //         {label: '选项4', value: 'fa-solid fa-calendar-days'}
+        //     ],
+        //     isShowMoreIcon: true,
+        //     optionLayout: 'horizontal',
+        //     rules: [{required: true, message: t('copyrightRequired')}]
+        // },
     ];
 
     // 加载数据
