@@ -11,7 +11,7 @@ import {
     faCheck,
     faShieldHalved,
 } from '@fortawesome/free-solid-svg-icons';
-import {setLocalStorage} from '@/utils/StorageUtil';
+import {getLocalStorage, setLocalStorage} from '@/utils/StorageUtil';
 import Link from 'next/link';
 import {apis} from "@/utils/RequestUtil";
 import forge from 'node-forge';
@@ -53,6 +53,15 @@ const LoginPage = () => {
     // 检测系统初始化状态
     useEffect(() => {
         checkSystemInit()
+    }, []);
+
+    // 加载记住的用户名
+    useEffect(() => {
+        const rememberedUsername = getLocalStorage('rememberedUsername');
+        if (rememberedUsername) {
+            setUsername(rememberedUsername);
+            setRememberMe(true);
+        }
     }, []);
 
     const checkSystemInit = async () => {
